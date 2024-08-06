@@ -201,7 +201,8 @@ public class ProfileWindow {
 			}
 		});
 		
-		JLabel lblNewLabel_1 = new JLabel(user.getName().concat(user.getAccessLevel() == 2 ? " - Usuario Comum": " - Admnistrador"));
+		JLabel lblNewLabel_1 = new JLabel(user.getName().concat(user.getAccessLevel() == 2 ? " - Usuario Comum.": " - Admnistrador."));
+		lblNewLabel_1.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
 		lblNewLabel_1.setBounds(214, 102, 212, 14);
 		frame.getContentPane().add(lblNewLabel_1);
 		
@@ -249,6 +250,11 @@ public class ProfileWindow {
 		JButton btnNewButton_1 = new JButton("Depositar");
 		btnNewButton_1.setBounds(507, 326, 123, 23);
 		frame.getContentPane().add(btnNewButton_1);
+		
+		JLabel balanceLabel = new JLabel("Saldo Atual: R$ " + user.getBalance() + ".");
+		balanceLabel.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
+		balanceLabel.setBounds(214, 120, 163, 14);
+		frame.getContentPane().add(balanceLabel);
         
 	}
 }
