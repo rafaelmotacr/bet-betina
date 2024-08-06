@@ -1,19 +1,27 @@
 package ui;
 
+import java.awt.Color;
 import java.awt.EventQueue;
-import java.awt.HeadlessException;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+
 import dao.UserDaoPostgres;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+
+import java.awt.Font;
 
 public class LoginWindow {
 
@@ -24,15 +32,7 @@ public class LoginWindow {
 	private UserDaoPostgres dao = new UserDaoPostgres();
 	private MainWindow mainWindow;
 	private JButton backBTN;
-	
-
-	public MainWindow getMainWindow() {
-		return mainWindow;
-	}
-
-	public void setMainWindow(MainWindow mainWindow) {
-		this.mainWindow = mainWindow;
-	}
+	int xx,xy;
 
 	/**
 	 * Launch the application.
@@ -45,22 +45,22 @@ public class LoginWindow {
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
-				
+				}
 			}
-			}});
+		});
 	}
 
 	/**
 	 * Create the application.
 	 */
 	public LoginWindow() {
-	        initialize();
-	    }
-		
-    public LoginWindow(MainWindow mainWindowTMP) {
-        mainWindow = mainWindowTMP;
         initialize();
     }
+	
+	public LoginWindow(MainWindow mainWindowTMP) {
+		mainWindow = mainWindowTMP;
+		initialize();
+	}
 
 	/**
 	 * Initialize the contents of the frame.
@@ -68,26 +68,66 @@ public class LoginWindow {
 	private void initialize() {
 		
 		frame = new JFrame();
-		frame.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\rafae\\eclipse-workspace\\betgree\\src\\img\\ico.png"));
-		frame.setBounds(100, 100, 259, 286);
+		frame.setUndecorated(true);
+		frame.setBounds(100, 100, 250, 266);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
-		backBTN = new JButton("New button");
-		backBTN.setIcon(new ImageIcon(LoginWindow.class.getResource("/resources/back_btn_register.png")));
-		backBTN.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		backBTN.setBounds(22, 178, 31, 32);
-		frame.getContentPane().add(backBTN);
+        frame.getContentPane().addMouseListener(new MouseAdapter() {
+        	
+        	@Override
+        	public void mousePressed(MouseEvent e) {
+        		
+            	xx = e.getX();
+    		     xy = e.getY();
+        	}
+        });
+        frame.getContentPane().addMouseMotionListener(new MouseMotionAdapter() {
+        	
+        	@Override
+        	public void mouseDragged(MouseEvent arg0) {
+        		int x = arg0.getXOnScreen();
+	            int y = arg0.getYOnScreen();
+	            frame.setLocation(x - xx, y - xy);
+				 
+        	}
+        });
+		
+        JPanel blackLine_2 = new JPanel();
+        blackLine_2.setBounds(0, 0, 250, 23);
+        blackLine_2.setForeground(Color.BLACK);
+        blackLine_2.setBackground(Color.BLACK);
+        frame.getContentPane().add(blackLine_2);
+        blackLine_2.setLayout(null);
+        
+        JLabel closeBTN = new JLabel("X");
+        closeBTN.setFont(new Font("Tahoma", Font.PLAIN, 20));
+        closeBTN.setForeground(new Color(255, 255, 255));
+        closeBTN.setBounds(224, 2, 14, 21);
+        blackLine_2.add(closeBTN);
+        closeBTN.addMouseListener(new MouseAdapter() {
+        	@Override
+        	public void mouseClicked(MouseEvent e) {
+        		System.exit(0);
+        	}
+        });
+        
+        JLabel titleLBL = new JLabel("bet-betina v1.21 - Login");
+        titleLBL.setBounds(0, 5, 141, 16);
+        titleLBL.setHorizontalAlignment(SwingConstants.LEFT);
+        blackLine_2.add(titleLBL);
 		
 		passwordField = new JPasswordField();
-		passwordField.setBounds(27, 138, 154, 20);
+		passwordField.setBounds(25, 154, 158, 20);
 		frame.getContentPane().add(passwordField);
 		
+		emailField = new JTextField();
+		emailField.setBounds(25, 111, 158, 20);
+		frame.getContentPane().add(emailField);
+		emailField.setColumns(10);
+		
 		loginBTN = new JButton("");
-		loginBTN.setBounds(63, 178, 118, 32);
+		loginBTN.setBounds(63, 195, 120, 29);
 		frame.getContentPane().add(loginBTN);
 		loginBTN.setOpaque(false);
 		loginBTN.setContentAreaFilled(false);
@@ -110,10 +150,7 @@ public class LoginWindow {
 					} else {
 						JOptionPane.showMessageDialog(frame, "Login ou senha incorretos");
 					}
-				} catch (HeadlessException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (SQLException e1) {
+				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
@@ -121,14 +158,21 @@ public class LoginWindow {
 			}
 		});
 		
-		emailField = new JTextField();
-		emailField.setBounds(27, 94, 154, 20);
-		frame.getContentPane().add(emailField);
-		emailField.setColumns(10);
+		backBTN = new JButton("");
+		backBTN.setIcon(new ImageIcon(RegisterWindow.class.getResource("/resources/back_btn_register.png")));
+		backBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 5));
+		backBTN.setBounds(25, 195, 34, 29);
+		frame.getContentPane().add(backBTN);
+		backBTN.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				frame.dispose();
+			}
+		});
+		frame.getContentPane().add(backBTN);
 		
 		JLabel lblNewLabel = new JLabel("");
-		lblNewLabel.setIcon(new ImageIcon(LoginWindow.class.getResource("/resources/loginBg.png")));
-		lblNewLabel.setBounds(0, 0, 250, 250);
+		lblNewLabel.setIcon(new ImageIcon(LoginWindow.class.getResource("/resources/logar.png")));
+		lblNewLabel.setBounds(0, 16, 250, 250);
 		frame.getContentPane().add(lblNewLabel);
 	}
 }

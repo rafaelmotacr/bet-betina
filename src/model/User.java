@@ -4,25 +4,20 @@ public class User {
 	
     private int ID;
     private int accessLevel; 
+    private Double balance;
     private String name;
     private String email;
     private String password;
     
-	public User(int iD, int accessLevel, String name, String email, String password) {
+	public User(int iD, int accessLevel, Double balance, String name, String email, String password) {
 		super();
 		ID = iD;
 		this.accessLevel = accessLevel;
+		this.balance = balance;
 		this.name = name;
 		this.email = email;
 		this.password = password;
 	}
-	
-	public User(int iD, String name) {
-		super();
-		ID = iD;
-		this.name = name;
-	}
-	
 
 	public int getID() {
 		return ID;
@@ -38,6 +33,14 @@ public class User {
 
 	public void setAccessLevel(int accessLevel) {
 		this.accessLevel = accessLevel;
+	}
+
+	public Double getBalance() {
+		return balance;
+	}
+
+	public void setBalance(Double balance) {
+		this.balance = balance;
 	}
 
 	public String getName() {
@@ -66,8 +69,9 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [ID=" + ID + ", accessLevel=" + accessLevel + ", name=" + name + ", email=" + email + ", password="
-				+ password + "]";
+		return "User [ID=" + ID + ", accessLevel=" + accessLevel + ", balance=" + balance + ", name=" + name
+				+ ", email=" + email + ", password=" + password + "]";
 	}
+    
     
 }

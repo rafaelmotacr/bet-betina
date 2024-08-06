@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import model.User;
 
 public class UserDaoPostgres implements UserDao {
+	
+	private Double saldoInicialPadrao = 500.00d;
 
 	public boolean login(String email, String senha) throws SQLException {
 		
@@ -23,6 +25,7 @@ public class UserDaoPostgres implements UserDao {
 	public User findUserByLoguin(String email, String senha) throws SQLException {
 	
 		User user = null;
+		
 		PreparedStatement ps = ConexaoBdSingleton
 				.getInstance()
 				.getConexao().prepareStatement("SELECT * FROM user_tb WHERE user_email = ? AND user_password = ?");	
@@ -33,16 +36,12 @@ public class UserDaoPostgres implements UserDao {
 		ResultSet rs = ps.executeQuery();
 		rs.next();
 		
-		try {
-			user = new User(rs.getInt("user_id"),
-							rs.getInt("access_level_id"), 
-							rs.getString("user_name"), 
-							rs.getString("user_email"), 
-							rs.getString("user_password"));
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		user = new User(rs.getInt("user_id"),
+						rs.getInt("access_level_id"),
+						rs.getDouble("user_balance"),
+						rs.getString("user_name"), 
+						rs.getString("user_email"), 
+						rs.getString("user_password"));
 		return user;
 		
 	}
@@ -53,11 +52,12 @@ public class UserDaoPostgres implements UserDao {
 		try {
 		PreparedStatement ps = ConexaoBdSingleton
 				.getInstance()
-				.getConexao().prepareStatement("INSERT INTO user_tb (access_level_id, user_name, user_email, user_password) VALUES (?, ?, ?, ?)");
+				.getConexao().prepareStatement("INSERT INTO user_tb (access_level_id, user_name, user_email, user_password, user_balance) VALUES (?, ?, ?, ?, ?)");
 				ps.setInt(1,2 );
 				ps.setString(2, nome);
 				ps.setString(3, email);
 				ps.setString(4, senha);
+				ps.setDouble(5, saldoInicialPadrao);
 				ps.executeUpdate();
 		}catch (SQLException e) {
 			e.printStackTrace();

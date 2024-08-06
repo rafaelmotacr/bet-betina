@@ -11,11 +11,12 @@ public class ConexaoBdSingleton {
 	
 	private ConexaoBdSingleton() {
 		try {
+			
 			// Conexao com o BD de Rafael
-			conexao = DriverManager.getConnection("jdbc:postgresql://localhost:5432/betgree", "postgres", "106927");
+			conexao = DriverManager.getConnection("jdbc:postgresql://localhost:5432/bet-betina", "postgres", "106927");
 			
 			// Conexao com o BD do IFBA
-			//conexao = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "alunoifba");
+			//conexao = DriverManager.getConnection("jdbc:postgresql://localhost:5432/bettina", "postgres", "alunoifba");
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
