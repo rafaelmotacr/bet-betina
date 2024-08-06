@@ -174,3 +174,5 @@ INSERT INTO bid_tb (bid_paid_value, bid_guess, bet_id, match_id) VALUES
 (40.00, 2, 8, 8),
 (70.00, 1, 9, 9),
 (65.00, 0, 10, 10);
+
+select * from user_tb
