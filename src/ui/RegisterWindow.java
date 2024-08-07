@@ -34,7 +34,7 @@ public class RegisterWindow {
 	private JTextField emailField;
 	private MainWindow mainWindow;
 	private UserDaoPostgres dao = new UserDaoPostgres();
-	int xx,xy;
+	private int xx,xy;
 
 	/**
 	 * Launch the application.
@@ -144,7 +144,8 @@ public class RegisterWindow {
 					JOptionPane.showMessageDialog(frame,"Erro ao criar usuário.");
 				}
 				frame.dispose();
-				mainWindow.setRegisterWindow(null);
+				mainWindow.getFrame().setEnabled(true);
+				mainWindow.getFrame().toFront();
 			}
 		});
 		
@@ -186,7 +187,8 @@ public class RegisterWindow {
         	@Override
         	public void mouseClicked(MouseEvent e) {
         		frame.dispose();
-        		mainWindow.setRegisterWindow(null);
+        		mainWindow.getFrame().setEnabled(true);
+        		mainWindow.getFrame().toFront();
         		
         	}
         });

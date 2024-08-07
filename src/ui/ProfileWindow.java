@@ -29,11 +29,11 @@ public class ProfileWindow {
 	private MainWindow mainWindow;
 	private UserDaoPostgres dao = new UserDaoPostgres();
 	private User currentUser = null;
-	int xx,xy;
 	private JTextField nameField;
 	private JTextField emailField;
 	private JTextField changePasswordField;
 	private JPasswordField confirmPasswordField;
+	private int xx,xy;
 	/**
 	 * Launch the application.
 	 */
@@ -129,6 +129,8 @@ public class ProfileWindow {
                     mainWindow.updateButtons();
                     mainWindow.updateStatusLabel();
 					frame.dispose();
+					mainWindow.getFrame().setEnabled(true);
+					mainWindow.getFrame().toFront();
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -285,7 +287,8 @@ public class ProfileWindow {
         	@Override
         	public void mouseClicked(MouseEvent e) {
         		frame.dispose();
-        		mainWindow.setProfileWindow(null);
+        		mainWindow.getFrame().setEnabled(true);
+        		mainWindow.getFrame().toFront();
         	}
         });
 		

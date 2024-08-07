@@ -31,7 +31,7 @@ public class LoginWindow {
 	private JButton loginBTN;
 	private UserDaoPostgres dao = new UserDaoPostgres();
 	private MainWindow mainWindow;
-	int xx,xy;
+	private int xx,xy;
 
 	/**
 	 * Launch the application.
@@ -115,7 +115,8 @@ public class LoginWindow {
         	@Override
         	public void mouseClicked(MouseEvent e) {
         		frame.dispose();
-        		mainWindow.setLoginWindow(null);
+        		mainWindow.getFrame().setEnabled(true);
+        		mainWindow.getFrame().toFront();
         	}
         });
         
@@ -155,7 +156,8 @@ public class LoginWindow {
 					    mainWindow.updateUser(dao.findUserByLoguin(email, senha));
 					    mainWindow.updateButtons();
 					    frame.dispose();
-					    mainWindow.setLoginWindow(null);
+					    mainWindow.getFrame().setEnabled(true);
+					    mainWindow.getFrame().toFront();
 					} else {
 						JOptionPane.showMessageDialog(frame, "Login ou senha incorretos");
 					}

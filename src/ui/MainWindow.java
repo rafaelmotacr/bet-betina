@@ -24,16 +24,12 @@ public class MainWindow {
 	private JFrame frame;
     private JLabel greetingLabel;
     private User currentUser = null;
-    private RegisterWindow registerWindow = null;
-    private LoginWindow loginWindow = null;
-    private ProfileWindow profileWindow = null;
     private JButton loginBTN = new JButton("Log In");
     private JButton registerBTN = new JButton("Registrar");
     private JButton logOutBTN = new JButton("Log Out");
     private JButton profileBTN = new JButton("Perfil");
-
+    private int xx,xy;
     
-	int xx,xy;
     /**
      * Launch the application.
      */
@@ -282,10 +278,11 @@ public class MainWindow {
             profileBTN.setBounds(149, 29, 98, 26); 
             profileBTN.addActionListener(new ActionListener() {
 	    	    public void actionPerformed(ActionEvent e) {
-	    	    	if(profileWindow == null) {
-		    	    	profileWindow = new ProfileWindow(MainWindow.this);
-		    	    	profileWindow.frame.setVisible(true);
-	    	    	}
+
+	    	    	ProfileWindow profileWindow = new ProfileWindow(MainWindow.this);
+	    	    	profileWindow.frame.setVisible(true);
+	    	    	frame.setEnabled(false);   
+    	   
 	    	    }
 	    	});
             profileBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 12));
@@ -300,10 +297,9 @@ public class MainWindow {
 	        loginBTN.setBounds(149, 29, 98, 26);
 	        loginBTN.addActionListener(new ActionListener() {
 	              public void actionPerformed(ActionEvent e) {
-	            	  if(loginWindow == null) {
-		                  loginWindow = new LoginWindow(MainWindow.this);
-		                  loginWindow.frame.setVisible(true);
-	            	  }
+	            	  frame.setEnabled(false);
+		              LoginWindow loginWindow = new LoginWindow(MainWindow.this);
+		              loginWindow.frame.setVisible(true);
 	              }
 	          });
 	        loginBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 12));
@@ -315,10 +311,12 @@ public class MainWindow {
             registerBTN.setBounds(393, 29, 98, 26);
             registerBTN.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                	if(registerWindow == null)
-	                	registerWindow = new RegisterWindow(MainWindow.this);
-	                	registerWindow.frame.setVisible(true);
-                }
+	          
+	            	RegisterWindow registerWindow = new RegisterWindow(MainWindow.this);
+	                registerWindow.frame.setVisible(true);
+	                frame.setEnabled(false);   
+	                
+	            }
             });
             registerBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 12));
             frame.getContentPane().add(registerBTN);	
@@ -347,28 +345,12 @@ public class MainWindow {
 		this.currentUser = currentUser;
 	}
 
-	public RegisterWindow getRegisterWindow() {
-		return registerWindow;
+	public JFrame getFrame() {
+		return frame;
 	}
 
-	public void setRegisterWindow(RegisterWindow registerWindow) {
-		this.registerWindow = registerWindow;
-	}
-
-	public LoginWindow getLoginWindow() {
-		return loginWindow;
-	}
-
-	public void setLoginWindow(LoginWindow loginWindow) {
-		this.loginWindow = loginWindow;
-	}
-
-	public ProfileWindow getProfileWindow() {
-		return profileWindow;
-	}
-
-	public void setProfileWindow(ProfileWindow profileWindow) {
-		this.profileWindow = profileWindow;
+	public void setFrame(JFrame frame) {
+		this.frame = frame;
 	}
 	
 }
