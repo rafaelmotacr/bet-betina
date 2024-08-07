@@ -8,7 +8,7 @@ import model.User;
 
 public class UserDaoPostgres implements UserDao {
 	
-	private Double saldoInicialPadrao = 500.00d;
+	private Double saldoInicialPadrao = 500.000d;
 
 	public boolean login(String email, String senha) throws SQLException {
 		
@@ -75,6 +75,20 @@ public class UserDaoPostgres implements UserDao {
 		}catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public int getTotalApostas(User user) throws SQLException{
+		
+		PreparedStatement ps = ConexaoBdSingleton
+				.getInstance()
+				.getConexao().prepareStatement("SELECT COUNT(*) as total_user_bets FROM bet_tb AS bt INNER JOIN user_tb AS u ON bt.user_id = u.user_id WHERE bt.user_id = ?");	
+
+		ps.setInt(1, user.getID());
+		
+		ResultSet rs = ps.executeQuery();
+		rs.next();
+		return rs.getInt("total_user_bets");
 	}
 		
 }

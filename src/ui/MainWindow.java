@@ -24,10 +24,15 @@ public class MainWindow {
 	private JFrame frame;
     private JLabel greetingLabel;
     private User currentUser = null;
+    private RegisterWindow registerWindow = null;
+    private LoginWindow loginWindow = null;
+    private ProfileWindow profileWindow = null;
     private JButton loginBTN = new JButton("Log In");
     private JButton registerBTN = new JButton("Registrar");
     private JButton logOutBTN = new JButton("Log Out");
     private JButton profileBTN = new JButton("Perfil");
+
+    
 	int xx,xy;
     /**
      * Launch the application.
@@ -82,7 +87,7 @@ public class MainWindow {
         
         frame.setUndecorated(true);
         frame.setResizable(false);
-        frame.getContentPane().setBackground(new Color(153, 0, 0));
+        frame.getContentPane().setBackground(new Color(0, 128, 128));
         frame.setBounds(100, 100, 640, 360);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(null);
@@ -90,7 +95,7 @@ public class MainWindow {
         // Label de cumprimento ao usuário
 
         greetingLabel = new JLabel("");
-        greetingLabel.setBounds(149, 317, 342, 34);
+        greetingLabel.setBounds(149, 314, 342, 34);
         greetingLabel.setForeground(new Color(255, 255, 255));
         greetingLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 16));
         greetingLabel.setBackground(new Color(238, 238, 238));
@@ -117,6 +122,7 @@ public class MainWindow {
         // Botão de sair
         
         JButton exitBTN = new JButton("SAIR");
+        exitBTN.setContentAreaFilled(false);
         exitBTN.setMnemonic('S');
         exitBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 12));
         exitBTN.addActionListener(new ActionListener() {
@@ -138,6 +144,7 @@ public class MainWindow {
         // Botão de apostar
         
         JButton betBTN = new JButton("Apostar");
+        betBTN.setContentAreaFilled(false);
         betBTN.setMnemonic('A');
         betBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 12));
         betBTN.setBounds(12, 45, 98, 26);
@@ -156,6 +163,7 @@ public class MainWindow {
         // Botão de ver jogos
 
         JButton matchBTN = new JButton("Jogos");
+        matchBTN.setContentAreaFilled(false);
         matchBTN.setMnemonic('V');
         matchBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 12));
         matchBTN.addActionListener(new ActionListener() {
@@ -163,25 +171,8 @@ public class MainWindow {
                // frame.dispose();
             }
         });
-        matchBTN.setBounds(12, 121, 98, 26);
+        matchBTN.setBounds(12, 77, 98, 26);
         panel.add(matchBTN);
-        
-        // Botão de histórico
-        
-        JButton historyBTN = new JButton("Histórico");
-        historyBTN.setMnemonic('h');
-        historyBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 12));
-        historyBTN.setBounds(12, 83, 98, 26);
-        panel.add(historyBTN);
-        historyBTN.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-               if(currentUser == null) {
-            	   
-            	   JOptionPane.showMessageDialog(frame, "Você precisa estar logado para acessar seu histórico!");
-            	   
-               }
-            }
-        });
         
         
         // Linha preta meramente estétitca
@@ -193,8 +184,9 @@ public class MainWindow {
         blackLine.setBackground(new Color(0, 0, 0));
         
         JButton btnNewButton = new JButton("Times");
+        btnNewButton.setContentAreaFilled(false);
         btnNewButton.setFont(new Font("Comic Sans MS", Font.BOLD, 12));
-        btnNewButton.setBounds(12, 160, 98, 26);
+        btnNewButton.setBounds(12, 112, 98, 26);
         panel.add(btnNewButton);
         
         Panel panel_1 = new Panel();
@@ -228,12 +220,13 @@ public class MainWindow {
         
         
         JLabel titleLBL = new JLabel("bet-betina v1.21 - Home");
+        titleLBL.setForeground(new Color(255, 255, 255));
         titleLBL.setBounds(0, 2, 141, 16);
         titleLBL.setHorizontalAlignment(SwingConstants.LEFT);
         blackLine_2.add(titleLBL);
         
         JLabel closeBTN = new JLabel("X");
-        closeBTN.setBounds(621, 2, 10, 10);
+        closeBTN.setBounds(614, 3, 20, 16);
         blackLine_2.add(closeBTN);
         closeBTN.addMouseListener(new MouseAdapter() {
         	@Override
@@ -283,14 +276,16 @@ public class MainWindow {
             });
 
             
-            // Botão de deletar usuário
+            // Botão de perfil
             
-            profileBTN.setMnemonic('d');
+            profileBTN.setMnemonic('p');
             profileBTN.setBounds(149, 29, 98, 26); 
             profileBTN.addActionListener(new ActionListener() {
 	    	    public void actionPerformed(ActionEvent e) {
-	    	    	ProfileWindow profileWindow = new ProfileWindow(MainWindow.this);
-	    	    	profileWindow.frame.setVisible(true);
+	    	    	if(profileWindow == null) {
+		    	    	profileWindow = new ProfileWindow(MainWindow.this);
+		    	    	profileWindow.frame.setVisible(true);
+	    	    	}
 	    	    }
 	    	});
             profileBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 12));
@@ -305,8 +300,10 @@ public class MainWindow {
 	        loginBTN.setBounds(149, 29, 98, 26);
 	        loginBTN.addActionListener(new ActionListener() {
 	              public void actionPerformed(ActionEvent e) {
-	                  LoginWindow loginDialog = new LoginWindow(MainWindow.this);
-	                  loginDialog.frame.setVisible(true);
+	            	  if(loginWindow == null) {
+		                  loginWindow = new LoginWindow(MainWindow.this);
+		                  loginWindow.frame.setVisible(true);
+	            	  }
 	              }
 	          });
 	        loginBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 12));
@@ -318,8 +315,9 @@ public class MainWindow {
             registerBTN.setBounds(393, 29, 98, 26);
             registerBTN.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    RegisterWindow registerDialog = new RegisterWindow(MainWindow.this);
-                    registerDialog.frame.setVisible(true);
+                	if(registerWindow == null)
+	                	registerWindow = new RegisterWindow(MainWindow.this);
+	                	registerWindow.frame.setVisible(true);
                 }
             });
             registerBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 12));
@@ -330,7 +328,7 @@ public class MainWindow {
         frame.repaint();
     }
 
-    private void updateStatusLabel() {
+    public void updateStatusLabel() {
         if (currentUser == null) {
             greetingLabel.setText("Seja Bem Vindo (a), visitante!");
         } else if (currentUser.getAccessLevel() == 1) {
@@ -348,4 +346,29 @@ public class MainWindow {
 	public void setCurrentUser(User currentUser) {
 		this.currentUser = currentUser;
 	}
+
+	public RegisterWindow getRegisterWindow() {
+		return registerWindow;
+	}
+
+	public void setRegisterWindow(RegisterWindow registerWindow) {
+		this.registerWindow = registerWindow;
+	}
+
+	public LoginWindow getLoginWindow() {
+		return loginWindow;
+	}
+
+	public void setLoginWindow(LoginWindow loginWindow) {
+		this.loginWindow = loginWindow;
+	}
+
+	public ProfileWindow getProfileWindow() {
+		return profileWindow;
+	}
+
+	public void setProfileWindow(ProfileWindow profileWindow) {
+		this.profileWindow = profileWindow;
+	}
+	
 }

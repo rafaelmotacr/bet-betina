@@ -31,7 +31,6 @@ public class LoginWindow {
 	private JButton loginBTN;
 	private UserDaoPostgres dao = new UserDaoPostgres();
 	private MainWindow mainWindow;
-	private JButton backBTN;
 	int xx,xy;
 
 	/**
@@ -101,6 +100,13 @@ public class LoginWindow {
         blackLine_2.setLayout(null);
         
         JLabel closeBTN = new JLabel("X");
+        closeBTN.addMouseMotionListener(new MouseMotionAdapter() {
+        	@Override
+        	public void mouseMoved(MouseEvent e) {
+        		closeBTN.setForeground(new Color(255, 0, 0));
+        		
+        	}
+        });
         closeBTN.setFont(new Font("Tahoma", Font.PLAIN, 20));
         closeBTN.setForeground(new Color(255, 255, 255));
         closeBTN.setBounds(224, 2, 14, 21);
@@ -108,21 +114,23 @@ public class LoginWindow {
         closeBTN.addMouseListener(new MouseAdapter() {
         	@Override
         	public void mouseClicked(MouseEvent e) {
-        		System.exit(0);
+        		frame.dispose();
+        		mainWindow.setLoginWindow(null);
         	}
         });
         
         JLabel titleLBL = new JLabel("bet-betina v1.21 - Login");
+        titleLBL.setForeground(new Color(255, 255, 255));
         titleLBL.setBounds(0, 5, 141, 16);
         titleLBL.setHorizontalAlignment(SwingConstants.LEFT);
         blackLine_2.add(titleLBL);
 		
 		passwordField = new JPasswordField();
-		passwordField.setBounds(25, 154, 158, 20);
+		passwordField.setBounds(25, 154, 203, 20);
 		frame.getContentPane().add(passwordField);
 		
 		emailField = new JTextField();
-		emailField.setBounds(25, 111, 158, 20);
+		emailField.setBounds(25, 111, 203, 20);
 		frame.getContentPane().add(emailField);
 		emailField.setColumns(10);
 		
@@ -147,6 +155,7 @@ public class LoginWindow {
 					    mainWindow.updateUser(dao.findUserByLoguin(email, senha));
 					    mainWindow.updateButtons();
 					    frame.dispose();
+					    mainWindow.setLoginWindow(null);
 					} else {
 						JOptionPane.showMessageDialog(frame, "Login ou senha incorretos");
 					}
@@ -158,20 +167,8 @@ public class LoginWindow {
 			}
 		});
 		
-		backBTN = new JButton("");
-		backBTN.setIcon(new ImageIcon(RegisterWindow.class.getResource("/resources/back_btn_register.png")));
-		backBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 5));
-		backBTN.setBounds(25, 195, 34, 29);
-		frame.getContentPane().add(backBTN);
-		backBTN.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				frame.dispose();
-			}
-		});
-		frame.getContentPane().add(backBTN);
-		
 		JLabel lblNewLabel = new JLabel("");
-		lblNewLabel.setIcon(new ImageIcon(LoginWindow.class.getResource("/resources/logar.png")));
+		lblNewLabel.setIcon(new ImageIcon(LoginWindow.class.getResource("/resources/loginBG.png")));
 		lblNewLabel.setBounds(0, 16, 250, 250);
 		frame.getContentPane().add(lblNewLabel);
 	}

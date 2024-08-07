@@ -9,7 +9,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.sql.SQLException;
+import java.util.regex.Pattern;
 
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -20,18 +23,17 @@ import javax.swing.SwingConstants;
 
 import dao.UserDaoPostgres;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-
 public class RegisterWindow {
 
 	JFrame frame;
+	private int minPasswordLength = 8;
+	private int minNameLength = 4;
+	private int minEmailLenght = 10;
 	private JTextField nameField;
 	private JPasswordField passwordField;
 	private JTextField emailField;
 	private MainWindow mainWindow;
 	private UserDaoPostgres dao = new UserDaoPostgres();
-	private JButton backBTN;
 	int xx,xy;
 
 	/**
@@ -104,12 +106,36 @@ public class RegisterWindow {
 			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent e) {
 				
+				String name = nameField.getText();
+				String email = emailField.getText() ;
+				String password = passwordField.getText();
+				String regex = "^[a-zA0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+				
+				if(password.length() < minPasswordLength) {
+					JOptionPane.showMessageDialog(frame,"Senha muito curta.");
+					return;
+				}
+				
+				if(email.equals("") || email.length() < minEmailLenght) {
+					JOptionPane.showMessageDialog(frame,"Email muito curto.");
+					return;
+				}
+				
+				if(!Pattern.matches(regex, email)) {
+					JOptionPane.showMessageDialog(frame,"Insira um e-mail válido!");
+					return;
+				}
+				
+				if(name.length() < minNameLength) {
+					JOptionPane.showMessageDialog(frame,"O nome precisa ter ao menos 4 letras.s");
+					return;
+				}
+				
+				
 				try {
-					String nome = nameField.getText();
-					String email = emailField.getText() ;
-					String senha = passwordField.getText();
-					dao.insertUser(nome, email, senha);
-					mainWindow.updateUser(dao.findUserByLoguin(email, senha));
+
+					dao.insertUser(name, email, password);
+					mainWindow.updateUser(dao.findUserByLoguin(email, password));
 					mainWindow.updateButtons();
 					JOptionPane.showMessageDialog(frame, "Usuário criado com sucesso.");
 					frame.dispose();
@@ -118,6 +144,7 @@ public class RegisterWindow {
 					JOptionPane.showMessageDialog(frame,"Erro ao criar usuário.");
 				}
 				frame.dispose();
+				mainWindow.setRegisterWindow(null);
 			}
 		});
 		
@@ -147,6 +174,7 @@ public class RegisterWindow {
         
         
         JLabel titleLabel = new JLabel("bet-betina v1.21 - Registro");
+        titleLabel.setForeground(new Color(255, 255, 255));
         titleLabel.setBounds(0, 5, 214, 16);
         blackLine_2.add(titleLabel);
         titleLabel.setHorizontalAlignment(SwingConstants.LEFT);
@@ -157,25 +185,16 @@ public class RegisterWindow {
         closeBTN.addMouseListener(new MouseAdapter() {
         	@Override
         	public void mouseClicked(MouseEvent e) {
-        		System.exit(0);
+        		frame.dispose();
+        		mainWindow.setRegisterWindow(null);
+        		
         	}
         });
         closeBTN.setFont(new Font("Tahoma", Font.PLAIN, 20));
         closeBTN.setForeground(new Color(255, 255, 255));
-		
-		backBTN = new JButton("");
-		backBTN.setIcon(new ImageIcon(RegisterWindow.class.getResource("/resources/back_btn_register.png")));
-		backBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 5));
-		backBTN.setBounds(13, 215, 40, 35);
-		frame.getContentPane().add(backBTN);
-		backBTN.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				frame.dispose();
-			}
-		});
         
 		JLabel lblNewLabel = new JLabel("");
-		lblNewLabel.setIcon(new ImageIcon(RegisterWindow.class.getResource("/resources/registro.png")));
+		lblNewLabel.setIcon(new ImageIcon(RegisterWindow.class.getResource("/resources/registerBG.png")));
 		lblNewLabel.setBounds(0, 16, 250, 250);
 		frame.getContentPane().add(lblNewLabel);
 		

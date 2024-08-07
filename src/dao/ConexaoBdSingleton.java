@@ -16,7 +16,7 @@ public class ConexaoBdSingleton {
 			conexao = DriverManager.getConnection("jdbc:postgresql://localhost:5432/bet-betina", "postgres", "106927");
 			
 			// Conexao com o BD do IFBA
-			//conexao = DriverManager.getConnection("jdbc:postgresql://localhost:5432/bettina", "postgres", "alunoifba");
+			//conexao = DriverManager.getConnection("jdbc:postgresql://localhost:5432/betina", "postgres", "alunoifba");
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
