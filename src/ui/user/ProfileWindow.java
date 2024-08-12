@@ -29,6 +29,7 @@ import util.InputManipulation;
 import javax.swing.JTextField;
 import javax.swing.JInternalFrame;
 import javax.swing.border.LineBorder;
+import javax.swing.border.CompoundBorder;
 
 public class ProfileWindow {
 
@@ -47,12 +48,14 @@ public class ProfileWindow {
 	private int xx, xy;
 	
 //  Standard height and width
-    int frameHeight = 360;
-    int frameWidth = 640;
-    
+	
+	private int frameHeight = 360;
+	private int frameWidth = 640;
+	
  // Gets the screen resolution
-    Toolkit tk = Toolkit.getDefaultToolkit();
-    Dimension d = tk.getScreenSize();
+	
+	private Toolkit tk = Toolkit.getDefaultToolkit();
+	private Dimension d = tk.getScreenSize();
     
 	
 	/**
@@ -80,7 +83,7 @@ public class ProfileWindow {
 		}
 		else {
 			try {
-				this.currentUser =  dao.findUserByEmail("rafael.rafael@rafael.rafael");
+				this.currentUser =  dao.findUserByEmail("rafaelmotacr@gmail.com");
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -126,47 +129,14 @@ public class ProfileWindow {
         });
 		frame.getContentPane().setLayout(null);
 		
-		JPanel blackLine_2 = new JPanel();
-		blackLine_2.setBounds(0, 0, 640, 23);
-		blackLine_2.setLayout(null);
-		blackLine_2.setForeground(Color.BLACK);
-		blackLine_2.setBackground(Color.BLACK);
-		frame.getContentPane().add(blackLine_2);
-  
-        JLabel titleLabel = new JLabel("bet-betina v1.21 - Perfil de " + currentUser.getName());
-        titleLabel.setForeground(new Color(255, 255, 255));
-		titleLabel.setHorizontalAlignment(SwingConstants.LEFT);
-		titleLabel.setBounds(0, 5, 606, 16);
-		blackLine_2.add(titleLabel);
-		
-		JLabel closeBTN = new JLabel("X");
-		closeBTN.setForeground(Color.WHITE);
-		closeBTN.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		closeBTN.setBounds(616, 0, 14, 21);
-		blackLine_2.add(closeBTN);
-        closeBTN.addMouseListener(new MouseAdapter() {
-        	@Override
-        	public void mouseClicked(MouseEvent e) {
-        		frame.dispose();
-        		mainWindow.getFrame().setEnabled(true);
-        		mainWindow.getFrame().toFront();
-        	}
-        });
-        
-        
-		JPanel mainPanel = new JPanel();
-		mainPanel.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-		mainPanel.setBounds(214, 41, 212, 273);
-		frame.getContentPane().add(mainPanel);
-		mainPanel.setLayout(null);
-		
 				
 		// inicio da felete label
 		
 		
-		JInternalFrame confirmDeletePanel = new JInternalFrame("Confirmação de Exclusão");
-		confirmDeletePanel.setBounds(2, 0, 212, 274);
-		mainPanel.add(confirmDeletePanel);
+		JInternalFrame confirmDeletePanel = new JInternalFrame();
+		confirmDeletePanel.setFocusable(false);
+		confirmDeletePanel.setBounds(214, 43, 212, 274);
+		frame.getContentPane().add(confirmDeletePanel);
 		confirmDeletePanel.setClosable(true);
 		confirmDeletePanel.getContentPane().setLayout(null);
 		
@@ -203,9 +173,7 @@ public class ProfileWindow {
 				frame.setEnabled(true);
 				confirmDeletePanel.dispose();
 				}
-		});
-		
-				
+		});		
 				
 		JLabel profilePictureLabel_1 = new JLabel("");
 		profilePictureLabel_1.setIcon(new ImageIcon(ProfileWindow.class.getResource("/resources/user.png")));
@@ -224,6 +192,39 @@ public class ProfileWindow {
 		lblNewLabel.setBounds(8, 86, 178, 99);
 		confirmDeletePanel.getContentPane().add(lblNewLabel);
 		
+		JPanel blackLine_2 = new JPanel();
+		blackLine_2.setBounds(0, 0, 640, 23);
+		blackLine_2.setLayout(null);
+		blackLine_2.setForeground(Color.BLACK);
+		blackLine_2.setBackground(Color.BLACK);
+		frame.getContentPane().add(blackLine_2);
+  
+        JLabel titleLabel = new JLabel("bet-betina v1.21 - Perfil de " + currentUser.getName());
+        titleLabel.setForeground(new Color(255, 255, 255));
+		titleLabel.setHorizontalAlignment(SwingConstants.LEFT);
+		titleLabel.setBounds(0, 5, 606, 16);
+		blackLine_2.add(titleLabel);
+		
+		JLabel closeBTN = new JLabel("X");
+		closeBTN.setForeground(Color.WHITE);
+		closeBTN.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		closeBTN.setBounds(616, 0, 14, 21);
+		blackLine_2.add(closeBTN);
+        closeBTN.addMouseListener(new MouseAdapter() {
+        	@Override
+        	public void mouseClicked(MouseEvent e) {
+        		frame.dispose();
+        		mainWindow.getFrame().setEnabled(true);
+        		mainWindow.getFrame().toFront();
+        	}
+        });
+        
+		JPanel mainPanel = new JPanel();
+		mainPanel.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+		mainPanel.setBounds(214, 41, 212, 273);
+		frame.getContentPane().add(mainPanel);
+		mainPanel.setLayout(null);
+		
 		JLabel nameLabel = new JLabel(currentUser.getName().concat(currentUser.getAccessLevel() == 2 ? " - Usuario Comum.": " - Admnistrador."));
 		nameLabel.setBounds(12, 77, 202, 14);
 		mainPanel.add(nameLabel);
@@ -231,11 +232,13 @@ public class ProfileWindow {
 		
 		JButton saveBTN = new JButton("Salvar Alterações");
 		saveBTN.setContentAreaFilled(false);
-		saveBTN.setBounds(10, 326, 194, 23);
+		saveBTN.setBounds(47, 327, 157, 23);
 		saveBTN.setEnabled(false);
 		frame.getContentPane().add(saveBTN);
 		saveBTN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				
 				
 				String email = emailField.getText();
 				String name = nameField.getText();
@@ -304,9 +307,6 @@ public class ProfileWindow {
 			}
 		});
 
-	
-
-		
 		JPanel dataPanel = new JPanel();
 		dataPanel.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		dataPanel.setBounds(10, 41, 194, 274);
@@ -455,12 +455,10 @@ public class ProfileWindow {
     	    	confirmDeletePanel.setVisible(true);
     	    	
     	    }
-    	});
-
-				
-				// limite da felete label
-		
-		
+    	});		
+    	
+		// limite da felete label
+			
 		JLabel balanceLabel = new JLabel("Saldo Atual: R$ " + currentUser.getBalance() + ".");
 		balanceLabel.setBounds(12, 103, 163, 14);
 		mainPanel.add(balanceLabel);
@@ -498,13 +496,27 @@ public class ProfileWindow {
 		victoryRateLabel.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
 		
 		JLabel favoriteTeamLabel = new JLabel();
-		favoriteTeamLabel.setBounds(12, 252, 163, 14);
+		favoriteTeamLabel.setBounds(12, 257, 163, 14);
 		mainPanel.add(favoriteTeamLabel);
 		favoriteTeamLabel.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
 
 		statsBTN.setBounds(18, 126, 175, 23);
 		mainPanel.add(statsBTN);
 		statsBTN.setContentAreaFilled(false);
+		
+		JButton backBTN = new JButton("");
+		backBTN.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				frame.dispose();
+        		mainWindow.getFrame().setEnabled(true);
+        		mainWindow.getFrame().toFront();
+			}
+		});
+		backBTN.setIcon(new ImageIcon(ProfileWindow.class.getResource("/resources/backBTN.png")));
+		backBTN.setContentAreaFilled(false);
+		backBTN.setBorder(new CompoundBorder());
+		backBTN.setBounds(10, 327, 30, 23);
+		frame.getContentPane().add(backBTN);
 		statsBTN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 					try {
@@ -516,6 +528,7 @@ public class ProfileWindow {
 					totalLosesLabel.setText("Total de Derrotas:");
 					totalWinsLabel.setText("Total de Vitórias: ");
 					victoryRateLabel.setText("Taxa de Vitória:");
+					favoriteTeamLabel.setText("Time Favorito: ");
 					mainPanel.remove(statsBTN);
 					mainPanel.add(surroundStatsBTN);
 					mainPanel.revalidate();

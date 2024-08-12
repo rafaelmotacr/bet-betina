@@ -6,14 +6,14 @@ import java.sql.SQLException;
 
 public class ConexaoBdSingleton {
 
-	private Connection conexao;
+	private Connection connection;
 	private static ConexaoBdSingleton instance;
 	
 	private ConexaoBdSingleton() {
 		try {
 			
 			// Conexao com o BD de Rafael
-			 conexao = DriverManager.getConnection("jdbc:postgresql://localhost:5432/bet-betina", "postgres", "106927");
+			connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/bet-betina-prod", "postgres", "106927");
 			
 			// Conexao com o BD do IFBA
 			// conexao = DriverManager.getConnection("jdbc:postgresql://localhost:5432/betina", "postgres", "alunoifba");
@@ -28,7 +28,7 @@ public class ConexaoBdSingleton {
 	}
 	
 	public Connection getConexao() {
-        return conexao;
+        return connection;
     }
 	
 	public static ConexaoBdSingleton getInstance() {
@@ -37,5 +37,4 @@ public class ConexaoBdSingleton {
 		}
 		return instance;
 	}
-	
 }

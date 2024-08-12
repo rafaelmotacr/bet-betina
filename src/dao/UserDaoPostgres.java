@@ -43,7 +43,7 @@ public class UserDaoPostgres implements UserDao {
 		rs.next();
 		
 		user = new User(rs.getInt("user_id"),
-						rs.getInt("access_level_id"),
+						rs.getInt("user_access_level"),
 						rs.getDouble("user_balance"),
 						rs.getString("user_name"), 
 						rs.getString("user_email"), 
@@ -55,7 +55,7 @@ public class UserDaoPostgres implements UserDao {
 		
 	PreparedStatement ps = ConexaoBdSingleton
 			.getInstance()
-			.getConexao().prepareStatement("INSERT INTO user_tb (access_level_id, user_name, user_email, user_password, user_balance) VALUES (?, ?, ?, ?, ?)");
+			.getConexao().prepareStatement("INSERT INTO user_tb (user_access_level, user_name, user_email, user_password, user_balance) VALUES (?, ?, ?, ?, ?)");
 			ps.setInt(1, accessLevel);
 			ps.setString(2, nome);
 			ps.setString(3, email);
