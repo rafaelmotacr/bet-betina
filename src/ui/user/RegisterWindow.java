@@ -155,8 +155,16 @@ public class RegisterWindow {
 					return;
 				}
 				
+				try {
+					if(dao.findUserByEmail(email) != null) {
+						JOptionPane.showMessageDialog(frame,"Email já cadastrado no banco de dados!");
+						return;
+					}
+				} catch (SQLException e1) {
+					//no coments
+				}
+				
 				encryptedPassword = InputManipulation.generateHashedPassword(password);
-
 				
 				try {
 					dao.insertUser(name, email, encryptedPassword, 2);
@@ -173,7 +181,6 @@ public class RegisterWindow {
 				mainWindow.getFrame().toFront();
 			}
 		});
-		
 		
 		
 		emailField = new JTextField();

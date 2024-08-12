@@ -167,18 +167,21 @@ public class LoginWindow {
 				String email = emailField.getText();
 				String password = String.valueOf(passwordField.getPassword());
 
+				if(email.length() == 0 || password.length() == 0) {
+					JOptionPane.showMessageDialog(frame, "Nenhum dos campos pode estar vazio.");
+					return;
+				}
 				
 				try {
 					if(dao.login(email, password)) {
 						
-					    JOptionPane.showMessageDialog(frame, "Login realizado com sucesso");
 					    mainWindow.updateUser(dao.findUserByEmail(email));
 					    mainWindow.updateButtons();
 					    frame.dispose();
 					    mainWindow.getFrame().setEnabled(true);
 					    mainWindow.getFrame().toFront();
 					} else {
-						JOptionPane.showMessageDialog(frame, "Login ou senha incorretos");
+						JOptionPane.showMessageDialog(frame, "Login ou senha incorretos.");
 					}
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block

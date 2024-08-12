@@ -53,19 +53,16 @@ public class UserDaoPostgres implements UserDao {
 	@Override
 	public void insertUser(String nome, String email, String senha, int accessLevel) throws SQLException {
 		
-		try {
-		PreparedStatement ps = ConexaoBdSingleton
-				.getInstance()
-				.getConexao().prepareStatement("INSERT INTO user_tb (access_level_id, user_name, user_email, user_password, user_balance) VALUES (?, ?, ?, ?, ?)");
-				ps.setInt(1, accessLevel);
-				ps.setString(2, nome);
-				ps.setString(3, email);
-				ps.setString(4, senha);
-				ps.setDouble(5, saldoInicialPadrao);
-				ps.executeUpdate();
-		}catch (SQLException e) {
-			e.printStackTrace();
-		}
+	PreparedStatement ps = ConexaoBdSingleton
+			.getInstance()
+			.getConexao().prepareStatement("INSERT INTO user_tb (access_level_id, user_name, user_email, user_password, user_balance) VALUES (?, ?, ?, ?, ?)");
+			ps.setInt(1, accessLevel);
+			ps.setString(2, nome);
+			ps.setString(3, email);
+			ps.setString(4, senha);
+			ps.setDouble(5, saldoInicialPadrao);
+			ps.executeUpdate();
+
 	}
 	@Override
 	public void deletUser(User user) throws SQLException {
@@ -121,6 +118,8 @@ public class UserDaoPostgres implements UserDao {
 				ps.executeUpdate();
 		}catch (SQLException e) {
 			e.printStackTrace();
+		}finally{
+			user.setName(newUserName);
 		}
 		
 	}
@@ -136,6 +135,8 @@ public class UserDaoPostgres implements UserDao {
 				ps.executeUpdate();
 		}catch (SQLException e) {
 			e.printStackTrace();
+		}finally{
+			user.setName(newEmail);
 		}
 	}
 		
