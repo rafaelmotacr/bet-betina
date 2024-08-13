@@ -27,7 +27,7 @@ import exceptions.PasswordsDontMatchException;
 import ui.user.MainWindow;
 import util.InputManipulation;
 
-public class RegisterWindow {
+public class RegisterWindowOld {
 
 	JFrame frame;
 	private MainWindow mainWindow;
@@ -55,7 +55,7 @@ public class RegisterWindow {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					RegisterWindow window = new RegisterWindow();
+					RegisterWindowOld window = new RegisterWindowOld();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -67,11 +67,11 @@ public class RegisterWindow {
 	/**
 	 * Create the application.
 	 */
-	public RegisterWindow() {
+	public RegisterWindowOld() {
 		initialize();
 	}
 	
-	public RegisterWindow(MainWindow mainWindow) {
+	public RegisterWindowOld(MainWindow mainWindow) {
 		this.mainWindow = mainWindow;
 		initialize();
 	}
@@ -115,7 +115,7 @@ public class RegisterWindow {
         	}
         });
         
-        backBTN.setIcon(new ImageIcon(RegisterWindow.class.getResource("/resources/backBTN.png")));
+        backBTN.setIcon(new ImageIcon(RegisterWindowOld.class.getResource("/resources/backBTN.png")));
         backBTN.setContentAreaFilled(false);
         backBTN.setBorder(null);
         backBTN.setBounds(14, 211, 30, 30);
@@ -242,7 +242,7 @@ public class RegisterWindow {
         closeBTN.setForeground(new Color(255, 255, 255));
         
 		JLabel lblNewLabel = new JLabel("");
-		lblNewLabel.setIcon(new ImageIcon(RegisterWindow.class.getResource("/resources/registerBG.png")));
+		lblNewLabel.setIcon(new ImageIcon(RegisterWindowOld.class.getResource("/resources/registerBG.png")));
 		lblNewLabel.setBounds(0, 16, 250, 250);
 		frame.getContentPane().add(lblNewLabel);
 		
