@@ -116,6 +116,10 @@ public class MainWindow {
         registerWindow.setLocation(195, 42);
         frame.getContentPane().add(registerWindow);
         
+        JInternalFrame registerAdminWindow = new RegisterAdminWindow(MainWindow.this);
+        registerAdminWindow.setLocation(195,42);
+        frame.getContentPane().add(registerAdminWindow);
+        
         // Label de cumprimento ao usuário
 
         greetingLabel = new JLabel("");
@@ -350,7 +354,11 @@ public class MainWindow {
     	createADMBTN.setBounds(271, 29, 98, 26);
         createADMBTN.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-			
+        		if(loginWindow.isVisible()) {
+    				JOptionPane.showMessageDialog(frame,"Primeiro feche a outra janela!");
+    				return;
+    			}
+                registerAdminWindow.setVisible(true);  
         	}
 	    });
     	frame.getContentPane().add(createADMBTN);

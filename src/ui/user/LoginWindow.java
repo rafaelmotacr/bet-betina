@@ -72,6 +72,8 @@ public class LoginWindow extends JInternalFrame {
                     mainWindow.updateUser(dao.findUserByEmail(email));
                     JOptionPane.showMessageDialog(LoginWindow.this, "Login realizado com sucesso.");
                     mainWindow.updateButtons();
+                    emailField.setText(null);
+                    passwordField.setText(null);
                     LoginWindow.this.dispose();
                 } else {
                     JOptionPane.showMessageDialog(LoginWindow.this, "Login ou senha incorretos.");

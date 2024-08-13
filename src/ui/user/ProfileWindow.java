@@ -83,7 +83,7 @@ public class ProfileWindow {
 		}
 		else {
 			try {
-				this.currentUser =  dao.findUserByEmail("rafaelmotacr@gmail.com");
+				this.currentUser =  dao.findUserByEmail("pedrohenrique73@gmail.com");
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -284,6 +284,8 @@ public class ProfileWindow {
 							try {
 								encriptedPassword = InputManipulation.generateHashedPassword(InputManipulation.joinPasswords(passwordField1, passwordField2));
 								dao.updateUserPassword(currentUser, encriptedPassword);
+								changePasswordField.setText(null);
+								confirmPasswordField.setText(null);
 								JOptionPane.showMessageDialog(frame,"Senha atualizada com sucesso.");
 							} catch (SQLException e1) {
 								JOptionPane.showMessageDialog(frame,"Não foi possível atualizar sua senha.");
