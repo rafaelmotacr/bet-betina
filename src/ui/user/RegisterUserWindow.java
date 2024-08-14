@@ -11,24 +11,23 @@ import dao.UserDaoPostgres;
 import exceptions.PasswordsDontMatchException;
 import util.InputManipulation;
 
-public class RegisterAdminWindow extends RegisterWindow {
+public class RegisterUserWindow extends RegisterWindow {
 	
 	private static final long serialVersionUID = 1L;
 	private UserDaoPostgres dao = new UserDaoPostgres();
 	private MainWindow mainWindow = null;
 
-	public RegisterAdminWindow(MainWindow mainWindow) {
-		
+	public RegisterUserWindow(MainWindow mainWindow) {
 		super();
 		this.mainWindow  = mainWindow;
-		this.backgroundLabel.setIcon(new ImageIcon(RegisterWindow.class.getResource("/resources/registerBG.png")));
-		this.setTitle("bet-betina v1.21 - Criar ADM");
+		this.backgroundLabel.setIcon(new ImageIcon(RegisterUserWindow.class.getResource("/resources/registerBG.png")));
+		this.setTitle("bet-betina v1.21 - Registro");
 		this.registerBTN.addActionListener(this::onRegisterButtonClick);
 		
 	}
 	
 	@Override
-	public void onRegisterButtonClick(ActionEvent e) {
+	public  void onRegisterButtonClick(ActionEvent e) {
 
 		String name = nameField.getText();
 		String email = emailField.getText();
@@ -75,17 +74,17 @@ public class RegisterAdminWindow extends RegisterWindow {
 		encryptedPassword = InputManipulation.generateHashedPassword(password);
 
 		try {
-			dao.insertUser(name, email, encryptedPassword, 1);
+			dao.insertUser(name, email, encryptedPassword, 0);
 			this.mainWindow.updateUser(dao.findUserByEmail(email));
 			mainWindow.updateButtons();
-			JOptionPane.showMessageDialog(RegisterAdminWindow.this, "Administrador criado com sucesso.");
+			JOptionPane.showMessageDialog(RegisterUserWindow.this, "Administrador criado com sucesso.");
 			nameField.setText(null);
 			emailField.setText(null);
 			passwordField.setText(null);
 			confirmPasswordField.setText(null);
 			dispose();
 		} catch (SQLException e1) {
-			JOptionPane.showMessageDialog(RegisterAdminWindow.this, "Erro ao criar Administrador.");
+			JOptionPane.showMessageDialog(RegisterUserWindow.this, "Erro ao criar Administrador.");
 		}
 
 		dispose();

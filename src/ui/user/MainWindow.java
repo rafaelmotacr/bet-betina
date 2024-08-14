@@ -2,7 +2,6 @@ package ui.user;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -24,14 +23,14 @@ import model.User;
 
 public class MainWindow {
 
-	private JFrame frame;
-	private JLabel greetingLabel;
+	public JFrame frame;
 	private User currentUser = null;
-	private JButton loginBTN = new JButton("Fazer Log In");
-	private JButton registerBTN = new JButton("Registrar");
-	private JButton logOutBTN = new JButton("Fazer Log Out");
-	private JButton profileBTN = new JButton("Meu Perfil");
-	private JButton createADMBTN = new JButton("Criar Novo ADM");
+	private JLabel greetingLabel;
+	private JButton loginBTN = null;
+	private JButton registerBTN = null;
+	private JButton logOutBTN = null;
+	private JButton profileBTN = null;
+	private JButton createADMBTN = null;
 
 	// drag and drop xx, yy
 
@@ -46,26 +45,7 @@ public class MainWindow {
 
 	private Toolkit tk = Toolkit.getDefaultToolkit();
 	private Dimension d = tk.getScreenSize();
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					MainWindow window = new MainWindow();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the application.
-	 */
+	
 	public MainWindow() {
 		initialize();
 	}
@@ -115,9 +95,9 @@ public class MainWindow {
 		loginWindow.setLocation(259, 78);
 		frame.getContentPane().add(loginWindow);
 
-		JInternalFrame registerWindow = new RegisterWindow(MainWindow.this);
-		registerWindow.setLocation(259, 78);
-		frame.getContentPane().add(registerWindow);
+		JInternalFrame registerUserWindow = new RegisterUserWindow(MainWindow.this);
+		registerUserWindow.setLocation(259, 78);
+		frame.getContentPane().add(registerUserWindow);
 
 		JInternalFrame registerAdminWindow = new RegisterAdminWindow(MainWindow.this);
 		registerAdminWindow.setLocation(259, 78);
@@ -287,7 +267,8 @@ public class MainWindow {
 		blackLine_2.add(closeBTN);
 
 		// Botão de log in
-
+		
+		loginBTN = new JButton("Fazer Log In");
 		loginBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 12));
 		loginBTN.setForeground(new Color(255, 255, 255));
 		loginBTN.setBounds(140, 33, 109, 26);
@@ -298,7 +279,7 @@ public class MainWindow {
 		frame.getContentPane().add(loginBTN);
 		loginBTN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (registerWindow.isVisible()) {
+				if (registerUserWindow.isVisible()) {
 					JOptionPane.showMessageDialog(frame, "Primeiro feche a outra janela!");
 					return;
 				}
@@ -308,6 +289,7 @@ public class MainWindow {
 
 		// Botão de registro
 
+		registerBTN = new JButton("Registrar");
 		registerBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 12));
 		registerBTN.setForeground(new Color(255, 255, 255));
 		registerBTN.setBounds(434, 33, 121, 26);
@@ -321,12 +303,13 @@ public class MainWindow {
 					JOptionPane.showMessageDialog(frame, "Primeiro feche a outra janela!");
 					return;
 				}
-				registerWindow.setVisible(true);
+				registerUserWindow.setVisible(true);
 			}
 		});
 
 		// Botão de perfil
 
+		profileBTN = new JButton("Meu Perfil");
 		profileBTN.setBounds(140, 33, 109, 26);
 		profileBTN.setForeground(new Color(255, 255, 255));
 		profileBTN.setContentAreaFilled(false);
@@ -342,7 +325,7 @@ public class MainWindow {
 		});
 
 		// Botão de log out
-
+		logOutBTN =  new JButton("Fazer Log Out");
 		logOutBTN.setBounds(434, 33, 121, 26);
 		logOutBTN.setForeground(new Color(255, 255, 255));
 		logOutBTN.setContentAreaFilled(false);
@@ -356,14 +339,15 @@ public class MainWindow {
 				if(profileWindow.isVisible()) {
 					profileWindow.dispose();
 				}
-				JOptionPane.showMessageDialog(frame, "Log Out realizado com sucesso.");
 				updateButtons();
 				updateStatusLabel();
+				JOptionPane.showMessageDialog(frame, "Log Out realizado com sucesso.");
 			}
 		});
 
 		// Botão de criar admnistradores
-
+		
+		createADMBTN = new JButton("Criar Novo ADM");
 		createADMBTN.setForeground(new Color(255, 255, 255));
 		createADMBTN.setContentAreaFilled(false);
 		createADMBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 12));

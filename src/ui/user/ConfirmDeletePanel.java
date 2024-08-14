@@ -96,7 +96,7 @@ public class ConfirmDeletePanel extends JInternalFrame {
 		this.mainWindow = mainWindow;
 		currentUser = mainWindow.getCurrentUser();
 		confirmationTextLabel.setText("<html>Deseja realmente apagar para \r\n<br> sempre o "
-				.concat(currentUser.getAccessLevel() == 2 ? "usuario" : "admnistrador") + "<strong> "
+				.concat(currentUser.getAccessLevel() == 0 ? "usuario" : "admnistrador") + "<strong> "
 				+ currentUser.getName() + "</strong>?\r\n<br>(Para sempre é um tempão!)</html>");
 	}
 }

@@ -13,6 +13,7 @@ import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 
 import dao.UserDaoPostgres;
+import javax.swing.border.LineBorder;
 
 public class LoginWindow extends JInternalFrame {
 
@@ -44,10 +45,16 @@ public class LoginWindow extends JInternalFrame {
 		});
 
 		JPasswordField passwordField = new JPasswordField();
+		passwordField.setForeground(new Color(255, 255, 255));
+		passwordField.setBorder(new LineBorder(new Color(53, 83, 85), 1, true));
+		passwordField.setOpaque(false);
 		passwordField.setBounds(20, 153, 203, 20);
 		getContentPane().add(passwordField);
 
 		JTextField emailField = new JTextField();
+		emailField.setForeground(new Color(255, 255, 255));
+		emailField.setOpaque(false);
+		emailField.setBorder(new LineBorder(new Color(53, 83, 85), 1, true));
 		emailField.setBounds(20, 90, 203, 20);
 		getContentPane().add(emailField);
 		emailField.setColumns(10);

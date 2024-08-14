@@ -33,8 +33,6 @@ public class ProfileWindow extends JInternalFrame {
 	private JPasswordField confirmPasswordField;
 	private JButton editDataBTN = new JButton("");
 	private JButton editPasswordBTN = new JButton("");
-	private JButton statsBTN = new JButton("Ver Estatísticas");
-	private JButton surroundStatsBTN = new JButton("Ocultar Estatísticas");
 	private JLabel nameLabel = new JLabel();
 	private JLabel idLabel = new JLabel();
 	private JLabel balanceLabel = new JLabel();
@@ -87,7 +85,7 @@ public class ProfileWindow extends JInternalFrame {
 							currentUser.setName(name);
 							ProfileWindow.this.setTitle("bet-betina v1.21 - Perfil de " + currentUser.getName());
 							nameLabel.setText(currentUser.getName().concat(
-									currentUser.getAccessLevel() == 2 ? " - Usuario Comum." : " - Admnistrador."));
+									currentUser.getAccessLevel() == 0 ? " - Usuario Comum." : " - Admnistrador."));
 							JOptionPane.showMessageDialog(ProfileWindow.this, "Nome atualizado com sucesso.");
 						} catch (SQLException e1) {
 							JOptionPane.showMessageDialog(ProfileWindow.this, "Erro ao atualizar nome.");
@@ -157,6 +155,7 @@ public class ProfileWindow extends JInternalFrame {
 		dataPanel.add(lblNewLabel_2_1);
 
 		nameField = new JTextField();
+		nameField.setBorder(new LineBorder(new Color(0, 0, 0)));
 		nameField.setEnabled(false);
 		nameField.setBounds(11, 87, 173, 20);
 		dataPanel.add(nameField);
@@ -175,6 +174,7 @@ public class ProfileWindow extends JInternalFrame {
 		dataPanel.add(lblNewLabel_3_1);
 
 		emailField = new JTextField();
+		emailField.setBorder(new LineBorder(new Color(0, 0, 0)));
 		emailField.setEnabled(false);
 		emailField.setColumns(10);
 		emailField.setBounds(11, 131, 173, 20);
@@ -203,12 +203,14 @@ public class ProfileWindow extends JInternalFrame {
 		});
 
 		changePasswordField = new JPasswordField();
+		changePasswordField.setBorder(new LineBorder(new Color(0, 0, 0)));
 		changePasswordField.setEnabled(false);
 		changePasswordField.setColumns(10);
 		changePasswordField.setBounds(11, 200, 173, 20);
 		dataPanel.add(changePasswordField);
 
 		confirmPasswordField = new JPasswordField();
+		confirmPasswordField.setBorder(new LineBorder(new Color(0, 0, 0)));
 		confirmPasswordField.setEnabled(false);
 		confirmPasswordField.setText((String) null);
 		confirmPasswordField.setColumns(10);
@@ -354,6 +356,9 @@ public class ProfileWindow extends JInternalFrame {
 		getContentPane().add(backBTN);
 
 		// Botão de mostrar estatísticas
+		
+		JButton statsBTN = new JButton("Ver Estatísticas");
+		JButton surroundStatsBTN = new JButton("Ocultar Estatísticas");
 
 		statsBTN.setBounds(18, 126, 175, 23);
 		statsBTN.setContentAreaFilled(false);
