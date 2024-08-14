@@ -15,7 +15,7 @@ public class RegisterUserWindow extends RegisterWindow {
 	
 	private static final long serialVersionUID = 1L;
 	private UserDaoPostgres dao = new UserDaoPostgres();
-	private MainWindow mainWindow = null;
+	private MainWindow mainWindow;
 
 	public RegisterUserWindow(MainWindow mainWindow) {
 		super();

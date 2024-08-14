@@ -50,7 +50,7 @@ public class ConfirmDeletePanel extends JInternalFrame {
 					dao.deletUser(mainWindow.getCurrentUser());
 					mainWindow.updateUser(null);
 					mainWindow.updateButtons();
-					mainWindow.updateStatusLabel();
+					mainWindow.updateGreetingLabel();
 					JOptionPane.showMessageDialog(ConfirmDeletePanel.this,
 							"Usuário deletado com sucesso. Fechando janela.");
 					profileWindow.dispose();

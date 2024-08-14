@@ -17,12 +17,12 @@ import javax.swing.border.LineBorder;
 public abstract  class RegisterWindow extends JInternalFrame {
 
 	private static final long serialVersionUID = 1L;
-	public JTextField nameField = null;
-	public JTextField emailField = null;
-	public JPasswordField confirmPasswordField = null;
-	public JPasswordField passwordField = null;
-	public JButton registerBTN = null;
-	public JLabel backgroundLabel = null;
+	public JTextField nameField;
+	public JTextField emailField;
+	public JPasswordField confirmPasswordField;
+	public JPasswordField passwordField;
+	public JButton registerBTN;
+	public JLabel backgroundLabel;
 	
 	public RegisterWindow() {
 
@@ -41,7 +41,7 @@ public abstract  class RegisterWindow extends JInternalFrame {
 		getContentPane().add(nameField);
 		nameField.setColumns(10);
 
-		emailField = new JTextField();
+		JTextField emailField = new JTextField();
 		emailField.setForeground(new Color(255, 255, 255));
 		emailField.setOpaque(false);
 		emailField.setBorder(new LineBorder(new Color(53, 83, 85), 1, true));
