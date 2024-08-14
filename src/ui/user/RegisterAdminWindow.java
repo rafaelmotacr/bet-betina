@@ -147,7 +147,4 @@ public class RegisterAdminWindow extends JInternalFrame {
 
 	}
 
-	public static void main(String[] args) {
-		new RegisterAdminWindow(null);
-	}
 }

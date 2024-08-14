@@ -93,7 +93,4 @@ public class LoginWindow extends JInternalFrame {
 		getContentPane().add(lblNewLabel);
 	}
 
-	public static void main(String[] args) {
-		new LoginWindow(null);
-	}
 }

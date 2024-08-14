@@ -48,15 +48,15 @@ public class ProfileWindow extends JInternalFrame {
 		setBounds(0, 0, 640, 360);
 		getContentPane().setLayout(null);
 
+		ConfirmDeletePanel confirmDeleteWindow = new ConfirmDeletePanel();
+		confirmDeleteWindow.setBounds(214, 11, 212, 280);
+		getContentPane().add(confirmDeleteWindow);
+
 		JPanel mainPanel = new JPanel();
 		mainPanel.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		mainPanel.setBounds(214, 11, 212, 280);
 		getContentPane().add(mainPanel);
 		mainPanel.setLayout(null);
-
-		ConfirmDeletePanel confirmDeleteWindow = new ConfirmDeletePanel();
-		confirmDeleteWindow.setBounds(0, 0, 212, 280);
-		mainPanel.add(confirmDeleteWindow);
 
 		nameLabel.setBounds(12, 77, 202, 14);
 		mainPanel.add(nameLabel);
@@ -144,7 +144,7 @@ public class ProfileWindow extends JInternalFrame {
 		});
 
 		JPanel dataPanel = new JPanel();
-		dataPanel.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+		dataPanel.setBorder(new LineBorder(new Color(0, 0, 0), 2, true));
 		dataPanel.setBounds(10, 11, 194, 280);
 		dataPanel.setBackground(new Color(0, 128, 128));
 		getContentPane().add(dataPanel);
@@ -400,10 +400,6 @@ public class ProfileWindow extends JInternalFrame {
 			}
 		});
 
-	}
-
-	public static void main(String[] args) {
-		new RegisterAdminWindow(null);
 	}
 
 	public void turnOn(MainWindow mainWinndowPointer) {

@@ -13,13 +13,14 @@ public class ConexaoBdSingleton {
 		try {
 
 			// Conexao com o BD de Rafael
-			connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/bet-betina-prod", "postgres",
-					"106927");
-
-			// Conexao com o BD do IFBA
 			// connection =
 			// DriverManager.getConnection("jdbc:postgresql://localhost:5432/bet-betina-prod",
-			// "postgres", "alunoifba");
+			// "postgres",
+			// "106927");
+
+			// Conexao com o BD do IFBA
+			connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/bet-betina-prod", "postgres",
+					"alunoifba");
 
 			// Conexao com o BD de Iuri
 			// connection =

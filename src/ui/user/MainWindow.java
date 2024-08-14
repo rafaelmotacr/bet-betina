@@ -353,6 +353,9 @@ public class MainWindow {
 		logOutBTN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				currentUser = null;
+				if(profileWindow.isVisible()) {
+					profileWindow.dispose();
+				}
 				JOptionPane.showMessageDialog(frame, "Log Out realizado com sucesso.");
 				updateButtons();
 				updateStatusLabel();
