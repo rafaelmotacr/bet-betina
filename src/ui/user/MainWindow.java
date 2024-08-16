@@ -31,11 +31,11 @@ public class MainWindow {
 	private User currentUser;
 	
 	// Estes componentes da tela são declarados aqui para
-	// se tornarem acessíveis aos métodos da classe
+	// Se tornarem acessíveis aos métodos da classe
 	
 	private JLabel greetingLBL;
 	private JButton loginBTN;
-	private JButton registerBTN;
+	private JButton registerUserBTN;
 	private JButton logOutBTN;
 	private JButton profileBTN;
 	private JButton createADMBTN;
@@ -116,6 +116,11 @@ public class MainWindow {
 		loginBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		loginBTN.setVisible(true);
 		frame.getContentPane().add(loginBTN);
+		
+		// Ativa a janela de login 
+		// Se o usuário tentar se registrar e logar 
+		// Ao mesmo tempo, cancela a chamada de login
+		
 		loginBTN.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -127,21 +132,27 @@ public class MainWindow {
 			}
 		});
 
-		// Botão de registro 
+		// Botão de registro de usuários
 		// -- parent = frame
 
-		registerBTN = new JButton("Registrar");
-		registerBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 12));
-		registerBTN.setForeground(new Color(255, 255, 255));
-		registerBTN.setBounds(434, 33, 121, 26);
-		registerBTN.setContentAreaFilled(false);
-		registerBTN.setMnemonic('R');
-		registerBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-		registerBTN.setVisible(true);
-		frame.getContentPane().add(registerBTN);
-		registerBTN.addActionListener(new ActionListener() {
+		registerUserBTN = new JButton("Registrar");
+		registerUserBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 12));
+		registerUserBTN.setForeground(new Color(255, 255, 255));
+		registerUserBTN.setBounds(434, 33, 121, 26);
+		registerUserBTN.setContentAreaFilled(false);
+		registerUserBTN.setMnemonic('R');
+		registerUserBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+		registerUserBTN.setVisible(true);
+		frame.getContentPane().add(registerUserBTN);
+		
+		// Ativa a janela de registro de usuários
+		// Se o usuário tentar registrar e logar 
+		// Ao mesmo tempo, cancela a chamada do registro
+		
+		registerUserBTN.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
 				if (loginWindow.isVisible()) {
 					JOptionPane.showMessageDialog(frame, "Primeiro feche a outra janela!");
 					return;
@@ -162,6 +173,10 @@ public class MainWindow {
 		profileBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		profileBTN.setVisible(false);
 		frame.getContentPane().add(profileBTN);
+		
+		// Ativa a janela de perfil 
+		// E tranfere para ela uma referência da janela atual
+		
 		profileBTN.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -182,21 +197,22 @@ public class MainWindow {
 		logOutBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		logOutBTN.setVisible(false);
 		frame.getContentPane().add(logOutBTN);
+		
+		// Efetivamente desloga o usuário por 
+		// Definir o usuário atual como "null"
+		// Se a subjanela de perfil estiver aberta,
+		// Fecha ela
+		
 		logOutBTN.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				currentUser = null;
+				updateUser(null);
 				if(profileWindow.isVisible()) {
 					profileWindow.dispose();
 				}
-				updateButtons();
-				updateGreetingLabel();
 				JOptionPane.showMessageDialog(frame, "Log Out realizado com sucesso.");
 			}
 		});
-
-		// Botão de criar admnistradores
-		// -- parent = frame
 		
 		createADMBTN = new JButton("Criar Novo ADM");
 		createADMBTN.setForeground(new Color(255, 255, 255));
@@ -206,10 +222,16 @@ public class MainWindow {
 		createADMBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		createADMBTN.setVisible(false);
 		frame.getContentPane().add(createADMBTN);
+		
+		// Ativa a janela de registro de admnistradores
+		// Presume que o usuário já está logado
+		// No entanto, se a janela de perfil estiver aberta, 
+		// Cancela a ação
+		
 		createADMBTN.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (loginWindow.isVisible()) {
+				if(profileWindow.isVisible()) {
 					JOptionPane.showMessageDialog(frame, "Primeiro feche a outra janela!");
 					return;
 				}
@@ -267,6 +289,8 @@ public class MainWindow {
 		exitBTN.setMnemonic('S');
 		exitBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 12));
 		mainPNL.add(exitBTN);
+		
+		
 		exitBTN.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -386,6 +410,9 @@ public class MainWindow {
 		closeBTN.setBounds(744, 0, 12, 23);
 		closeBTN.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		titleBarPNL.add(closeBTN);
+		
+		// Finaliza completamente a execução do programa
+		
 		closeBTN.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -399,27 +426,39 @@ public class MainWindow {
 
 	public void updateUser(User user) {
 		currentUser = user;
+		updateButtons();
 		updateGreetingLabel();
 	}
 
 	// Oculta os botões de login e registro se o usuário já estiver logado
 	// E os traz de volta se necessárioS
 
-	public void updateButtons() {
+	private void updateButtons() {
+		
 		if (currentUser != null) {
 
+			// Se houver um usuário logado
+			// Exibe apenas os botoões de log out e perfil
+			
 			loginBTN.setVisible(false);
-			registerBTN.setVisible(false);
+			registerUserBTN.setVisible(false);
 
 			logOutBTN.setVisible(true);
 			profileBTN.setVisible(true);
 
+			// Caso este usuário seja admnistrador
+			// Adiciona o botão de criar novos admnistradores
+			
 			if (currentUser.getAccessLevel() == 1) {
 				createADMBTN.setVisible(true);
 			}
 
 		} else {
-
+			
+			// Se o usuário realizou log out e os botões 
+			// Ainda estão visíveis, os retira da tela 
+			// Antes de adicionar os de registro e login
+			
 			if (logOutBTN.isVisible()) {
 				logOutBTN.setVisible(false);
 				profileBTN.setVisible(false);
@@ -427,7 +466,7 @@ public class MainWindow {
 			}
 
 			loginBTN.setVisible(true);
-			registerBTN.setVisible(true);
+			registerUserBTN.setVisible(true);
 
 		}
 	}
@@ -436,7 +475,7 @@ public class MainWindow {
 	// Com seu nivel de acesso
 	// Admnistrador > Usuário > Visitante 
 	
-	public void updateGreetingLabel() {
+	private void updateGreetingLabel() {
 		if (currentUser == null) {
 			greetingLBL.setText("Seja Bem Vindo (a), visitante!");
 		} else if (currentUser.getAccessLevel() == 1) {
@@ -446,10 +485,15 @@ public class MainWindow {
 		}
 
 	}
+	
+	// Retorna o usuário atual
 
 	public User getCurrentUser() {
 		return currentUser;
 	}
+	
+	// Permite que outras janelas alterem o usuário atual
+	// É usado em janelas como login, registro e perfil
 
 	public void setCurrentUser(User currentUser) {
 		this.currentUser = currentUser;

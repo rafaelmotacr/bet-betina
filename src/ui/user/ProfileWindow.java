@@ -54,8 +54,11 @@ public class ProfileWindow extends JInternalFrame {
 	public ProfileWindow() {
 
 		super();
+		
+		// Configurações da janela de perfil
+		// -- parent = null
+		
 		setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-
 		setClosable(true);
 		setBounds(0, 0, 640, 360);
 		getContentPane().setLayout(null);
@@ -283,8 +286,8 @@ public class ProfileWindow extends JInternalFrame {
 				String email = emailFLD.getText();
 				String name = nameFLD.getText();
 				String encriptedPassword = null;
-				String passwordField1 = String.valueOf(changePasswordFLD.getPassword());
-				String passwordField2 = String.valueOf(confirmPasswordFLD.getPassword());
+				String passwordFLD1 = String.valueOf(changePasswordFLD.getPassword());
+				String passwordFLD2 = String.valueOf(confirmPasswordFLD.getPassword());
 
 				if (nameFLD.isEnabled() && emailFLD.isEnabled()) {
 
@@ -320,10 +323,10 @@ public class ProfileWindow extends JInternalFrame {
 
 				if (changePasswordFLD.isEnabled() && confirmPasswordFLD.isEnabled()) {
 
-					if (passwordField1.length() > 0 && passwordField2.length() > 0) {
+					if (passwordFLD1.length() > 0 && passwordFLD2.length() > 0) {
 						try {
 							encriptedPassword = InputManipulation.generateHashedPassword(
-									InputManipulation.joinPasswords(passwordField1, passwordField2));
+									InputManipulation.joinPasswords(passwordFLD1, passwordFLD2));
 							try {
 								dao.updateUserPassword(currentUser, encriptedPassword);
 								changePasswordFLD.setText(null);

@@ -77,7 +77,6 @@ public class RegisterAdminWindow extends RegisterWindow {
 		try {
 			dao.insertUser(name, email, encryptedPassword, 1);
 			this.mainWindow.updateUser(dao.findUserByEmail(email));
-			mainWindow.updateButtons();
 			JOptionPane.showMessageDialog(RegisterAdminWindow.this, "Administrador criado com sucesso.");
 			nameField.setText(null);
 			emailField.setText(null);

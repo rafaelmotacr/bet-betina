@@ -15,8 +15,20 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 
 public abstract  class RegisterWindow extends JInternalFrame {
+	
+	/* Classe abstrata que carrega elementos e características
+	 * em comun entre as janelas de registro de usuário e registro 
+	 * de admnistradorpossui apenas um método abstrato (onRegisterButtonClick)
+	 * que é implementado por suas classes filhas.
+	 */
 
+	// Atributo obrigatório para janelas que herdam de jInternalFrame
+	
 	private static final long serialVersionUID = 1L;
+	
+	// Atributos da classe que precisam ser públicos 
+	// A fim de que sejam herdaddos por outras classes
+	
 	public JTextField nameField;
 	public JTextField emailField;
 	public JPasswordField confirmPasswordField;
@@ -27,8 +39,11 @@ public abstract  class RegisterWindow extends JInternalFrame {
 	public RegisterWindow() {
 
 		super();
+		
+		// Configurações da janela de registro
+		// -- parent = null
+		
 		setClosable(true);
-
 		setBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(0, 0, 0), new Color(0, 0, 0)));
 		setBounds(0, 0, 250, 275);
 		getContentPane().setLayout(null);

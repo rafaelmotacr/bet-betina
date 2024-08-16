@@ -76,15 +76,14 @@ public class RegisterUserWindow extends RegisterWindow {
 		try {
 			dao.insertUser(name, email, encryptedPassword, 0);
 			this.mainWindow.updateUser(dao.findUserByEmail(email));
-			mainWindow.updateButtons();
-			JOptionPane.showMessageDialog(RegisterUserWindow.this, "Administrador criado com sucesso.");
+			JOptionPane.showMessageDialog(RegisterUserWindow.this, "Usuário criado com sucesso.");
 			nameField.setText(null);
 			emailField.setText(null);
 			passwordField.setText(null);
 			confirmPasswordField.setText(null);
 			dispose();
 		} catch (SQLException e1) {
-			JOptionPane.showMessageDialog(RegisterUserWindow.this, "Erro ao criar Administrador.");
+			JOptionPane.showMessageDialog(RegisterUserWindow.this, "Erro ao cadastrar Usuário.");
 		}
 
 		dispose();
