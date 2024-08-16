@@ -32,7 +32,6 @@ public class ConfirmDeletePanel extends JInternalFrame {
 		super();
 
 		setTitle("Confirmação de Exclusão");
-
 		setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		setBounds(0, 0, 212, 280);
 		setFocusable(false);

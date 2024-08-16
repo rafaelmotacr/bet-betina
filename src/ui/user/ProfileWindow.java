@@ -486,11 +486,8 @@ public class ProfileWindow extends JInternalFrame {
 				totalWinsLBL.setText("Total de Vitórias: ");
 				victoryRateLBL.setText("Taxa de Vitória:");
 				favoriteTeamLBL.setText("Time Favorito: ");
-				mainPanel.remove(statsBTN);
-				mainPanel.add(surroundStatsBTN);
+				statsBTN.setVisible(false);
 				surroundStatsBTN.setVisible(true);
-				mainPanel.revalidate();
-				mainPanel.repaint();
 			}
 		});
 		surroundStatsBTN.setVisible(false);
@@ -511,9 +508,8 @@ public class ProfileWindow extends JInternalFrame {
 				victoryRateLBL.setText("");
 				favoriteTeamLBL.setText("");
 				surroundStatsBTN.setVisible(false);
+				statsBTN.setVisible(true);
 				mainPanel.add(statsBTN);
-				mainPanel.revalidate();
-				mainPanel.repaint();
 			}
 		});
 
