@@ -8,6 +8,7 @@ public class User {
     private String name;
     private String email;
     private String password;
+    private int favoriteTeam;
     
 	public User(int iD, int accessLevel, Double balance, String name, String email, String password) {
 		super();
@@ -65,6 +66,15 @@ public class User {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	
+
+	public int getFavoriteTeam() {
+		return favoriteTeam;
+	}
+
+	public void setFavoriteTeam(int favoriteTeam) {
+		this.favoriteTeam = favoriteTeam;
 	}
 
 	@Override

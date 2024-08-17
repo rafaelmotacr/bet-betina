@@ -5,6 +5,7 @@ CREATE TABLE user_tb (
     user_email VARCHAR(100) NOT NULL UNIQUE,
     user_password VARCHAR(255) NOT NULL,
 	user_balance FLOAT NOT NULL
+	user_favorite_team_id INT REFERENCES team_tb (team_id);
 );
 
 
@@ -88,5 +89,7 @@ VALUES
     (2, 4, 4, 40.00),  -- Ana Costa apostou 40 na vitória do time visitante no jogo 4
     (1, 5, 5, 60.00);  -- Pedro Almeida apostou 60 na vitória do time da casa no jogo 5
 
+-- Atualização necessária no banco de dados de agora em diante
 
-
+ALTER TABLE user_tb
+ADD COLUMN user_favorite_team_id INT REFERENCES team_tb (team_id);

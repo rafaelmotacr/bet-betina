@@ -1,4 +1,4 @@
-package ui.team;
+package legacyCode;
 
 import java.awt.Color;
 import java.awt.Dimension;
