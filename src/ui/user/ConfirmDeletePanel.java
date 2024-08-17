@@ -19,7 +19,18 @@ import dao.UserDaoPostgres;
 import model.User;
 
 public class ConfirmDeletePanel extends JInternalFrame {
+	
+	/* Classe concreta que herda de JInternalFrame e
+	 * tem como objetivo ser uma tela de confirmação de exclusão
+	 * do perfil de um usuário "x". Conecta-se ao banco de dados 
+	 * e pode fazer alterações.
+	 * Depende de uma MainWindow E de uma ProfileWindow 
+	 * para ser instanciada corretamente e ter bom funcionamento.
+	 * Não pode ser "executada" isoladamente.
+	 */
 
+	// Atributo obrigatório para janelas que herdam de jInternalFrame
+	
 	private static final long serialVersionUID = 1L;
 	
 	// Conexão com banco de dados
@@ -41,7 +52,7 @@ public class ConfirmDeletePanel extends JInternalFrame {
 	
 	private ProfileWindow profileWindow = null;
 	
-	// Ponteiro para a janela principal
+	// Ponteiro/referência para a janela principal 
 	// para que seja possível deslogar
 	// o usuário quando seu perfil 
 	// for apagado
@@ -52,26 +63,36 @@ public class ConfirmDeletePanel extends JInternalFrame {
 
 		super();
 
+		// Configurações da janela de perfil
+		
 		setTitle("Confirmação de Exclusão");
 		setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		setBounds(0, 0, 212, 280);
 		setFocusable(false);
 		setClosable(true);
 		getContentPane().setLayout(null);
-
+		
+		// Botão de confirmação de exclusão
+		//-- parent = this
+		
 		JButton confirmDeleteBTN = new JButton("Sim");
 		confirmDeleteBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		confirmDeleteBTN.setContentAreaFilled(false);
 		confirmDeleteBTN.setBounds(8, 196, 90, 23);
 		getContentPane().add(confirmDeleteBTN);
+
+		// Tenta apagar o usuário exibe 
+		// uma mensagem de acordo com 
+		// o resultado da exclusão
+		
 		confirmDeleteBTN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					dao.deletUser(currentUser);
-					mainWindow.updateUser(null);
+					mainWindow.updateUser(null); // Define o usuário atual como nulo
 					JOptionPane.showMessageDialog(ConfirmDeletePanel.this, "Usuário(a) deletado(a) com sucesso. Fechando janela.");
 					dispose();
-					profileWindow.dispose();
+					profileWindow.dispose(); // Fecha a janela de perfil para impedir o acesso a dados defasados
 				} catch (SQLException e1) {
 					JOptionPane.showMessageDialog(ConfirmDeletePanel.this, "Não foi possível deletar o seu usuário.");
 					dispose();
@@ -79,33 +100,52 @@ public class ConfirmDeletePanel extends JInternalFrame {
 			}
 		});
 
+		// Botão de cancelamento de exclusão
+		//-- parent = this
+		
 		JButton cancelDeleteBTN = new JButton("Esquece");
 		cancelDeleteBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		cancelDeleteBTN.setContentAreaFilled(false);
 		cancelDeleteBTN.setBounds(102, 196, 90, 23);
 		getContentPane().add(cancelDeleteBTN);
+		
+		// Fecha a janela e não apaga o usuário
+		
 		cancelDeleteBTN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
 			}
 		});
+		
+		// Label que exibe uma imagem de perfil genérica para o usuário
+		// -- parent = this
 
-		JLabel profilePictureLabel_1 = new JLabel("");
-		profilePictureLabel_1.setIcon(new ImageIcon(ConfirmDeletePanel.class.getResource("/resources/user.png")));
-		profilePictureLabel_1.setBounds(73, 11, 50, 50);
-		getContentPane().add(profilePictureLabel_1);
+		JLabel profilePictureLabel = new JLabel("");
+		profilePictureLabel.setIcon(new ImageIcon(ConfirmDeletePanel.class.getResource("/resources/user.png")));
+		profilePictureLabel.setBounds(73, 11, 50, 50);
+		getContentPane().add(profilePictureLabel);
 
-		JPanel blackLine_1_1 = new JPanel();
-		blackLine_1_1.setForeground(Color.BLACK);
-		blackLine_1_1.setBackground(Color.BLACK);
-		blackLine_1_1.setBounds(37, 72, 119, 3);
-		getContentPane().add(blackLine_1_1);
+		// Label que exibe uma linha preta, nada demais
+		// -- parent = this
+		
+		JPanel blackLine = new JPanel();
+		blackLine.setForeground(Color.BLACK);
+		blackLine.setBackground(Color.BLACK);
+		blackLine.setBounds(37, 72, 119, 3);
+		getContentPane().add(blackLine);
+		
+		// Label que exibe um aviso final ao usuário
+		// -- parent = this
 
 		confirmationTextLabel.setVerticalAlignment(SwingConstants.TOP);
 		confirmationTextLabel.setBounds(8, 86, 178, 99);
 		confirmationTextLabel.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
 		getContentPane().add(confirmationTextLabel);
 	}
+	
+	// Personaliza a janela de acordo com o usuário recebido 
+	// e define a referência para a janela principal
+	// indispensável para o funcionamento adequado da classe
 
 	public void turnOn(MainWindow mainWindow, ProfileWindow profileWindow) {
 		this.profileWindow = profileWindow;

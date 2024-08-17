@@ -18,8 +18,9 @@ public abstract  class RegisterWindow extends JInternalFrame {
 	
 	/* Classe abstrata que carrega elementos e características
 	 * em comun entre as janelas de registro de usuário e registro 
-	 * de admnistradorpossui apenas um método abstrato (onRegisterButtonClick)
+	 * de admnistrador. Possui apenas um método abstrato (onRegisterButtonClick)
 	 * que é implementado por suas classes filhas.
+	 * Não foi planejada para ser instanciada, e nem deve, por ser uma classe abstratata.
 	 */
 
 	// Atributo obrigatório para janelas que herdam de jInternalFrame
@@ -40,13 +41,17 @@ public abstract  class RegisterWindow extends JInternalFrame {
 
 		super();
 		
-		// Configurações da janela de registro
-		// -- parent = null
+		// Configurações da janela de registro base
 		
 		setClosable(true);
 		setBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(0, 0, 0), new Color(0, 0, 0)));
 		setBounds(0, 0, 250, 275);
 		getContentPane().setLayout(null);
+		
+		// Campo para definir o nome do usuário
+		// é transparente e possui uma fina borda
+		// para destacá-lo
+		// -- parent = this
 
 		nameField = new JTextField();
 		nameField.setForeground(new Color(255, 255, 255));
@@ -55,7 +60,11 @@ public abstract  class RegisterWindow extends JInternalFrame {
 		nameField.setBounds(14, 53, 212, 20);
 		getContentPane().add(nameField);
 
-
+		// Campo para definir o email do usuário
+		// é transparente e possui uma fina borda
+		// para destacá-lo
+		// -- parent = this
+		
 		emailField = new JTextField();
 		emailField.setForeground(new Color(255, 255, 255));
 		emailField.setOpaque(false);
@@ -63,46 +72,78 @@ public abstract  class RegisterWindow extends JInternalFrame {
 		emailField.setBounds(14, 89, 212, 20);
 		getContentPane().add(emailField);
 
+		// Botão que permite ao usuário voltar
+		// para a janela anterior
+		// -- parent = this
 
 		JButton backBTN = new JButton("");
 		backBTN.setIcon(new ImageIcon(RegisterWindow.class.getResource("/resources/backBTN.png")));
 		backBTN.setContentAreaFilled(false);
 		backBTN.setBorder(null);
 		backBTN.setBounds(14, 194, 30, 30);
-		this.getContentPane().add(backBTN);
+		getContentPane().add(backBTN);
+		
+		// Fecha a janela de registro e
+		// efetivamente retorna para a
+		// janela anterior
+		
 		backBTN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
 			}
 		});
 
-		confirmPasswordField = new JPasswordField();
-		confirmPasswordField.setForeground(new Color(255, 255, 255));
-		confirmPasswordField.setOpaque(false);
-		confirmPasswordField.setBorder(new LineBorder(new Color(53, 83, 85), 1, true));
-		confirmPasswordField.setBounds(14, 163, 210, 20);
-		this.getContentPane().add(confirmPasswordField);
-
+		// Campo para digitar a senha do usuário
+		// é transparente e possui uma fina borda
+		// para destacá-lo
+		// -- parent = this
+		
 		passwordField = new JPasswordField();
 		passwordField.setForeground(new Color(255, 255, 255));
 		passwordField.setOpaque(false);
 		passwordField.setBorder(new LineBorder(new Color(53, 83, 85), 1, true));
 		passwordField.setBounds(14, 126, 210, 20);
-		this.getContentPane().add(passwordField);
+		getContentPane().add(passwordField);
+		
+		// Campo para confirmar a senha do usuário
+		// é transparente e possui uma fina borda
+		// para destacá-lo
+		// -- parent = this
 
+		confirmPasswordField = new JPasswordField();
+		confirmPasswordField.setForeground(new Color(255, 255, 255));
+		confirmPasswordField.setOpaque(false);
+		confirmPasswordField.setBorder(new LineBorder(new Color(53, 83, 85), 1, true));
+		confirmPasswordField.setBounds(14, 163, 210, 20);
+		getContentPane().add(confirmPasswordField);
+		
+		// Botão dedicado a salvar os dados do usuário 
+		// e efetivamente cadastrá-lo
+		// -- parent = this
+		
 		registerBTN = new JButton("");
 		registerBTN.setBounds(46, 194, 154, 34);
 		registerBTN.setOpaque(false);
 		registerBTN.setContentAreaFilled(false);
 		registerBTN.setBorderPainted(false);
 		registerBTN.setFocusPainted(false);
-		this.getContentPane().add(registerBTN);
+		getContentPane().add(registerBTN);
+		
+		// Adiciona como actionListener o método abstrato da classe
+		// que deve ser implementado nas classes que herdam dela
+		
 		registerBTN.addActionListener(this::onRegisterButtonClick);
+		
+		// Label que deve, nas classes filhas, ser preenchida com a
+		// imagem de fundo adequada (ADM ou USer)
+		// -- parent = statementPNL
 		
 		backgroundLabel = new JLabel("");
 		backgroundLabel.setBounds(0, 0, 250, 250);
 		getContentPane().add(backgroundLabel);
 	}
+	
+	// Método abstrado a ser herdado por classes filhas
 	
 	public abstract void onRegisterButtonClick(ActionEvent e);
 

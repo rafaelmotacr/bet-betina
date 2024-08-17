@@ -23,7 +23,14 @@ import util.InputManipulation;
 
 public class ProfileWindow extends JInternalFrame {
 	
-	// Atributo obrigarório para classes que extendem JInternalFrame
+	/* Classe concreta que herda de JInternalFrame e 
+	 * permite a visualização, atulização e exclusão do perfil
+	 * de um usuário "x". 
+	 * Depende de uma MainWindow para ser instanciada corretamente
+	 * e ter bom funcionamento. Não pode ser "executada" isoladamente.
+	 */
+	
+	// Atributo obrigarório para classes que herdam de JInternalFrame
 	
 	private static final long serialVersionUID = 1L; 
 	
@@ -45,7 +52,9 @@ public class ProfileWindow extends JInternalFrame {
 
 	private UserDaoPostgres dao = new UserDaoPostgres(); 
 	
-	// Ponteiro para a janela principal para comunicação
+	// Ponteiro/referência para a janela principal 
+	// para que seja possível receber e atualizar o usuário 
+	// atual, de acordo com o fluxo de execução do programa
 	
 	private MainWindow mainWindow; 
 
@@ -56,7 +65,6 @@ public class ProfileWindow extends JInternalFrame {
 		super();
 		
 		// Configurações da janela de perfil
-		// -- parent = null
 		
 		setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		setClosable(true);
@@ -64,14 +72,14 @@ public class ProfileWindow extends JInternalFrame {
 		getContentPane().setLayout(null);
 		
 		// InternalFrame de delete 
-		// -- parent = frame
+		// -- parent = this
 
 		ConfirmDeletePanel confirmDeleteWindow = new ConfirmDeletePanel();
 		confirmDeleteWindow.setBounds(214, 11, 212, 280);
 		getContentPane().add(confirmDeleteWindow);
 
 		// Painel principal, o do meio 
-		// -- parent = frame
+		// -- parent = this
 		
 		JPanel mainPanel = new JPanel();
 		mainPanel.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
@@ -154,7 +162,7 @@ public class ProfileWindow extends JInternalFrame {
 		favoriteTeamLBL.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
 		
 		// Painel que contém os dados do usuário 
-		// -- parent = frame
+		// -- parent = this
 
 		JPanel dataPanel = new JPanel();
 		dataPanel.setBorder(new LineBorder(new Color(0, 0, 0), 2, true));
@@ -271,7 +279,7 @@ public class ProfileWindow extends JInternalFrame {
 		dataPanel.add(confirmPasswordFLD);
 		
 		// Botão de salvar as alterações 
-		// -- parent = frame
+		// -- parent = this
 		
 		JButton saveBTN = new JButton("Salvar Alterações");
 		saveBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
@@ -327,10 +335,8 @@ public class ProfileWindow extends JInternalFrame {
 				// Se os campos de alterar e confirmar senha 
 				// estiverem ativos, tenta mesclar as senhas
 				// e testar se a senha resultante
-				// é válida. Se for, atualiza
+				// é válida. Se for, tenta atualizar
 				// a senha atual no banco de dados
-
-				// Update password
 
 				if (changePasswordFLD.isEnabled() && confirmPasswordFLD.isEnabled()) {
 					try {
@@ -345,14 +351,14 @@ public class ProfileWindow extends JInternalFrame {
 					}
 					encriptedPassword = InputManipulation.generateHashedPassword(password);
 					try {
+						// Atualiza a senha no banco de dados 
 						dao.updateUserPassword(currentUser, encriptedPassword);
-						changePasswordFLD.setText(null);
+						// Reseta os campos de senha e confirmação de senha
+						changePasswordFLD.setText(null); 
 						confirmPasswordFLD.setText(null);
 						JOptionPane.showMessageDialog(ProfileWindow.this, "Senha atualizada com sucesso.");
 					} catch (SQLException e1) {
-						JOptionPane.showMessageDialog(ProfileWindow.this,
-								"Não foi possível atualizar sua senha.");
-						e1.printStackTrace();
+						JOptionPane.showMessageDialog(ProfileWindow.this,"Não foi possível atualizar sua senha.");
 					}
 				}
 				changePasswordFLD.setEnabled(false);
@@ -406,7 +412,7 @@ public class ProfileWindow extends JInternalFrame {
 		
 		// Painel que exibe as x apostas mais recentes de um usuário
 		// , se houver (Ainda não programado / TODO)
-		// -- parent = frame
+		// -- parent = this
 
 		JPanel statementPNL = new JPanel();
 		statementPNL.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
@@ -425,7 +431,7 @@ public class ProfileWindow extends JInternalFrame {
 		statementPNL.add(statementLBL);
 
 		// Botão de histórico de apostas do usuário (Ainda não programado / TODO)
-		// -- parent = frame
+		// -- parent = this
 
 		JButton userHistoryBTN = new JButton("Meu Histórico");
 		userHistoryBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
@@ -440,7 +446,7 @@ public class ProfileWindow extends JInternalFrame {
 		
 		// Botão que permite ao usuário voltar
 		// para a janela anterior
-		// -- parent = frame
+		// -- parent = this
 		
 		JButton backBTN = new JButton("");
 		backBTN.setIcon(new ImageIcon(ProfileWindow.class.getResource("/resources/backBTN.png")));
@@ -448,6 +454,11 @@ public class ProfileWindow extends JInternalFrame {
 		backBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		backBTN.setBounds(10, 302, 30, 23);
 		getContentPane().add(backBTN);
+		
+		// Fecha a janela de perfil e
+		// efetivamente retorna para a
+		// janela anterior
+		
 		backBTN.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -457,7 +468,7 @@ public class ProfileWindow extends JInternalFrame {
 		
 		// Botão que permite ao usuário deletar
 		// o seu próprio perfil
-		// -- parent = frame
+		// -- parent = this
 
 		JButton deleteUserBTN = new JButton("Apagar Perfil");
 		deleteUserBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
@@ -482,7 +493,7 @@ public class ProfileWindow extends JInternalFrame {
 		// as estatísticas começam "ocultaas"
 		// para que o usuário não precise esperar
 		// o tempo da query em sql para abrir a janela
-		// -- parent = frame
+		// -- parent = this
 		
 		JButton statsBTN = new JButton("Ver Estatísticas");
 		JButton surroundStatsBTN = new JButton("Ocultar Estatísticas");
@@ -511,7 +522,7 @@ public class ProfileWindow extends JInternalFrame {
 		surroundStatsBTN.setVisible(false);
 
 		// Botão de ocultar estatísticas
-		// -- parent = frame
+		// -- parent = this
 
 		surroundStatsBTN.setBounds(18, 126, 175, 23);
 		surroundStatsBTN.setContentAreaFilled(false);

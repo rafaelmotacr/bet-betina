@@ -20,6 +20,15 @@ import javax.swing.border.LineBorder;
 import model.User;
 
 public class MainWindow {
+	
+	/* Classe concreta. Possui um JFrame que serve
+	 * de "container" para todas as janelas e subjanelas
+	 * da aplicação. É a janela principal da aplicação
+	 * e sempre está aberta. Todas as operações do programa
+	 * são feitas a partir dela.
+	 * Pode ser executada a partir da classe "Program.java".
+	 * Deve evitar-se executá-la diretamente.
+	 */
 
 	// Janela principal do programa
 	

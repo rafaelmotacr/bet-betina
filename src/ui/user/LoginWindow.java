@@ -18,9 +18,17 @@ import dao.UserDaoPostgres;
 
 public class LoginWindow extends JInternalFrame {
 
+	// Atributo obrigarório para classes que herdam de JInternalFrame
+	
 	private static final long serialVersionUID = 1L;
+	
+	// Conexão com o banco de dados
+	
 	private UserDaoPostgres dao = new UserDaoPostgres();
 
+	// Recebe um ponteiro/referência para a janela principal como parâmetro.
+	// Isso permite que a LoginWiwndow atualize o usuário atual da aplicação
+	
 	public LoginWindow(MainWindow mainWindow) {
 
 		super();
@@ -85,11 +93,9 @@ public class LoginWindow extends JInternalFrame {
 		loginBTN.setFocusPainted(false);
 		getContentPane().add(loginBTN);
 		loginBTN.addActionListener(e -> {
-			
 			// Email e Password capturam os campos para 
 			// evitar chamadas redundantes dos 
 			// métodos de getText()
-			
 			String email = emailField.getText();
 			String password = String.valueOf(passwordField.getPassword());
 
@@ -117,24 +123,19 @@ public class LoginWindow extends JInternalFrame {
 			// propriamente dito
 			
 			try {
-
 				mainWindow.updateUser(dao.findUserByEmail(email));
 				JOptionPane.showMessageDialog(LoginWindow.this, "Login realizado com sucesso.");
-
-				// Se não houver erro, limpa os campos de email e senha
-				
-				emailField.setText(null);
-				passwordField.setText(null);
-
 			} catch (SQLException e1) {
-				
 				// Caso ocorra algum erro no banco de dados
 				// avisa ao usuário
-				
 				JOptionPane.showMessageDialog(LoginWindow.this, "Algo deu errado ao fazer login");
 			}finally {
+				// limpa os campos de email e senha 
+				// para caso a janela seja aberta novamente.
+				// Fecha a janela.
+				emailField.setText(null);
+				passwordField.setText(null);
 				dispose();
-				
 			}
 		});
 
