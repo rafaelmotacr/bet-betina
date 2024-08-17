@@ -54,27 +54,27 @@ public abstract  class RegisterWindow extends JInternalFrame {
 		nameField.setBorder(new LineBorder(new Color(53, 83, 85), 1, true));
 		nameField.setBounds(14, 53, 212, 20);
 		getContentPane().add(nameField);
-		nameField.setColumns(10);
 
-		JTextField emailField = new JTextField();
+
+		emailField = new JTextField();
 		emailField.setForeground(new Color(255, 255, 255));
 		emailField.setOpaque(false);
 		emailField.setBorder(new LineBorder(new Color(53, 83, 85), 1, true));
 		emailField.setBounds(14, 89, 212, 20);
 		getContentPane().add(emailField);
-		emailField.setColumns(10);
+
 
 		JButton backBTN = new JButton("");
 		backBTN.setIcon(new ImageIcon(RegisterWindow.class.getResource("/resources/backBTN.png")));
+		backBTN.setContentAreaFilled(false);
+		backBTN.setBorder(null);
+		backBTN.setBounds(14, 194, 30, 30);
+		this.getContentPane().add(backBTN);
 		backBTN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
 			}
 		});
-		backBTN.setContentAreaFilled(false);
-		backBTN.setBorder(null);
-		backBTN.setBounds(14, 194, 30, 30);
-		this.getContentPane().add(backBTN);
 
 		confirmPasswordField = new JPasswordField();
 		confirmPasswordField.setForeground(new Color(255, 255, 255));
@@ -92,11 +92,11 @@ public abstract  class RegisterWindow extends JInternalFrame {
 
 		registerBTN = new JButton("");
 		registerBTN.setBounds(46, 194, 154, 34);
-		this.getContentPane().add(registerBTN);
 		registerBTN.setOpaque(false);
 		registerBTN.setContentAreaFilled(false);
 		registerBTN.setBorderPainted(false);
 		registerBTN.setFocusPainted(false);
+		this.getContentPane().add(registerBTN);
 		registerBTN.addActionListener(this::onRegisterButtonClick);
 		
 		backgroundLabel = new JLabel("");

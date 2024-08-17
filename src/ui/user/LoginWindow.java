@@ -73,7 +73,7 @@ public class LoginWindow extends JInternalFrame {
 		emailField.setColumns(10);
 
 		// Botão para realizar login
-		// Possui transparencia propositalmente
+		// possui transparencia propositalmente
 		// para exibir a iamgem abaixo dele
 		// -- parent = this
 		
@@ -88,7 +88,7 @@ public class LoginWindow extends JInternalFrame {
 			
 			// Email e Password capturam os campos para 
 			// evitar chamadas redundantes dos 
-			// Métodos de getText()
+			// métodos de getText()
 			
 			String email = emailField.getText();
 			String password = String.valueOf(passwordField.getPassword());
@@ -111,9 +111,9 @@ public class LoginWindow extends JInternalFrame {
 			}
 			
 			// Se o usuário foi encontrado
-			// E não ocorreram erros até aqui
-			// Tenta recuperar os dados 
-			// Do usuário e fazer o login 
+			// e não ocorreram erros até aqui
+			// tenta recuperar os dados 
+			// do usuário e fazer o login 
 			// propriamente dito
 			
 			try {
@@ -129,7 +129,7 @@ public class LoginWindow extends JInternalFrame {
 			} catch (SQLException e1) {
 				
 				// Caso ocorra algum erro no banco de dados
-				// Avisa ao usuário
+				// avisa ao usuário
 				
 				JOptionPane.showMessageDialog(LoginWindow.this, "Algo deu errado ao fazer login");
 			}finally {

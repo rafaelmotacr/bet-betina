@@ -21,11 +21,32 @@ import model.User;
 public class ConfirmDeletePanel extends JInternalFrame {
 
 	private static final long serialVersionUID = 1L;
+	
+	// Conexão com banco de dados
+	
 	private UserDaoPostgres dao = new UserDaoPostgres();
+	
+	// JLabel declarada aqui para er acessível
+	// aos métodos da classe
+	
 	private JLabel confirmationTextLabel = new JLabel();
+	
+	// Ponteiro para o usuário a ser deletado
+	
 	private User currentUser = null;
-	private MainWindow mainWindow = null;
+	
+	// Ponteiro para a janela de perfil 
+	// para casos onde seja necessário
+	// fechá-la
+	
 	private ProfileWindow profileWindow = null;
+	
+	// Ponteiro para a janela principal
+	// para que seja possível deslogar
+	// o usuário quando seu perfil 
+	// for apagado
+	
+	private MainWindow mainWindow = null;
 
 	public ConfirmDeletePanel() {
 
@@ -46,15 +67,14 @@ public class ConfirmDeletePanel extends JInternalFrame {
 		confirmDeleteBTN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					dao.deletUser(mainWindow.getCurrentUser());
+					dao.deletUser(currentUser);
 					mainWindow.updateUser(null);
-					JOptionPane.showMessageDialog(ConfirmDeletePanel.this,
-							"Usuário deletado com sucesso. Fechando janela.");
-					profileWindow.dispose();
+					JOptionPane.showMessageDialog(ConfirmDeletePanel.this, "Usuário(a) deletado(a) com sucesso. Fechando janela.");
 					dispose();
-
+					profileWindow.dispose();
 				} catch (SQLException e1) {
-					e1.printStackTrace();
+					JOptionPane.showMessageDialog(ConfirmDeletePanel.this, "Não foi possível deletar o seu usuário.");
+					dispose();
 				}
 			}
 		});
@@ -66,7 +86,6 @@ public class ConfirmDeletePanel extends JInternalFrame {
 		getContentPane().add(cancelDeleteBTN);
 		cancelDeleteBTN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				setEnabled(true);
 				dispose();
 			}
 		});
@@ -93,7 +112,7 @@ public class ConfirmDeletePanel extends JInternalFrame {
 		this.mainWindow = mainWindow;
 		currentUser = mainWindow.getCurrentUser();
 		confirmationTextLabel.setText("<html>Deseja realmente apagar para \r\n<br> sempre o "
-				.concat(currentUser.getAccessLevel() == 0 ? "usuario" : "admnistrador") + "<strong> "
+				.concat(currentUser.getAccessLevel() == 0 ? "usuario(a)" : "admnistrador") + "<strong> "
 				+ currentUser.getName() + "</strong>?\r\n<br>(Para sempre é um tempão!)</html>");
 	}
 }

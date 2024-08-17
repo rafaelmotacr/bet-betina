@@ -145,7 +145,7 @@ public class ProfileWindow extends JInternalFrame {
 		victoryRateLBL.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
 
 		// Label que exibe o time favorito de um usuário
-		// Baseado no time que ele mais apostou ao longo do tempo
+		// baseado no time que ele mais apostou ao longo do tempo
 		// -- parent = dataPanel
 		
 		JLabel favoriteTeamLBL = new JLabel();
@@ -191,7 +191,7 @@ public class ProfileWindow extends JInternalFrame {
 		dataPanel.add(nameTextPNL);
 
 		// Campo para alterar nome do usuário
-		// Inativo por padrão
+		// inativo por padrão
 		// -- parent = dataPanel
 		
 		nameFLD = new JTextField();
@@ -210,7 +210,7 @@ public class ProfileWindow extends JInternalFrame {
 		dataPanel.add(emailTextPNL);
 
 		// Campo para alterar email do usuário 
-		// Inativo por padrão
+		// inativo por padrão
 		// -- parent = dataPanel
 		
 		emailFLD = new JTextField();
@@ -221,7 +221,7 @@ public class ProfileWindow extends JInternalFrame {
 		dataPanel.add(emailFLD);
 		
 		// Label com o texto "SENHA", nada demais
-		// Indica visualmente a utilidade dos campos abaixo dela
+		// indica visualmente a utilidade dos campos abaixo dela
 		// -- parent = dataPanel
 		
 		JLabel passwordTextLBL = new JLabel("SENHA");
@@ -240,7 +240,7 @@ public class ProfileWindow extends JInternalFrame {
 		dataPanel.add(changePasswordTextLBL);
 		
 		// Campo para digitar a nova senha do usuário
-		// Inativo por padrão
+		// inativo por padrão
 		// -- parent = dataPanel
 		
 		JPasswordField changePasswordFLD = new JPasswordField();
@@ -260,7 +260,7 @@ public class ProfileWindow extends JInternalFrame {
 		dataPanel.add(confirmPasswordTextLBL);
 		
 		// Campo para confirmar a nova senha do usuário 
-		// Inativo por padrão
+		// inativo por padrão
 		// -- parent = dataPanel
 		
 		JPasswordField confirmPasswordFLD = new JPasswordField();
@@ -279,34 +279,39 @@ public class ProfileWindow extends JInternalFrame {
 		saveBTN.setBounds(47, 302, 157, 23);
 		saveBTN.setEnabled(false);
 		getContentPane().add(saveBTN);
+		
+		// Salva os dados editados pelo usuário de acordo com
+		// os campos ativos e se de fato os dados foram
+		// alterados
+		
 		saveBTN.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
 				String email = emailFLD.getText();
 				String name = nameFLD.getText();
+				String password = null;
 				String encriptedPassword = null;
-				String passwordFLD1 = String.valueOf(changePasswordFLD.getPassword());
-				String passwordFLD2 = String.valueOf(confirmPasswordFLD.getPassword());
-
 				if (nameFLD.isEnabled() && emailFLD.isEnabled()) {
 
-					// Update name
+					// Se o nome digitado no campo de alterar nome for
+					// diferente do nome atual do usuário, 
+					// tenta atualizar o nome no banco de dados
 
 					if (!name.equals(currentUser.getName())) {
 						try {
 							dao.updateUserName(currentUser, name);
 							currentUser.setName(name);
 							ProfileWindow.this.setTitle("bet-betina v1.21 - Perfil de " + currentUser.getName());
-							nameLBL.setText(currentUser.getName().concat(
-									currentUser.getAccessLevel() == 0 ? " - Usuario Comum." : " - Admnistrador."));
+							nameLBL.setText(currentUser.getName().concat(currentUser.getAccessLevel() == 0 ? " - Usuario Comum." : " - Admnistrador."));
 							JOptionPane.showMessageDialog(ProfileWindow.this, "Nome atualizado com sucesso.");
 						} catch (SQLException e1) {
 							JOptionPane.showMessageDialog(ProfileWindow.this, "Erro ao atualizar nome.");
 						}
 					}
 
-					// Update email
+					// Se o email digitado no campo de alterar email for
+					// diferente do email atual do usuário, 
+					// tenta atualizar o email no banco de dados
 
 					if (!email.equals(currentUser.getEmail())) {
 						try {
@@ -318,51 +323,58 @@ public class ProfileWindow extends JInternalFrame {
 						}
 					}
 				}
+				
+				// Se os campos de alterar e confirmar senha 
+				// estiverem ativos, tenta mesclar as senhas
+				// e testar se a senha resultante
+				// é válida. Se for, atualiza
+				// a senha atual no banco de dados
 
 				// Update password
 
 				if (changePasswordFLD.isEnabled() && confirmPasswordFLD.isEnabled()) {
-
-					if (passwordFLD1.length() > 0 && passwordFLD2.length() > 0) {
-						try {
-							encriptedPassword = InputManipulation.generateHashedPassword(
-									InputManipulation.joinPasswords(passwordFLD1, passwordFLD2));
-							try {
-								dao.updateUserPassword(currentUser, encriptedPassword);
-								changePasswordFLD.setText(null);
-								confirmPasswordFLD.setText(null);
-								JOptionPane.showMessageDialog(ProfileWindow.this, "Senha atualizada com sucesso.");
-							} catch (SQLException e1) {
-								JOptionPane.showMessageDialog(ProfileWindow.this,
-										"Não foi possível atualizar sua senha.");
-								e1.printStackTrace();
-							}
-						} catch (PasswordsDontMatchException e1) {
-							JOptionPane.showMessageDialog(ProfileWindow.this, "As senhas não conferem!");
-							return;
-						}
+					try {
+						password = InputManipulation.joinPasswords(String.valueOf(changePasswordFLD.getPassword()),String.valueOf(confirmPasswordFLD.getPassword()));
+					} catch (PasswordsDontMatchException e1) {
+						JOptionPane.showMessageDialog(ProfileWindow.this, "As senhas não conferem!");
+						return;
+					}
+					if (!InputManipulation.isMinLengthPassword(password)) {
+						JOptionPane.showMessageDialog(ProfileWindow.this, "Senha muito curta. Use ao menos 8 digitos.");
+						return;
+					}
+					encriptedPassword = InputManipulation.generateHashedPassword(password);
+					try {
+						dao.updateUserPassword(currentUser, encriptedPassword);
+						changePasswordFLD.setText(null);
+						confirmPasswordFLD.setText(null);
+						JOptionPane.showMessageDialog(ProfileWindow.this, "Senha atualizada com sucesso.");
+					} catch (SQLException e1) {
+						JOptionPane.showMessageDialog(ProfileWindow.this,
+								"Não foi possível atualizar sua senha.");
+						e1.printStackTrace();
 					}
 				}
-
-				// Comentário
-
 				changePasswordFLD.setEnabled(false);
 				confirmPasswordFLD.setEnabled(false);
 				emailFLD.setEnabled(false);
 				nameFLD.setEnabled(false);
 				saveBTN.setEnabled(false);
-
 			}
 		});
 		
 		// Botão que permite fazer alterações nos
-		// Dados (nome, email) do usuário atual
+		// dados (nome, email) do usuário atual
 		// -- parent = dataPanel
 		
 		JButton editDataBTN = new JButton();
 		editDataBTN.setIcon(new ImageIcon(ProfileWindow.class.getResource("/resources/editBTN.png")));
 		editDataBTN.setBounds(164, 50, 20, 20);
 		dataPanel.add(editDataBTN);
+		
+		// Ativa os campos de email e nome para
+		// que o usuário possa os alterar
+		
 		editDataBTN.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -372,7 +384,6 @@ public class ProfileWindow extends JInternalFrame {
 			}
 		});
 		
-		
 		// Botão que permite alterar a senha do usuário 
 		// -- parent = dataPanel
 		
@@ -380,6 +391,10 @@ public class ProfileWindow extends JInternalFrame {
 		editPasswordBTN.setIcon(new ImageIcon(ProfileWindow.class.getResource("/resources/editBTN.png")));
 		editPasswordBTN.setBounds(164, 162, 20, 20);
 		dataPanel.add(editPasswordBTN);
+		
+		// Ativa os campos de alterar e confirmar
+		// senha para que que o usuário possa os alterar
+		
 		editPasswordBTN.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -408,7 +423,6 @@ public class ProfileWindow extends JInternalFrame {
 		statementLBL.setFont(new Font("Comic Sans MS", Font.PLAIN, 20));
 		statementLBL.setBounds(45, 11, 103, 28);
 		statementPNL.add(statementLBL);
-
 
 		// Botão de histórico de apostas do usuário (Ainda não programado / TODO)
 		// -- parent = frame
@@ -442,7 +456,7 @@ public class ProfileWindow extends JInternalFrame {
 		});
 		
 		// Botão que permite ao usuário deletar
-		// O seu próprio perfil
+		// o seu próprio perfil
 		// -- parent = frame
 
 		JButton deleteUserBTN = new JButton("Apagar Perfil");
@@ -451,6 +465,10 @@ public class ProfileWindow extends JInternalFrame {
 		deleteUserBTN.setBounds(214, 302, 212, 23);
 		deleteUserBTN.setForeground(new Color(255, 0, 0));
 		getContentPane().add(deleteUserBTN);
+		
+		// Abre uma nova janela para que o usuário 
+		// decida se quer ou não excluir seu perfil
+		
 		deleteUserBTN.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -461,9 +479,9 @@ public class ProfileWindow extends JInternalFrame {
 		});
 
 		// Botão de exibir estatísticas
-		// As estatísticas começam "ocultaas"
-		// Para que o usuário não precise esperar
-		// O tempo da query em sql para abrir a janela
+		// as estatísticas começam "ocultaas"
+		// para que o usuário não precise esperar
+		// o tempo da query em sql para abrir a janela
 		// -- parent = frame
 		
 		JButton statsBTN = new JButton("Ver Estatísticas");
@@ -512,21 +530,20 @@ public class ProfileWindow extends JInternalFrame {
 				mainPanel.add(statsBTN);
 			}
 		});
-
 	}
 	
-	// Fim do método initialize
+	// Personaliza a janela de acordo com o usuário recebido 
+	// e define a referência para a janela principal
+	// indispensável para o funcionamento adequado da classe
 
 	public void turnOn(MainWindow mainWinndowPointer) {
 		this.currentUser = mainWinndowPointer.getCurrentUser();
 		this.mainWindow = mainWinndowPointer;
 		setTitle("bet-betina v1.21 - Perfil de " + currentUser.getName());
-		nameLBL.setText(currentUser.getName()
-				.concat(currentUser.getAccessLevel() == 2 ? " - Usuario Comum." : " - Admnistrador."));
+		nameLBL.setText(currentUser.getName().concat(currentUser.getAccessLevel() == 0 ? " - Usuario Comum." : " - Admnistrador."));
 		balanceLBL.setText(("Saldo Atual: R$ " + currentUser.getBalance() + "."));
 		idLBL.setText("ID:" + currentUser.getID());
 		nameFLD.setText(currentUser.getName());
 		emailFLD.setText(currentUser.getEmail());
-
 	}
 }
