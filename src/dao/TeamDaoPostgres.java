@@ -3,6 +3,7 @@ package dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import model.Team;
 
@@ -94,5 +95,21 @@ public class TeamDaoPostgres implements TeamDao {
 				team.setName(newName);
 				team.setAbbreviation(newAbbreviation);
 			}
+	}
+
+	@Override
+	public ArrayList<Team> getAllTeams() throws SQLException {
+		ArrayList <Team> teamsList = new ArrayList <Team> (); 
+		PreparedStatement ps = ConexaoBdSingleton
+				.getInstance()
+				.getConexao().prepareStatement("SELECT * FROM team_tb ORDER BY (team_id) DESC");
+		ResultSet rs= ps.executeQuery();
+		ArrayList<Team> contatos = new ArrayList<Team>();
+		while (rs.next()) {
+			teamsList.add(new Team(rs.getInt("team_id"),
+					rs.getString("team_name"), 
+					rs.getString("team_abbreviation")));
+		}
+		return teamsList;
 	}
 }
