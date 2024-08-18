@@ -511,10 +511,15 @@ public class ProfileWindow extends JInternalFrame {
 					JOptionPane.showMessageDialog(ProfileWindow.this, "Erro ao ler suas estatísticas.");
 					return;
 				}
+				try {
+					favoriteTeamLBL.setText("Time Favorito: " + dao.getFavoriteTeam(currentUser) + ".");
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				totalLosesLBL.setText("Total de Derrotas:");
 				totalWinsLBL.setText("Total de Vitórias: ");
 				victoryRateLBL.setText("Taxa de Vitória:");
-				favoriteTeamLBL.setText("Time Favorito: ");
 				statsBTN.setVisible(false);
 				surroundStatsBTN.setVisible(true);
 			}

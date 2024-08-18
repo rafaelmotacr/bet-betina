@@ -12,4 +12,5 @@ public interface TeamDao {
 	public void deleteTeam(Team team) throws SQLException;
 	public void updateTeamName(Team team, String newName, String NewAbbreviation) throws SQLException;
 	public ArrayList <Team> getAllTeams() throws SQLException;
+	public ArrayList<Team> getAllTeams(String filter) throws SQLException;
 }

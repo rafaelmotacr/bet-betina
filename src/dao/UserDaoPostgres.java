@@ -3,12 +3,14 @@ package dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import model.Team;
 import model.User;
 import util.BCrypt;
 
 public class UserDaoPostgres implements UserDao {
 	
-	private Double saldoInicialPadrao = 500.000d;
+	private Double saldoInicialPadrao = 1500d;
 	@Override
 	public boolean login(String email, String originalPassword) {
 	    try (PreparedStatement ps = ConexaoBdSingleton
@@ -90,6 +92,24 @@ public class UserDaoPostgres implements UserDao {
 		rs.next();
 		return rs.getInt("total_user_bets");
 	}
+	
+	@Override
+	public String getFavoriteTeam(User user) throws SQLException {
+		
+		PreparedStatement ps = ConexaoBdSingleton
+				.getInstance()
+				.getConexao().prepareStatement("SELECT team_abbreviation AS favorite_team \r\n"
+						+ "		FROM team_tb INNER JOIN user_tb\r\n"
+						+ "		ON (user_tb.user_favorite_team_id = team_tb.team_id)\r\n"
+						+ "		WHERE user_tb.user_id = ?");	
+
+		ps.setInt(1, user.getID());
+		
+		ResultSet rs = ps.executeQuery();
+		rs.next();
+		return rs.getString("favorite_team");
+	}
+	
 
 	@Override
 	public void updateUserPassword(User user, String newPassword) throws SQLException {
@@ -104,7 +124,6 @@ public class UserDaoPostgres implements UserDao {
 		}catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
 	}
 	@Override
 	public void updateUserName(User user, String newUserName) throws SQLException{
@@ -121,7 +140,6 @@ public class UserDaoPostgres implements UserDao {
 		}finally{
 			user.setName(newUserName);
 		}
-		
 	}
 	@Override
 	public void updateUserEmail(User user, String newEmail) throws SQLException{
@@ -139,5 +157,22 @@ public class UserDaoPostgres implements UserDao {
 			user.setName(newEmail);
 		}
 	}
+	@Override
+	public void updateUserFavoriteTeam(User user, Team team) throws SQLException {
+		try {
+		PreparedStatement ps = ConexaoBdSingleton
+				.getInstance()
+				.getConexao().prepareStatement("UPDATE user_tb SET user_favorite_team_id = ? \r\n"
+						+ "WHERE user_id = ?");
+				ps.setInt(1, team.getID());
+				ps.setInt(2, user.getID());
+				ps.executeUpdate();
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			user.setFavoriteTeam(team.getID());
+		}
+	}
+
 		
 }

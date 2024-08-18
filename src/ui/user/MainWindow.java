@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
 import model.User;
+import ui.team.TesteClass;
 
 public class MainWindow {
 	
@@ -53,7 +54,7 @@ public class MainWindow {
 	
 	private int xx, xy;
 	
-	// Construtor da classe
+	// Construtor da classe1
 	
 	public MainWindow() {
 		initialize();
@@ -92,6 +93,11 @@ public class MainWindow {
 				frame.setLocation(x - xx, y - xy);
 			}
 		});
+		
+		TesteClass testeTeste = new TesteClass();
+		testeTeste.setVisible(false);
+		testeTeste.setLocation(64, 36);
+		frame.getContentPane().add(testeTeste);
 
 		
 		// Todas as janelas secundárias 
@@ -111,7 +117,7 @@ public class MainWindow {
 		RegisterAdminWindow registerAdminWindow = new RegisterAdminWindow(MainWindow.this);
 		registerAdminWindow.setLocation(259, 78);
 		frame.getContentPane().add(registerAdminWindow);
-	
+		
 		// Botão de log in 
 		//-- parent = frame
 		
@@ -334,11 +340,11 @@ public class MainWindow {
 		// Botão de ver jogos TODOS
 		// -- parent = mainPanel
 
-		JButton matchBTN = new JButton("Jogos");
+		JButton matchBTN = new JButton("Ver Jogos");
 		matchBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		matchBTN.setBounds(12, 77, 98, 26);
 		matchBTN.setContentAreaFilled(false);
-		matchBTN.setMnemonic('V');
+		matchBTN.setMnemonic('j');
 		matchBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
 		mainPNL.add(matchBTN);
 		matchBTN.addActionListener(new ActionListener() {
@@ -360,12 +366,19 @@ public class MainWindow {
 		// Botão de times 
 		// -- parent = mainPanel
 
-		JButton teamBTN = new JButton("Times");
+		JButton teamBTN = new JButton("Ver Times");
+		teamBTN.setMnemonic('t');
 		teamBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		teamBTN.setBounds(12, 112, 98, 26);
 		teamBTN.setContentAreaFilled(false);
 		teamBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
 		mainPNL.add(teamBTN);
+		teamBTN.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				testeTeste.turnOn(currentUser);
+				testeTeste.setVisible(true);
+			}
+		});
 
 		// Painel de destaques 
 		// -- parent = frame

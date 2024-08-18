@@ -99,12 +99,39 @@ public class TeamDaoPostgres implements TeamDao {
 
 	@Override
 	public ArrayList<Team> getAllTeams() throws SQLException {
-		ArrayList <Team> teamsList = new ArrayList <Team> (); 
+		ArrayList <Team> teamsList = new ArrayList <Team>(); 
 		PreparedStatement ps = ConexaoBdSingleton
 				.getInstance()
 				.getConexao().prepareStatement("SELECT * FROM team_tb ORDER BY (team_id) DESC");
 		ResultSet rs= ps.executeQuery();
-		ArrayList<Team> contatos = new ArrayList<Team>();
+		while (rs.next()) {
+			teamsList.add(new Team(rs.getInt("team_id"),
+					rs.getString("team_name"), 
+					rs.getString("team_abbreviation")));
+		}
+		return teamsList;
+	}
+	
+	@Override
+	public ArrayList<Team> getAllTeams(String filter) throws SQLException {
+		ArrayList <Team> teamsList = new ArrayList <Team>(); 
+
+		String sql = "SELECT * FROM team_tb "
+		           + "WHERE LOWER(team_name) LIKE LOWER(?) "
+		           + "OR LOWER(team_abbreviation) LIKE LOWER(?) "
+		           + "ORDER BY team_id DESC";
+
+		PreparedStatement ps = ConexaoBdSingleton
+		        .getInstance()
+		        .getConexao()
+		        .prepareStatement(sql);
+
+		String teamNameSearch = "%" + filter + "%";
+		String teamAbbreviationSearch = "%" + filter + "%"; 
+
+		ps.setString(1, teamNameSearch);
+		ps.setString(2, teamAbbreviationSearch);
+		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
 			teamsList.add(new Team(rs.getInt("team_id"),
 					rs.getString("team_name"), 

@@ -2,139 +2,181 @@ package ui.team;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
 import dao.TeamDaoPostgres;
+import dao.UserDaoPostgres;
 import model.Team;
-import javax.swing.JButton;
-import javax.swing.JTextField;
-import javax.swing.ImageIcon;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import model.User;
 
 public class TesteClass extends JInternalFrame {
 
     private static final long serialVersionUID = 1L;
 
-    private TeamDaoPostgres dao = new TeamDaoPostgres();
-    private JTextField txtDigiteONome;
+    private TeamDaoPostgres teamdao = new TeamDaoPostgres();
+    private UserDaoPostgres userDao = new UserDaoPostgres();
+    private User currentUser;
+    private JTextField searchFLD;
+    private DefaultListModel<Team> listModel; // Mover para o escopo da classe para facilitar a atualização
+   // Mover para o escopo da classe para uso em busca
 
     public TesteClass() {
-        super("Teste Class", true, true, false, false);
+    	
+        super();
         
+        setTitle("Bet-Betina v1.23 - Menu de Times ");
+        setClosable(true);
+
         setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
         setBounds(0, 0, 640, 360);
-        
-        // Criar um ArrayList de opções
-        ArrayList<Team> options = new ArrayList<>();
-        try {
-            options = dao.getAllTeams();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        getContentPane().setLayout(null);
 
-        // Criar um DefaultListModel e preenchê-lo com o ArrayList
-        DefaultListModel<Team> listModel = new DefaultListModel<>();
-        for (Team team : options) {
-            listModel.addElement(team);
-        }
-        
-        // Criar um JList e adicionar o DefaultListModel
+        listModel = new DefaultListModel<>();
+		updateTeams();
+
         JList<Team> list = new JList<>(listModel);
         list.setOpaque(false);
         list.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
-        list.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION); // Permitir seleção múltipla
-        
-        // Adicionar um ListSelectionListener para mostrar a seleção
-        list.addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                java.util.List<Team> selectedTeams = list.getSelectedValuesList();
-            }
-        });
-        getContentPane().setLayout(null);
-       
-        // Adicionar o JList dentro de um JScrollPane
+        list.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION); 
+        list.setCellRenderer(new CustomListRenderer());
+
         JScrollPane scrollPane = new JScrollPane(list);
         scrollPane.setBorder(new LineBorder(new Color(0, 0, 0), 2, true));
-        scrollPane.setBounds(163, 38, 465, 283);
+        scrollPane.setBounds(163, 32, 475, 300);
         getContentPane().add(scrollPane);
-        
+
         JPanel dataPanel = new JPanel();
         dataPanel.setLayout(null);
         dataPanel.setBorder(new LineBorder(new Color(0, 0, 0), 2, true));
         dataPanel.setBackground(new Color(0, 128, 128));
-        dataPanel.setBounds(7, 38, 150, 283);
+        dataPanel.setBounds(0, 32, 157, 300);
         getContentPane().add(dataPanel);
+
+        JButton searchBTN = new JButton("Buscar");
+        searchBTN.setBorder(new LineBorder(new Color(0, 0, 0)));
+        searchBTN.setForeground(new Color(255, 255, 255));
+        searchBTN.setContentAreaFilled(false);
+        searchBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
+        searchBTN.setBounds(10, 42, 130, 23);
+        dataPanel.add(searchBTN);
+
+        searchBTN.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String searchText = searchFLD.getText();
+                if(searchText == null || searchText.equals("") || !searchFLD.isEnabled()) {
+                	JOptionPane.showMessageDialog(TesteClass.this, "Você não pode realizar uma busca vazia!");
+                	return;
+                }
+                updateTeams(searchText);
+            }
+        });
+
         
-        JButton btnNewButton = new JButton("Buscar");
-        btnNewButton.setBorder(new LineBorder(new Color(0, 0, 0)));
-        btnNewButton.setForeground(new Color(255, 255, 255));
-        btnNewButton.setContentAreaFilled(false);
-        btnNewButton.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
-        btnNewButton.setBounds(10, 42, 130, 23);
-        dataPanel.add(btnNewButton);
-        
-        txtDigiteONome = new JTextField();
-        txtDigiteONome.addMouseListener(new MouseAdapter() {
+        searchFLD = new JTextField();
+        searchFLD.addMouseListener(new MouseAdapter() {
         	public void mouseClicked(MouseEvent e) {
-        		txtDigiteONome.setText(null);
-        		txtDigiteONome.setEnabled(true);
-        		txtDigiteONome.requestFocus();
+        		searchFLD.setText(null);
+        		searchFLD.setEnabled(true);
+        		searchFLD.requestFocus();
         	}
         });
-        txtDigiteONome.setEnabled(false);
-        txtDigiteONome.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
-        txtDigiteONome.setText("Digite o nome do time...");
-        txtDigiteONome.setBounds(10, 11, 130, 20);
-        dataPanel.add(txtDigiteONome);
-        txtDigiteONome.setColumns(10);
+        searchFLD.setEnabled(false);
+        searchFLD.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
+        searchFLD.setText("Nome do time...");
+        searchFLD.setBounds(10, 11, 97, 23);
+        dataPanel.add(searchFLD);
+        searchFLD.setColumns(10);
         
-        JButton btnNewButton_1 = new JButton("Criar ");
-        btnNewButton_1.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
-        btnNewButton_1.setForeground(new Color(255, 255, 255));
-        btnNewButton_1.setContentAreaFilled(false);
-        btnNewButton_1.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-        btnNewButton_1.setBounds(10, 175, 130, 23);
-        dataPanel.add(btnNewButton_1);
+        JButton createTeamBTN = new JButton("Criar ");
+        createTeamBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
+        createTeamBTN.setForeground(new Color(255, 255, 255));
+        createTeamBTN.setContentAreaFilled(false);
+        createTeamBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+        createTeamBTN.setBounds(10, 164, 130, 23);
+        dataPanel.add(createTeamBTN);
         
-        JButton btnNewButton_1_1 = new JButton("Atualizar");
-        btnNewButton_1_1.setForeground(Color.WHITE);
-        btnNewButton_1_1.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
-        btnNewButton_1_1.setContentAreaFilled(false);
-        btnNewButton_1_1.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-        btnNewButton_1_1.setBounds(10, 207, 130, 23);
-        dataPanel.add(btnNewButton_1_1);
+        JButton updateTeamBTN = new JButton("Atualizar");
+        updateTeamBTN.setForeground(Color.WHITE);
+        updateTeamBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
+        updateTeamBTN.setContentAreaFilled(false);
+        updateTeamBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+        updateTeamBTN.setBounds(10, 198, 130, 23);
+        dataPanel.add(updateTeamBTN);
         
-        JButton btnNewButton_1_2 = new JButton("Deletar");
-        btnNewButton_1_2.setForeground(Color.WHITE);
-        btnNewButton_1_2.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
-        btnNewButton_1_2.setContentAreaFilled(false);
-        btnNewButton_1_2.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-        btnNewButton_1_2.setBounds(43, 241, 97, 23);
-        dataPanel.add(btnNewButton_1_2);
+        JButton DeleteTeamBTN = new JButton("Deletar");
+        DeleteTeamBTN.setForeground(Color.WHITE);
+        DeleteTeamBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
+        DeleteTeamBTN.setContentAreaFilled(false);
+        DeleteTeamBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+        DeleteTeamBTN.setBounds(43, 266, 97, 23);
+        dataPanel.add(DeleteTeamBTN);
         
         JButton backBTN = new JButton("");
         backBTN.setIcon(new ImageIcon(TesteClass.class.getResource("/resources/backBTN.png")));
         backBTN.setContentAreaFilled(false);
         backBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-        backBTN.setBounds(10, 241, 30, 23);
+        backBTN.setBounds(10, 266, 30, 23);
         dataPanel.add(backBTN);
+        
+        JButton bookmarkTeamBTN = new JButton("Favoritar");
+        bookmarkTeamBTN.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		try {
+					userDao.updateUserFavoriteTeam(currentUser, list.getSelectedValue());
+					JOptionPane.showMessageDialog(TesteClass.this, "Time favoritado com sucesso!");
+				} catch (SQLException e1) {
+					JOptionPane.showMessageDialog(TesteClass.this, "Erro ao favoritar time.");
+					e1.printStackTrace();
+				}
+        	}
+        });
+        bookmarkTeamBTN.setForeground(Color.WHITE);
+        bookmarkTeamBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
+        bookmarkTeamBTN.setContentAreaFilled(false);
+        bookmarkTeamBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+        bookmarkTeamBTN.setBounds(10, 232, 130, 23);
+        dataPanel.add(bookmarkTeamBTN);
+        
+        JButton refreshBTN = new JButton("");
+        refreshBTN.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		searchFLD.setText(null);
+        		updateTeams();
+        	}
+        });
+        refreshBTN.setToolTipText("Clique aqui para limpar a busca.");
+        refreshBTN.setBorderPainted(false);
+        refreshBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+        refreshBTN.setIcon(new ImageIcon(TesteClass.class.getResource("/resources/reload.png")));
+        refreshBTN.setContentAreaFilled(false);
+        refreshBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 8));
+        refreshBTN.setBounds(117, 11, 23, 23);
+        dataPanel.add(refreshBTN);
         
         JPanel panel = new JPanel();
         panel.setBackground(new Color(0, 0, 0));
-        panel.setBounds(7, 5, 621, 28);
+        panel.setBounds(0, 0, 638, 28);
         getContentPane().add(panel);
         panel.setLayout(null);
         
@@ -151,6 +193,36 @@ public class TesteClass extends JInternalFrame {
         lblTimesCorrespondentes.setFont(new Font("Comic Sans MS", Font.PLAIN, 20));
 
         setVisible(true);
+    }
+    
+    private void updateTeams(){
+    	ArrayList<Team> teams = null;
+		try {
+			teams = teamdao.getAllTeams();
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(TesteClass.this, "Nenhum time foi encontrado.");
+		}
+    	listModel.clear();
+        for (Team team : teams) {
+        	listModel.addElement(team); 
+        }
+    }
+    
+    private void updateTeams(String filter) {
+    	ArrayList<Team> teams = null;
+		try {
+			teams = teamdao.getAllTeams(filter);
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(TesteClass.this, "Nenhum time foi encontrado.");
+		}
+    	listModel.clear();
+        for (Team team : teams) {
+        	listModel.addElement(team); 
+        }
+    }
+    
+    public void turnOn(User user) {
+    	currentUser = user;
     }
     
     public static void main(String[] args) {
