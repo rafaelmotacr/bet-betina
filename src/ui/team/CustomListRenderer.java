@@ -11,10 +11,12 @@ import javax.swing.ListCellRenderer;
 import javax.swing.border.LineBorder;
 
 import model.Team;
+import model.User;
 
 class CustomListRenderer extends JLabel implements ListCellRenderer<Team> {
 
 	private static final long serialVersionUID = 1L;
+	private User user;
 
 		public CustomListRenderer() {
             setOpaque(true);
@@ -22,7 +24,18 @@ class CustomListRenderer extends JLabel implements ListCellRenderer<Team> {
 
         @Override
         public Component getListCellRendererComponent(JList<? extends Team> list, Team value, int index, boolean isSelected, boolean cellHasFocus) {
-            setText(String.valueOf(index + 1) + " - " + value); 
+        	String text;
+        	index ++;
+        	if(index < 10) {
+        		text = "0" + String.valueOf(index) + " - " + value;
+        		
+        	}else {
+        		text = String.valueOf(index) + " - " + value; 
+        	}
+        	if((user != null) && (value.getID() == user.getFavoriteTeam())) {
+        		text = text.concat(" | (Seu time favorito)");
+        	}
+        	setText(text);
             setFont(new Font("Comic Sans MS", Font.BOLD, 14));
             if (isSelected) {
                 setBackground(list.getSelectionBackground());
@@ -47,4 +60,9 @@ class CustomListRenderer extends JLabel implements ListCellRenderer<Team> {
             int y = getHeight() - 1;
             g.drawLine(0, y, getWidth(), y);
         }
+        
+        public void setUser(User user) {
+        	this.user = user;
+        }
+        
     }

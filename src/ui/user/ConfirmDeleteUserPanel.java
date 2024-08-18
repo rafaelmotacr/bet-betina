@@ -18,7 +18,7 @@ import javax.swing.border.LineBorder;
 import dao.UserDaoPostgres;
 import model.User;
 
-public class ConfirmDeletePanel extends JInternalFrame {
+public class ConfirmDeleteUserPanel extends JInternalFrame {
 	
 	/* Classe concreta que herda de JInternalFrame e
 	 * tem como objetivo ser uma tela de confirmação de exclusão
@@ -59,7 +59,7 @@ public class ConfirmDeletePanel extends JInternalFrame {
 	
 	private MainWindow mainWindow = null;
 
-	public ConfirmDeletePanel() {
+	public ConfirmDeleteUserPanel() {
 
 		super();
 
@@ -90,11 +90,11 @@ public class ConfirmDeletePanel extends JInternalFrame {
 				try {
 					dao.deletUser(currentUser);
 					mainWindow.updateUser(null); // Define o usuário atual como nulo
-					JOptionPane.showMessageDialog(ConfirmDeletePanel.this, "Usuário(a) deletado(a) com sucesso. Fechando janela.");
+					JOptionPane.showMessageDialog(ConfirmDeleteUserPanel.this, "Usuário (a) deletado (a) com sucesso. Fechando janela.");
 					dispose();
 					profileWindow.dispose(); // Fecha a janela de perfil para impedir o acesso a dados defasados
 				} catch (SQLException e1) {
-					JOptionPane.showMessageDialog(ConfirmDeletePanel.this, "Não foi possível deletar o seu usuário.");
+					JOptionPane.showMessageDialog(ConfirmDeleteUserPanel.this, "Não foi possível deletar o seu usuário (a).");
 					dispose();
 				}
 			}
@@ -121,7 +121,7 @@ public class ConfirmDeletePanel extends JInternalFrame {
 		// -- parent = this
 
 		JLabel profilePictureLabel = new JLabel("");
-		profilePictureLabel.setIcon(new ImageIcon(ConfirmDeletePanel.class.getResource("/resources/user.png")));
+		profilePictureLabel.setIcon(new ImageIcon(ConfirmDeleteUserPanel.class.getResource("/resources/user.png")));
 		profilePictureLabel.setBounds(73, 11, 50, 50);
 		getContentPane().add(profilePictureLabel);
 
@@ -152,7 +152,7 @@ public class ConfirmDeletePanel extends JInternalFrame {
 		this.mainWindow = mainWindow;
 		currentUser = mainWindow.getCurrentUser();
 		confirmationTextLabel.setText("<html>Deseja realmente apagar para \r\n<br> sempre o "
-				.concat(currentUser.getAccessLevel() == 0 ? "usuario(a)" : "admnistrador") + "<strong> "
+				.concat(currentUser.getAccessLevel() == 0 ? "usuario (a)" : "admnistrador") + "<strong> "
 				+ currentUser.getName() + "</strong>?\r\n<br>(Para sempre é um tempão!)</html>");
 	}
 }

@@ -12,12 +12,23 @@ public class User {
     
 	public User(int iD, int accessLevel, Double balance, String name, String email, String password) {
 		super();
+		this.ID = iD;
+		this.accessLevel = accessLevel;
+		this.balance = balance;
+		this.name = name;
+		this.email = email;
+		this.password = password;
+	}
+	
+	public User(int iD, int accessLevel, Double balance, String name, String email, String password, int favoriteTeam) {
+		super();
 		ID = iD;
 		this.accessLevel = accessLevel;
 		this.balance = balance;
 		this.name = name;
 		this.email = email;
 		this.password = password;
+		this.favoriteTeam = favoriteTeam;
 	}
 
 	public int getID() {
@@ -25,7 +36,7 @@ public class User {
 	}
 
 	public void setID(int iD) {
-		ID = iD;
+		this.ID = iD;
 	}
 
 	public int getAccessLevel() {

@@ -15,6 +15,8 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
 
 import dao.UserDaoPostgres;
 import exceptions.PasswordsDontMatchException;
@@ -74,7 +76,7 @@ public class ProfileWindow extends JInternalFrame {
 		// InternalFrame de delete 
 		// -- parent = this
 
-		ConfirmDeletePanel confirmDeleteWindow = new ConfirmDeletePanel();
+		ConfirmDeleteUserPanel confirmDeleteWindow = new ConfirmDeleteUserPanel();
 		confirmDeleteWindow.setBounds(214, 11, 212, 280);
 		getContentPane().add(confirmDeleteWindow);
 
@@ -309,7 +311,7 @@ public class ProfileWindow extends JInternalFrame {
 						try {
 							dao.updateUserName(currentUser, name);
 							currentUser.setName(name);
-							ProfileWindow.this.setTitle("bet-betina v1.21 - Perfil de " + currentUser.getName());
+							ProfileWindow.this.setTitle("Bet-Betina v1.21 - Perfil de " + currentUser.getName());
 							nameLBL.setText(currentUser.getName().concat(currentUser.getAccessLevel() == 0 ? " - Usuario Comum." : " - Admnistrador."));
 							JOptionPane.showMessageDialog(ProfileWindow.this, "Nome atualizado com sucesso.");
 						} catch (SQLException e1) {
@@ -444,28 +446,6 @@ public class ProfileWindow extends JInternalFrame {
 			}
 		});
 		
-		// Botão que permite ao usuário voltar
-		// para a janela anterior
-		// -- parent = this
-		
-		JButton backBTN = new JButton("");
-		backBTN.setIcon(new ImageIcon(ProfileWindow.class.getResource("/resources/backBTN.png")));
-		backBTN.setContentAreaFilled(false);
-		backBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-		backBTN.setBounds(10, 302, 30, 23);
-		getContentPane().add(backBTN);
-		
-		// Fecha a janela de perfil e
-		// efetivamente retorna para a
-		// janela anterior
-		
-		backBTN.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				dispose();
-			}
-		});
-		
 		// Botão que permite ao usuário deletar
 		// o seu próprio perfil
 		// -- parent = this
@@ -514,8 +494,7 @@ public class ProfileWindow extends JInternalFrame {
 				try {
 					favoriteTeamLBL.setText("Time Favorito: " + dao.getFavoriteTeam(currentUser) + ".");
 				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					favoriteTeamLBL.setText("Time Favorito: Nulo.");
 				}
 				totalLosesLBL.setText("Total de Derrotas:");
 				totalWinsLBL.setText("Total de Vitórias: ");
@@ -546,6 +525,41 @@ public class ProfileWindow extends JInternalFrame {
 				mainPanel.add(statsBTN);
 			}
 		});
+		
+		// Botão que permite ao usuário voltar
+		// para a janela anterior
+		// -- parent = this
+		
+		JButton backBTN = new JButton("");
+		backBTN.setIcon(new ImageIcon(ProfileWindow.class.getResource("/resources/backBTN.png")));
+		backBTN.setContentAreaFilled(false);
+		backBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+		backBTN.setBounds(10, 302, 30, 23);
+		getContentPane().add(backBTN);
+		
+		// Fecha a janela de perfil e
+		// efetivamente retorna para a
+		// janela anterior
+		
+		backBTN.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(surroundStatsBTN.isVisible()) {
+					surroundStatsBTN.doClick();
+				}
+				dispose();
+			}
+		});
+		
+		addInternalFrameListener(new InternalFrameAdapter() {
+            @Override
+            public void internalFrameClosing(InternalFrameEvent e) {
+				if(surroundStatsBTN.isVisible()) {
+					surroundStatsBTN.doClick();
+				}
+            }
+        });
+		
 	}
 	
 	// Personaliza a janela de acordo com o usuário recebido 
@@ -555,7 +569,7 @@ public class ProfileWindow extends JInternalFrame {
 	public void turnOn(MainWindow mainWinndowPointer) {
 		this.currentUser = mainWinndowPointer.getCurrentUser();
 		this.mainWindow = mainWinndowPointer;
-		setTitle("bet-betina v1.21 - Perfil de " + currentUser.getName());
+		setTitle("Bet-Betina v1.23 - Perfil de " + currentUser.getName());
 		nameLBL.setText(currentUser.getName().concat(currentUser.getAccessLevel() == 0 ? " - Usuario Comum." : " - Admnistrador."));
 		balanceLBL.setText(("Saldo Atual: R$ " + currentUser.getBalance() + "."));
 		idLBL.setText("ID:" + currentUser.getID());

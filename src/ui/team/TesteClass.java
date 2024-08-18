@@ -28,6 +28,7 @@ import dao.TeamDaoPostgres;
 import dao.UserDaoPostgres;
 import model.Team;
 import model.User;
+import ui.user.MainWindow;
 
 public class TesteClass extends JInternalFrame {
 
@@ -36,9 +37,10 @@ public class TesteClass extends JInternalFrame {
     private TeamDaoPostgres teamdao = new TeamDaoPostgres();
     private UserDaoPostgres userDao = new UserDaoPostgres();
     private User currentUser;
+    private MainWindow mainWindow;
     private JTextField searchFLD;
-    private DefaultListModel<Team> listModel; // Mover para o escopo da classe para facilitar a atualização
-   // Mover para o escopo da classe para uso em busca
+    CustomListRenderer CustomListRenderer = new CustomListRenderer();
+    private DefaultListModel<Team> listModel; 
 
     public TesteClass() {
     	
@@ -55,10 +57,11 @@ public class TesteClass extends JInternalFrame {
 		updateTeams();
 
         JList<Team> list = new JList<>(listModel);
+        
         list.setOpaque(false);
-        list.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
+        list.setFont(new Font("Comic Sans MS", Font.BOLD, 16));
         list.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION); 
-        list.setCellRenderer(new CustomListRenderer());
+        list.setCellRenderer(CustomListRenderer);
 
         JScrollPane scrollPane = new JScrollPane(list);
         scrollPane.setBorder(new LineBorder(new Color(0, 0, 0), 2, true));
@@ -71,6 +74,7 @@ public class TesteClass extends JInternalFrame {
         dataPanel.setBackground(new Color(0, 128, 128));
         dataPanel.setBounds(0, 32, 157, 300);
         getContentPane().add(dataPanel);
+    
 
         JButton searchBTN = new JButton("Buscar");
         searchBTN.setBorder(new LineBorder(new Color(0, 0, 0)));
@@ -131,8 +135,20 @@ public class TesteClass extends JInternalFrame {
         DeleteTeamBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
         DeleteTeamBTN.setBounds(43, 266, 97, 23);
         dataPanel.add(DeleteTeamBTN);
+        DeleteTeamBTN.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		int escolha = JOptionPane.showConfirmDialog(TesteClass.this,
+        				"Deseja realmente excluir este time?", "Atenção", JOptionPane.YES_NO_CANCEL_OPTION);
+        		System.out.println("Sua escolha: " + escolha);
+        	}
+        });
         
         JButton backBTN = new JButton("");
+        backBTN.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		dispose();
+        	}
+        });
         backBTN.setIcon(new ImageIcon(TesteClass.class.getResource("/resources/backBTN.png")));
         backBTN.setContentAreaFilled(false);
         backBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
@@ -144,10 +160,12 @@ public class TesteClass extends JInternalFrame {
         	public void actionPerformed(ActionEvent e) {
         		try {
 					userDao.updateUserFavoriteTeam(currentUser, list.getSelectedValue());
+					setUser(userDao.findUserByEmail(currentUser.getEmail()));
+					mainWindow.updateUser(currentUser);
+					updateTeams();
 					JOptionPane.showMessageDialog(TesteClass.this, "Time favoritado com sucesso!");
 				} catch (SQLException e1) {
 					JOptionPane.showMessageDialog(TesteClass.this, "Erro ao favoritar time.");
-					e1.printStackTrace();
 				}
         	}
         });
@@ -173,6 +191,11 @@ public class TesteClass extends JInternalFrame {
         refreshBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 8));
         refreshBTN.setBounds(117, 11, 23, 23);
         dataPanel.add(refreshBTN);
+        
+        JLabel lblNewLabel_1 = new JLabel("");
+        lblNewLabel_1.setIcon(new ImageIcon(TesteClass.class.getResource("/resources/bolacha.png")));
+        lblNewLabel_1.setBounds(10, 76, 130, 77);
+        dataPanel.add(lblNewLabel_1);
         
         JPanel panel = new JPanel();
         panel.setBackground(new Color(0, 0, 0));
@@ -221,8 +244,14 @@ public class TesteClass extends JInternalFrame {
         }
     }
     
-    public void turnOn(User user) {
+    public void setUser(User user) {
     	currentUser = user;
+    	CustomListRenderer.setUser(user);
+    }
+    
+    public void setMainWindow(MainWindow mainWindow) {
+    	this.mainWindow = mainWindow;
+    	
     }
     
     public static void main(String[] args) {

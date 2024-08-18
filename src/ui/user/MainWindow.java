@@ -94,13 +94,8 @@ public class MainWindow {
 			}
 		});
 		
-		TesteClass testeTeste = new TesteClass();
-		testeTeste.setVisible(false);
-		testeTeste.setLocation(64, 36);
-		frame.getContentPane().add(testeTeste);
-
-		
 		// Todas as janelas secundárias 
+		
 		
 		ProfileWindow profileWindow = new ProfileWindow();
 		profileWindow.setLocation(64, 36);
@@ -110,6 +105,11 @@ public class MainWindow {
 		loginWindow.setLocation(259, 78);
 		frame.getContentPane().add(loginWindow);
 
+		TesteClass testeTeste = new TesteClass();
+		testeTeste.setVisible(false);
+		testeTeste.setLocation(64, 36);
+		frame.getContentPane().add(testeTeste);
+		
 		RegisterUserWindow registerUserWindow = new RegisterUserWindow(MainWindow.this);
 		registerUserWindow.setLocation(259, 78);
 		frame.getContentPane().add(registerUserWindow);
@@ -117,7 +117,8 @@ public class MainWindow {
 		RegisterAdminWindow registerAdminWindow = new RegisterAdminWindow(MainWindow.this);
 		registerAdminWindow.setLocation(259, 78);
 		frame.getContentPane().add(registerAdminWindow);
-		
+
+
 		// Botão de log in 
 		//-- parent = frame
 		
@@ -277,7 +278,7 @@ public class MainWindow {
 		logoLBL.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		logoLBL.setBounds(140, 67, 415, 313);
 		logoLBL.setBackground(new Color(102, 0, 0));
-		logoLBL.setIcon(new ImageIcon(MainWindow.class.getResource("/resources/logoTeste.png")));
+		logoLBL.setIcon(new ImageIcon(MainWindow.class.getResource("/resources/logoMain.png")));
 		frame.getContentPane().add(logoLBL);
 
 		// Painel onde ficam os botões 
@@ -375,7 +376,8 @@ public class MainWindow {
 		mainPNL.add(teamBTN);
 		teamBTN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				testeTeste.turnOn(currentUser);
+				testeTeste.setUser(currentUser);
+				testeTeste.setMainWindow(MainWindow.this);
 				testeTeste.setVisible(true);
 			}
 		});
@@ -420,7 +422,7 @@ public class MainWindow {
 		// "Título" do app 
 		// -- parent = titleBarPNL
 
-		JLabel titleLBL = new JLabel("Bet-Betina v1.21 - Home");
+		JLabel titleLBL = new JLabel("Bet-Betina v1.23 - Home");
 		titleLBL.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
 		titleLBL.setForeground(new Color(255, 255, 255));
 		titleLBL.setBounds(10, 4, 185, 16);

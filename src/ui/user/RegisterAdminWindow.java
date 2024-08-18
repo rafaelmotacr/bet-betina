@@ -1,6 +1,7 @@
 
 package ui.user;
 
+import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.sql.SQLException;
 
@@ -35,9 +36,9 @@ public class RegisterAdminWindow extends RegisterWindow {
 
 	public RegisterAdminWindow(MainWindow mainWindow) {
 		super();
+		this.backgroundLabel.setIcon(new ImageIcon(RegisterAdminWindow.class.getResource("/resources/registerADMBG.png")));
 		this.mainWindow = mainWindow;
-		this.backgroundLabel.setIcon(new ImageIcon(RegisterWindow.class.getResource("/resources/registerBG.png")));
-		this.setTitle("bet-betina v1.21 - Criar ADM");
+		this.setTitle("Bet-Betina v1.23 - Criar ADM");
 	}
 	
 	@Override
@@ -73,8 +74,8 @@ public class RegisterAdminWindow extends RegisterWindow {
 				JOptionPane.showMessageDialog(this, "Email já cadastrado no banco de dados!");
 				return;
 			}
-		} catch (SQLException e1) {
-			JOptionPane.showMessageDialog(this, "Algo deu errado ao consultar seu email em nossa base de dados.");
+		} catch (HeadlessException | SQLException e1) {
+			
 		}
 		encryptedPassword = InputManipulation.generateHashedPassword(password);
 		

@@ -49,7 +49,8 @@ public class UserDaoPostgres implements UserDao {
 						rs.getDouble("user_balance"),
 						rs.getString("user_name"), 
 						rs.getString("user_email"), 
-						rs.getString("user_password"));
+						rs.getString("user_password"),
+						rs.getInt("user_favorite_team_id"));
 		return user;	
 	}
 	@Override
