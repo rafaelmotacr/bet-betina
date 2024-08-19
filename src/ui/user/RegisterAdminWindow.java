@@ -86,7 +86,7 @@ public class RegisterAdminWindow extends RegisterWindow {
 		// Em caso de sucesso ou falha ao criar o usuário, fecha a janela
 		
 		try {
-			dao.insertUser(name, email, encryptedPassword, 0);
+			dao.insertUser(name, email, encryptedPassword, 1);
 			this.mainWindow.updateUser(dao.findUserByEmail(email));
 			JOptionPane.showMessageDialog(RegisterAdminWindow.this, "Administrador criado com sucesso.");
 		} catch (SQLException e1) {

@@ -40,6 +40,7 @@ public class MainWindow {
 	
 	private User currentUser;
 	
+	
 	// Estes componentes da tela são declarados aqui para
 	// se tornarem acessíveis aos métodos da classe
 	
@@ -474,6 +475,7 @@ public class MainWindow {
 			// Caso este usuário seja admnistrador
 			// adiciona o botão de criar novos admnistradores
 			
+
 			if (currentUser.getAccessLevel() == 1) {
 				createADMBTN.setVisible(true);
 			}
