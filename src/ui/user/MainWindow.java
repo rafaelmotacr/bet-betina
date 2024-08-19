@@ -18,7 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
 import model.User;
-import ui.team.TesteClass;
+import ui.team.TeamMainWindow;
 
 public class MainWindow {
 	
@@ -106,7 +106,7 @@ public class MainWindow {
 		loginWindow.setLocation(259, 78);
 		frame.getContentPane().add(loginWindow);
 
-		TesteClass testeTeste = new TesteClass();
+		TeamMainWindow testeTeste = new TeamMainWindow();
 		testeTeste.setVisible(false);
 		testeTeste.setLocation(64, 36);
 		frame.getContentPane().add(testeTeste);
@@ -264,7 +264,7 @@ public class MainWindow {
 		// Label de cumprimento ao usuário 
 		// -- parent = frame
 
-		greetingLBL = new JLabel("Seja Bem Vindo (a), visitante!");
+		greetingLBL = new JLabel("Seja Bem Vindo (a), Visitante!");
 		greetingLBL.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		greetingLBL.setBounds(140, 386, 415, 34);
 		greetingLBL.setForeground(new Color(255, 255, 255));
@@ -501,9 +501,9 @@ public class MainWindow {
 	
 	private void updateGreetingLabel() {
 		if (currentUser == null) {
-			greetingLBL.setText("Seja Bem Vindo (a), visitante!");
+			greetingLBL.setText("Seja Bem Vindo (a), Visitante!");
 		} else if (currentUser.getAccessLevel() == 1) {
-			greetingLBL.setText("Bem Vindo (a) de volta, administrador (a)!");
+			greetingLBL.setText("Bem Vindo (a) de volta, Administrador (a)!");
 		} else {
 			greetingLBL.setText("Bem Vindo (a) de volta, " + currentUser.getName() + "!");
 		}

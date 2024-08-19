@@ -14,14 +14,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
-import dao.TeamDaoPostgres;
+import dao.team.TeamDaoPostgres;
 import util.InputManipulation;
 
 public class CreateTeamWindow extends JInternalFrame {
 	
 	private static final long serialVersionUID = 1L;
 	TeamDaoPostgres dao = new TeamDaoPostgres ();
-	TesteClass testeClass;
+	TeamMainWindow testeClass;
 
 	CreateTeamWindow(){
 		
@@ -113,7 +113,7 @@ public class CreateTeamWindow extends JInternalFrame {
 		getContentPane().add(bgImageLBL);
 	}
 	
-	public void setTesteClass(TesteClass testeClass) {
+	public void setTesteClass(TeamMainWindow testeClass) {
 		this.testeClass = testeClass;
 	}
 }

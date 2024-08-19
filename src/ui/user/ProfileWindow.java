@@ -19,7 +19,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 
-import dao.UserDaoPostgres;
+import dao.user.UserDaoPostgres;
 import exceptions.PasswordsDontMatchException;
 import model.User;
 import util.InputManipulation;

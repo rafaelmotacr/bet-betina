@@ -16,7 +16,7 @@ import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 
-import dao.UserDaoPostgres;
+import dao.user.UserDaoPostgres;
 
 public class LoginWindow extends JInternalFrame {
 

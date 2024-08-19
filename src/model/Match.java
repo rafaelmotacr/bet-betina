@@ -2,29 +2,28 @@ package model;
 
 public class Match {
 	
-	private int ID;
+	private int id;
 	private int state;
-	private Double ODD;
+	private Double odd;
 	private int result;
-	private int homeTeamId;
-	private int awayTeamId;
+	private String homeTeamName;
+	private String awayTeamName;
 	
-	public Match(int iD, int state, Double oDD, int result, int homeTeamId, int awayTeamId) {
+	public Match(int id, int state, Double odd, String homeTeamName, String awayTeamName) {
 		super();
-		ID = iD;
+		this.id = id;
 		this.state = state;
-		ODD = oDD;
-		this.result = result;
-		this.homeTeamId = homeTeamId;
-		this.awayTeamId = awayTeamId;
+		this.odd = odd;
+		this.homeTeamName = homeTeamName;
+		this.awayTeamName = awayTeamName;
 	}
 
-	public int getID() {
-		return ID;
+	public int getId() {
+		return id;
 	}
 
-	public void setID(int iD) {
-		ID = iD;
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public int getState() {
@@ -35,12 +34,12 @@ public class Match {
 		this.state = state;
 	}
 
-	public Double getODD() {
-		return ODD;
+	public Double getOdd() {
+		return odd;
 	}
 
-	public void setODD(Double oDD) {
-		ODD = oDD;
+	public void setOdd(Double odd) {
+		this.odd = odd;
 	}
 
 	public int getResult() {
@@ -51,20 +50,25 @@ public class Match {
 		this.result = result;
 	}
 
-	public int getHomeTeamId() {
-		return homeTeamId;
+	public String getHomeTeamName() {
+		return homeTeamName;
 	}
 
-	public void setHomeTeamId(int homeTeamId) {
-		this.homeTeamId = homeTeamId;
+	public void setHomeTeamName(String homeTeamName) {
+		this.homeTeamName = homeTeamName;
 	}
 
-	public int getAwayTeamId() {
-		return awayTeamId;
+	public String getAwayTeamName() {
+		return awayTeamName;
 	}
 
-	public void setAwayTeamId(int awayTeamId) {
-		this.awayTeamId = awayTeamId;
+	public void setAwayTeamName(String awayTeamName) {
+		this.awayTeamName = awayTeamName;
 	}
-	
+
+	@Override
+	public String toString() {
+		return  "ODD:" + odd + " - " + homeTeamName + " x " + awayTeamName;
+	}
+
 }

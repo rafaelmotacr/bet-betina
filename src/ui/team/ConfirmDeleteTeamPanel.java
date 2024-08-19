@@ -14,7 +14,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
-import dao.TeamDaoPostgres;
+import dao.team.TeamDaoPostgres;
 import model.Team;
 
 public class ConfirmDeleteTeamPanel extends JInternalFrame {
@@ -22,7 +22,7 @@ public class ConfirmDeleteTeamPanel extends JInternalFrame {
 	private static final long serialVersionUID = 1L;
 	private Team team;
 	private TeamDaoPostgres dao = new TeamDaoPostgres();
-	private TesteClass testeClass;
+	private TeamMainWindow testeClass;
 	private JLabel confirmDeleteLBL;
 
 	ConfirmDeleteTeamPanel(){
@@ -65,7 +65,7 @@ public class ConfirmDeleteTeamPanel extends JInternalFrame {
         getContentPane().add(noBTN);
         
         JLabel lblNewLabel = new JLabel("");
-        lblNewLabel.setIcon(new ImageIcon(TesteClass.class.getResource("/resources/time.png")));
+        lblNewLabel.setIcon(new ImageIcon(TeamMainWindow.class.getResource("/resources/time.png")));
         lblNewLabel.setBounds(45, 0, 50, 46);
         getContentPane().add(lblNewLabel);
         
@@ -86,7 +86,7 @@ public class ConfirmDeleteTeamPanel extends JInternalFrame {
 		this.team = team;
 	}
 	
-	public void setTesteClass(TesteClass testeClass) {
+	public void setTesteClass(TeamMainWindow testeClass) {
 		this.testeClass = testeClass;
 	}
 	

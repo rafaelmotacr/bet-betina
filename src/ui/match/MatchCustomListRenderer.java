@@ -1,29 +1,26 @@
-package ui.team;
+package ui.match;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
-import java.awt.Graphics;
 
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import javax.swing.border.LineBorder;
 
-import model.Team;
-import model.User;
+import model.Match;
 
-class CustomListRenderer extends JLabel implements ListCellRenderer<Team> {
+class CustomListRenderer extends JLabel implements ListCellRenderer<Match> {
 
 	private static final long serialVersionUID = 1L;
-	private User user;
 
 		public CustomListRenderer() {
             setOpaque(true);
-        }
+		}
 
-        @Override
-        public Component getListCellRendererComponent(JList<? extends Team> list, Team value, int index, boolean isSelected, boolean cellHasFocus) {
+		@Override
+		public Component getListCellRendererComponent(JList<? extends Match> list, Match value, int index,
+				boolean isSelected, boolean cellHasFocus) {
         	String text;
         	index ++;
         	if(index < 10) {
@@ -32,9 +29,7 @@ class CustomListRenderer extends JLabel implements ListCellRenderer<Team> {
         	}else {
         		text = String.valueOf(index) + " - " + value; 
         	}
-        	if((user != null) && (value.getID() == user.getFavoriteTeam())) {
-        		text = text.concat(" | (Seu time favorito)");
-        	}
+        	
         	setText(text);
             setFont(new Font("Comic Sans MS", Font.BOLD, 14));
             if (isSelected) {
@@ -49,20 +44,6 @@ class CustomListRenderer extends JLabel implements ListCellRenderer<Team> {
             setBorder(LineBorder.createGrayLineBorder());
 
             return this;
-        }
-
-        @Override
-        protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
-
-            // Desenhe a linha inferior
-            g.setColor(Color.GRAY); // Cor da linha
-            int y = getHeight() - 1;
-            g.drawLine(0, y, getWidth(), y);
-        }
-        
-        public void setUser(User user) {
-        	this.user = user;
-        }
-        
+		}
+		
     }

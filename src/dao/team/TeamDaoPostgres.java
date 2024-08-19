@@ -1,54 +1,14 @@
-package dao;
+package dao.team;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import dao.connection.ConexaoBdSingleton;
 import model.Team;
 
 public class TeamDaoPostgres implements TeamDao {
-	
-	@Override
-	public Team findTeamByName(String nome) throws SQLException {
-		
-		Team team = null;
-		
-		PreparedStatement ps = ConexaoBdSingleton
-				.getInstance()
-				.getConexao().prepareStatement("SELECT * FROM team_tb WHERE team_name LIKE ?");
-				
-		ps.setString(1, "%" + nome + "%");
-		
-		ResultSet rs = ps.executeQuery();
-		rs.next();
-		
-		team = new Team(rs.getInt("team_id"),
-						rs.getString("team_name"), 
-						rs.getString("team_abbreviation"));
-		return team;
-	}
-	
-	@Override
-	public Team findTeamByAbbreviation(String abbreviation) throws SQLException {
-		
-		Team team = null;
-		PreparedStatement ps = ConexaoBdSingleton
-				.getInstance()
-				.getConexao().prepareStatement("SELECT * FROM team_tb WHERE team_abbreviation = ?");
-				
-		ps.setString(1, abbreviation);
-		
-		ResultSet rs = ps.executeQuery();
-		rs.next();
-		
-		team = new Team(rs.getInt("team_id"),
-						rs.getString("team_name"), 
-						rs.getString("team_abbreviation"));
-		return team;
-	}
-	
-	
 	@Override
 	public void insertTeam(String name, String abbreviation) throws SQLException {
 		
@@ -146,6 +106,4 @@ public class TeamDaoPostgres implements TeamDao {
 		}
 		return teamsList;
 	}
-
-
 }

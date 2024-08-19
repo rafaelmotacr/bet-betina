@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
-import dao.UserDaoPostgres;
+import dao.user.UserDaoPostgres;
 import model.User;
 
 public class ConfirmDeleteUserPanel extends JInternalFrame {

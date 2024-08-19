@@ -1,9 +1,10 @@
-package dao;
+package dao.user;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import dao.connection.ConexaoBdSingleton;
 import model.Team;
 import model.User;
 import util.BCrypt;

@@ -14,7 +14,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
-import dao.TeamDaoPostgres;
+import dao.team.TeamDaoPostgres;
 import model.Team;
 import util.InputManipulation;
 
@@ -22,7 +22,7 @@ public class UpdateTeamWindow extends JInternalFrame {
 	
 	private static final long serialVersionUID = 1L;
 	private TeamDaoPostgres dao = new TeamDaoPostgres ();
-	private TesteClass testeClass;
+	private TeamMainWindow testeClass;
 	private Team team;
 	private JTextField teamNameFLD = new JTextField();
 	private JTextField teamAbbreviationFLD = new JTextField();
@@ -127,7 +127,7 @@ public class UpdateTeamWindow extends JInternalFrame {
 		getContentPane().add(bgImageLBL);
 	}
 	
-	public void setTesteClass(TesteClass testeClass) {
+	public void setTesteClass(TeamMainWindow testeClass) {
 		this.testeClass = testeClass;
 	}
 	

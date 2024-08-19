@@ -20,7 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import dao.TeamDaoPostgres;
+import dao.team.TeamDaoPostgres;
 import model.Team;
 
 public class TeamFullView {

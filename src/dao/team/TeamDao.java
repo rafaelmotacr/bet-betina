@@ -1,4 +1,4 @@
-package dao;
+package dao.team;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import model.Team;
 
 public interface TeamDao {
-	public Team findTeamByName(String nome) throws SQLException;
-	public Team findTeamByAbbreviation(String abbreviation) throws SQLException;
 	public void insertTeam(String name, String abbreviation) throws SQLException;
 	public void deleteTeam(Team team) throws SQLException;
 	public void updateTeamName(Team team, String name) throws SQLException;

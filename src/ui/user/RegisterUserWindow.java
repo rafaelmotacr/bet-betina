@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
-import dao.UserDaoPostgres;
+import dao.user.UserDaoPostgres;
 import exceptions.PasswordsDontMatchException;
 import util.InputManipulation;
 
@@ -85,7 +85,7 @@ public class RegisterUserWindow extends RegisterWindow {
 		// tenta criar um novo usuário comum no banco de dados, 
 		// através do DAO. Caso contrário, nem sequer chega a este ponto.
 		// Se houver erro ao criar o usuário, avisa ao cliente.
-		// Em caso de sucesso ou falha ao criar o usuário, fecha a janela
+		// Em caso de sucesso ou falha , fecha a janela
 		
 		try {
 			dao.insertUser(name, email, encryptedPassword, 0);
