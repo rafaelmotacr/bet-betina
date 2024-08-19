@@ -39,7 +39,11 @@ public class TesteClass extends JInternalFrame {
     private User currentUser;
     private MainWindow mainWindow;
     private JTextField searchFLD;
-    CustomListRenderer CustomListRenderer = new CustomListRenderer();
+    private JButton createTeamBTN;
+    private JButton updateTeamBTN;
+    private JButton DeleteTeamBTN;
+    private JButton bookmarkTeamBTN;
+    private CustomListRenderer CustomListRenderer = new CustomListRenderer();
     private DefaultListModel<Team> listModel; 
 
     public TesteClass() {
@@ -48,10 +52,24 @@ public class TesteClass extends JInternalFrame {
         
         setTitle("Bet-Betina v1.23 - Menu de Times ");
         setClosable(true);
-
         setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
         setBounds(0, 0, 640, 360);
         getContentPane().setLayout(null);
+
+		UpdateTeamWindow updateTeamWindow = new UpdateTeamWindow();
+		updateTeamWindow.setBounds(159, 62, 320, 208);
+		getContentPane().add(updateTeamWindow);
+		updateTeamWindow.setVisible(false);
+        
+		CreateTeamWindow createTeamWindow = new CreateTeamWindow();
+		createTeamWindow.setBounds(159, 62, 320, 208);
+		getContentPane().add(createTeamWindow);
+		createTeamWindow.setVisible(false);
+		
+		ConfirmDeleteTeamPanel confirmDeleteTeamPanel = new ConfirmDeleteTeamPanel();
+		confirmDeleteTeamPanel.setBounds(0, 32, 157, 254);
+		getContentPane().add(confirmDeleteTeamPanel);
+		confirmDeleteTeamPanel.setVisible(false);
 
         listModel = new DefaultListModel<>();
 		updateTeams();
@@ -74,16 +92,14 @@ public class TesteClass extends JInternalFrame {
         dataPanel.setBackground(new Color(0, 128, 128));
         dataPanel.setBounds(0, 32, 157, 300);
         getContentPane().add(dataPanel);
-    
 
         JButton searchBTN = new JButton("Buscar");
-        searchBTN.setBorder(new LineBorder(new Color(0, 0, 0)));
+        searchBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
         searchBTN.setForeground(new Color(255, 255, 255));
         searchBTN.setContentAreaFilled(false);
         searchBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
         searchBTN.setBounds(10, 42, 130, 23);
         dataPanel.add(searchBTN);
-
         searchBTN.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -95,9 +111,9 @@ public class TesteClass extends JInternalFrame {
                 updateTeams(searchText);
             }
         });
-
         
         searchFLD = new JTextField();
+        searchFLD.setBorder(new LineBorder(new Color(0, 0, 0)));
         searchFLD.addMouseListener(new MouseAdapter() {
         	public void mouseClicked(MouseEvent e) {
         		searchFLD.setText(null);
@@ -112,23 +128,44 @@ public class TesteClass extends JInternalFrame {
         dataPanel.add(searchFLD);
         searchFLD.setColumns(10);
         
-        JButton createTeamBTN = new JButton("Criar ");
+        createTeamBTN = new JButton("Criar ");
+        createTeamBTN.setVisible(false);
         createTeamBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
         createTeamBTN.setForeground(new Color(255, 255, 255));
         createTeamBTN.setContentAreaFilled(false);
         createTeamBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
         createTeamBTN.setBounds(10, 164, 130, 23);
         dataPanel.add(createTeamBTN);
+        createTeamBTN.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		createTeamWindow.setVisible(true);
+        		createTeamWindow.setTesteClass(TesteClass.this);
+        	}
+        });
         
-        JButton updateTeamBTN = new JButton("Atualizar");
+        updateTeamBTN = new JButton("Atualizar");
+        updateTeamBTN.setVisible(false);
         updateTeamBTN.setForeground(Color.WHITE);
         updateTeamBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
         updateTeamBTN.setContentAreaFilled(false);
         updateTeamBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
         updateTeamBTN.setBounds(10, 198, 130, 23);
         dataPanel.add(updateTeamBTN);
+        updateTeamBTN.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		if(list.getSelectedValue() == null) {
+        			JOptionPane.showMessageDialog(TesteClass.this, "Selecione um time primeiro.");
+        			return;
+        		}
+        		updateTeamWindow.setVisible(true);
+        		updateTeamWindow.setTesteClass(TesteClass.this);
+        		updateTeamWindow.setTeam(list.getSelectedValue());
+        		updateTeamWindow.turnOn();
+        	}
+        });
         
-        JButton DeleteTeamBTN = new JButton("Deletar");
+        DeleteTeamBTN = new JButton("Deletar");
+        DeleteTeamBTN.setVisible(false);
         DeleteTeamBTN.setForeground(Color.WHITE);
         DeleteTeamBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
         DeleteTeamBTN.setContentAreaFilled(false);
@@ -137,9 +174,14 @@ public class TesteClass extends JInternalFrame {
         dataPanel.add(DeleteTeamBTN);
         DeleteTeamBTN.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		int escolha = JOptionPane.showConfirmDialog(TesteClass.this,
-        				"Deseja realmente excluir este time?", "Atenção", JOptionPane.YES_NO_CANCEL_OPTION);
-        		System.out.println("Sua escolha: " + escolha);
+        		if(list.getSelectedValue() == null) {
+        			JOptionPane.showMessageDialog(TesteClass.this, "Selecione um time primeiro.");
+        			return;
+        		}
+        		confirmDeleteTeamPanel.setVisible(true);
+        		confirmDeleteTeamPanel.setTeam(list.getSelectedValue());
+        		confirmDeleteTeamPanel.setTesteClass(TesteClass.this);
+        		confirmDeleteTeamPanel.turnOn();
         	}
         });
         
@@ -155,7 +197,14 @@ public class TesteClass extends JInternalFrame {
         backBTN.setBounds(10, 266, 30, 23);
         dataPanel.add(backBTN);
         
-        JButton bookmarkTeamBTN = new JButton("Favoritar");
+        bookmarkTeamBTN = new JButton("Favoritar");
+        bookmarkTeamBTN.setVisible(false);
+        bookmarkTeamBTN.setForeground(Color.WHITE);
+        bookmarkTeamBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
+        bookmarkTeamBTN.setContentAreaFilled(false);
+        bookmarkTeamBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+        bookmarkTeamBTN.setBounds(10, 232, 130, 23);
+        dataPanel.add(bookmarkTeamBTN);
         bookmarkTeamBTN.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		try {
@@ -169,12 +218,6 @@ public class TesteClass extends JInternalFrame {
 				}
         	}
         });
-        bookmarkTeamBTN.setForeground(Color.WHITE);
-        bookmarkTeamBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
-        bookmarkTeamBTN.setContentAreaFilled(false);
-        bookmarkTeamBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-        bookmarkTeamBTN.setBounds(10, 232, 130, 23);
-        dataPanel.add(bookmarkTeamBTN);
         
         JButton refreshBTN = new JButton("");
         refreshBTN.addActionListener(new ActionListener() {
@@ -218,7 +261,7 @@ public class TesteClass extends JInternalFrame {
         setVisible(true);
     }
     
-    private void updateTeams(){
+    public void updateTeams(){
     	ArrayList<Team> teams = null;
 		try {
 			teams = teamdao.getAllTeams();
@@ -231,7 +274,7 @@ public class TesteClass extends JInternalFrame {
         }
     }
     
-    private void updateTeams(String filter) {
+    public void updateTeams(String filter) {
     	ArrayList<Team> teams = null;
 		try {
 			teams = teamdao.getAllTeams(filter);
@@ -252,6 +295,22 @@ public class TesteClass extends JInternalFrame {
     public void setMainWindow(MainWindow mainWindow) {
     	this.mainWindow = mainWindow;
     	
+    }
+    
+    public void turnOn() {
+    	if(currentUser == null) {
+    		createTeamBTN.setVisible(false);
+    		updateTeamBTN.setVisible(false);
+    	    DeleteTeamBTN.setVisible(false);
+    	    bookmarkTeamBTN.setVisible(false);
+    		return;
+    	}
+    	if(currentUser.getAccessLevel() == 1) {
+    		createTeamBTN.setVisible(true);
+    		updateTeamBTN.setVisible(true);
+    	    DeleteTeamBTN.setVisible(true);
+    	}
+    	bookmarkTeamBTN.setVisible(true);
     }
     
     public static void main(String[] args) {

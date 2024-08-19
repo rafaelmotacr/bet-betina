@@ -30,15 +30,14 @@ public class TeamDaoPostgres implements TeamDao {
 	}
 	
 	@Override
-	public Team findTeamByAbbreviation(String abreviacao) throws SQLException {
+	public Team findTeamByAbbreviation(String abbreviation) throws SQLException {
 		
 		Team team = null;
-		
 		PreparedStatement ps = ConexaoBdSingleton
 				.getInstance()
 				.getConexao().prepareStatement("SELECT * FROM team_tb WHERE team_abbreviation = ?");
 				
-		ps.setString(1, abreviacao);
+		ps.setString(1, abbreviation);
 		
 		ResultSet rs = ps.executeQuery();
 		rs.next();
@@ -53,9 +52,10 @@ public class TeamDaoPostgres implements TeamDao {
 	@Override
 	public void insertTeam(String name, String abbreviation) throws SQLException {
 		
+		abbreviation = abbreviation.toUpperCase();
 		PreparedStatement ps = ConexaoBdSingleton
 				.getInstance()
-				.getConexao().prepareStatement("INSERT INTO team_tb (team_name, abbreviation) VALUES (?, ?)");
+				.getConexao().prepareStatement("INSERT INTO team_tb (team_name, team_abbreviation) VALUES (?, ?)");
 				ps.setString(1, name);
 				ps.setString(2, abbreviation);
 				ps.executeUpdate();
@@ -75,25 +75,32 @@ public class TeamDaoPostgres implements TeamDao {
 			}
 	}
 	
-	
 	@Override
-	public void updateTeamName(Team team, String newName, String newAbbreviation) throws SQLException {
+	public void updateAbbreviation(Team team, String abbreviation) throws SQLException {
+		abbreviation = abbreviation.toUpperCase();
 		try {
 			PreparedStatement ps = ConexaoBdSingleton
 					.getInstance()
-					.getConexao().prepareStatement("UPDATE team_tb SET team_name = ?, "
-												  + "team_abbreviation = ? "
-												  + "WHERE team_id = ?");
-					ps.setString(1, newName);
-					ps.setString(2, newAbbreviation);
-					ps.setInt(3, team.getID());
-					
+					.getConexao().prepareStatement("UPDATE team_tb SET team_abbreviation = ? WHERE team_id = ?");
+					ps.setString(1, abbreviation);
+					ps.setInt(2, team.getID());
 					ps.executeUpdate();
 			}catch (SQLException e) {
 				e.printStackTrace();
-			}finally{
-				team.setName(newName);
-				team.setAbbreviation(newAbbreviation);
+			}
+		
+	}
+	@Override
+	public void updateTeamName(Team team, String name) throws SQLException {
+		try {
+			PreparedStatement ps = ConexaoBdSingleton
+					.getInstance()
+					.getConexao().prepareStatement("UPDATE team_tb SET team_name = ? WHERE team_id = ?");
+					ps.setString(1, name);
+					ps.setInt(2, team.getID());
+					ps.executeUpdate();
+			}catch (SQLException e) {
+				e.printStackTrace();
 			}
 	}
 
@@ -139,4 +146,6 @@ public class TeamDaoPostgres implements TeamDao {
 		}
 		return teamsList;
 	}
+
+
 }

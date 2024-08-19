@@ -2,6 +2,7 @@ package ui.user;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -301,6 +302,7 @@ public class ProfileWindow extends JInternalFrame {
 				String name = nameFLD.getText();
 				String password = null;
 				String encriptedPassword = null;
+				boolean userChanged = false;
 				if (nameFLD.isEnabled() && emailFLD.isEnabled()) {
 
 					// Se o nome digitado no campo de alterar nome for
@@ -308,12 +310,16 @@ public class ProfileWindow extends JInternalFrame {
 					// tenta atualizar o nome no banco de dados
 
 					if (!name.equals(currentUser.getName())) {
+						if (!InputManipulation.isValidName(name)) {
+							JOptionPane.showMessageDialog(ProfileWindow.this, "O nome precisa ter ao menos 4 letras.");
+							return;
+						}
 						try {
 							dao.updateUserName(currentUser, name);
-							currentUser.setName(name);
-							ProfileWindow.this.setTitle("Bet-Betina v1.21 - Perfil de " + currentUser.getName());
-							nameLBL.setText(currentUser.getName().concat(currentUser.getAccessLevel() == 0 ? " - Usuario Comum." : " - Admnistrador."));
+							ProfileWindow.this.setTitle("Bet-Betina v1.21 - Perfil de " + name);
+							nameLBL.setText(name.concat(currentUser.getAccessLevel() == 0 ? " - Usuario Comum." : " - Admnistrador."));
 							JOptionPane.showMessageDialog(ProfileWindow.this, "Nome atualizado com sucesso.");
+							userChanged = true;
 						} catch (SQLException e1) {
 							JOptionPane.showMessageDialog(ProfileWindow.this, "Erro ao atualizar nome.");
 						}
@@ -324,10 +330,30 @@ public class ProfileWindow extends JInternalFrame {
 					// tenta atualizar o email no banco de dados
 
 					if (!email.equals(currentUser.getEmail())) {
+						
+						if (!InputManipulation.isMinLengthEmail(email)) {
+							JOptionPane.showMessageDialog(ProfileWindow.this, "Email muito curto.");
+							return;
+						}
+						if (!InputManipulation.isValidEmail(email)) {
+							JOptionPane.showMessageDialog(ProfileWindow.this, "Insira um e-mail válido.");
+							return;
+						}
+						try {
+							if (dao.findUserByEmail(email) != null) {
+								JOptionPane.showMessageDialog(ProfileWindow.this, "Email já cadastrado no banco de dados!");
+								return;
+							}
+						} catch (HeadlessException | SQLException e1) {
+							
+						}
+						
+						// Tenta atualizar o email
+						
 						try {
 							dao.updateUserName(currentUser, email);
-							currentUser.setEmail(email);
 							JOptionPane.showMessageDialog(ProfileWindow.this, "Email atualizado com sucesso.");
+							userChanged = true;
 						} catch (SQLException e1) {
 							JOptionPane.showMessageDialog(ProfileWindow.this, "Erro ao atualizar email.");
 						}
@@ -362,6 +388,14 @@ public class ProfileWindow extends JInternalFrame {
 					} catch (SQLException e1) {
 						JOptionPane.showMessageDialog(ProfileWindow.this,"Não foi possível atualizar sua senha.");
 					}
+				}
+				if(userChanged) {
+					try {
+						currentUser = dao.findUserByEmail(currentUser.getEmail());
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}				
 				}
 				changePasswordFLD.setEnabled(false);
 				confirmPasswordFLD.setEnabled(false);

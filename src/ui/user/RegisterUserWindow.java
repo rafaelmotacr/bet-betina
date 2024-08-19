@@ -55,7 +55,7 @@ public class RegisterUserWindow extends RegisterWindow {
 			return;
 		}
 		if (!InputManipulation.isMinLengthPassword(password)) {
-			JOptionPane.showMessageDialog(this, "Senha muito curta. Use ao menos 8 digitos.");
+			JOptionPane.showMessageDialog(this, "Senha muito curta. Use ao menos " + InputManipulation.minPasswordLength + " digitos.");
 			return;
 		}
 		if (!InputManipulation.isMinLengthEmail(email)) {
@@ -67,7 +67,7 @@ public class RegisterUserWindow extends RegisterWindow {
 			return;
 		}
 		if (!InputManipulation.isValidName(name)) {
-			JOptionPane.showMessageDialog(this, "O nome precisa ter ao menos 4 letras.");
+			JOptionPane.showMessageDialog(this, "O nome precisa ter ao menos " +  InputManipulation.minNameLength +" letras.");
 			return;
 		}
 		try {

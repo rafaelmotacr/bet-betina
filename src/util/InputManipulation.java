@@ -6,9 +6,12 @@ import exceptions.PasswordsDontMatchException;
 
 public class InputManipulation {
 	
-	private static final int minPasswordLength = 8;
-	private static final int minNameLength = 4;
-	private static final int minEmailLenght = 10;
+	public static final int minPasswordLength = 8;
+	public static final int minNameLength = 4;
+	public static final int minEmailLenght = 10;
+	public static final int minTeamNameLength = 8;
+	public static final int minTeamAbbreviationLength = 2;
+	public static final int maxTeamAbbreviationLentgth = 5;
 	private static final String regex = "^[a-zA0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
 	
 	public static boolean isMinLengthPassword(String password) {
@@ -16,9 +19,6 @@ public class InputManipulation {
 	}
 	
 	public static boolean isMinLengthEmail(String email) {
-		if(email.equals("")) {
-			return false;
-		}
 		return email.length() >= minEmailLenght;
 	}
 	
@@ -45,7 +45,16 @@ public class InputManipulation {
 		return BCrypt.checkpw(originalPassword, hashedPassword);
 	}
 	
-
+	public static boolean isMinTeamNameLength(String teamName) {
+		return teamName.length() >= minTeamNameLength;
+	}
 	
+	public static boolean isMinTeamAbbreviationLength(String teamAbbreviation) {
+		return teamAbbreviation.length() >= minTeamAbbreviationLength;
+	}	
+	
+	public static boolean isMaxTeamAbbreviationLength(String teamAbbreviation) {
+		return teamAbbreviation.length() >= maxTeamAbbreviationLentgth;
+	}	
 	
 }

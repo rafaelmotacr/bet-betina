@@ -138,8 +138,6 @@ public class UserDaoPostgres implements UserDao {
 				ps.executeUpdate();
 		}catch (SQLException e) {
 			e.printStackTrace();
-		}finally{
-			user.setName(newUserName);
 		}
 	}
 	@Override

@@ -22,6 +22,8 @@ public class ConfirmDeleteTeamPanel extends JInternalFrame {
 	private static final long serialVersionUID = 1L;
 	private Team team;
 	private TeamDaoPostgres dao = new TeamDaoPostgres();
+	private TesteClass testeClass;
+	private JLabel confirmDeleteLBL;
 
 	ConfirmDeleteTeamPanel(){
 		
@@ -36,6 +38,7 @@ public class ConfirmDeleteTeamPanel extends JInternalFrame {
         		try {
 					dao.deleteTeam(team);
 					JOptionPane.showMessageDialog(ConfirmDeleteTeamPanel.this, "Time deletado com sucesso.");
+					testeClass.updateTeams();
 					dispose();
 				} catch (SQLException e1) {
 					JOptionPane.showMessageDialog(ConfirmDeleteTeamPanel.this, "Não foi possível deletar o time.");
@@ -50,6 +53,11 @@ public class ConfirmDeleteTeamPanel extends JInternalFrame {
         getContentPane().add(yesBTN);
         
         JButton noBTN = new JButton("Não");
+        noBTN.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		dispose();
+        	}
+        });
         noBTN.setOpaque(false);
         noBTN.setContentAreaFilled(false);
         noBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
@@ -61,13 +69,10 @@ public class ConfirmDeleteTeamPanel extends JInternalFrame {
         lblNewLabel.setBounds(45, 0, 50, 46);
         getContentPane().add(lblNewLabel);
         
-        JLabel confirmDeleteLBL = new JLabel("");
+        confirmDeleteLBL = new JLabel("");
         confirmDeleteLBL.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
-        confirmDeleteLBL.setBounds(10, 67, 121, 113);
+        confirmDeleteLBL.setBounds(10, 57, 121, 123);
         getContentPane().add(confirmDeleteLBL);
-        confirmDeleteLBL.setText("<html>Deseja realmente apagar para \r\n<br> sempre o time " +
-			 team.getName()+ "<strong> "
-			 +  "</strong>?\r\n<br>(Para sempre é um tempão!)</html>");
         
         JPanel blackLine = new JPanel();
         blackLine.setForeground(Color.BLACK);
@@ -77,8 +82,19 @@ public class ConfirmDeleteTeamPanel extends JInternalFrame {
         setVisible(true);
 	}
 	
-	private void setTeam(Team team){
+	public void setTeam(Team team){
 		this.team = team;
+	}
+	
+	public void setTesteClass(TesteClass testeClass) {
+		this.testeClass = testeClass;
+	}
+	
+	public void turnOn() {
+        confirmDeleteLBL.setText("<html>Deseja realmente apagar para \r\n<br> sempre o time "
+        		+ "<strong> " + team.getName()
+        		+  "</strong>?\r\n<br>(Para sempre é um tempão!)</html>");
+		
 	}
 
 }

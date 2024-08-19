@@ -378,6 +378,7 @@ public class MainWindow {
 			public void actionPerformed(ActionEvent e) {
 				testeTeste.setUser(currentUser);
 				testeTeste.setMainWindow(MainWindow.this);
+				testeTeste.turnOn();
 				testeTeste.setVisible(true);
 			}
 		});

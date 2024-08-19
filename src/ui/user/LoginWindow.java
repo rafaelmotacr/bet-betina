@@ -27,7 +27,8 @@ public class LoginWindow extends JInternalFrame {
 	// Conexão com o banco de dados
 	
 	private UserDaoPostgres dao = new UserDaoPostgres();
-
+	@SuppressWarnings("unused")
+	private MainWindow mainWindow;
 	// Recebe um ponteiro/referência para a janela principal como parâmetro.
 	// Isso permite que a LoginWiwndow atualize o usuário atual da aplicação
 	
@@ -56,9 +57,11 @@ public class LoginWindow extends JInternalFrame {
 		backBTN.setContentAreaFilled(false);
 		backBTN.setIcon(new ImageIcon(LoginWindow.class.getResource("/resources/backBTN.png")));
 		getContentPane().add(backBTN);
-		backBTN.addActionListener(e -> {
-			dispose();
-
+		backBTN.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+			}
 		});
 		
 		// Campo para que o usuário digite sua senha 
