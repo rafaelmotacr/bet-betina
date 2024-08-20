@@ -77,8 +77,6 @@ public class TeamMainWindow extends JInternalFrame {
 		
 //      Lista de times
         listModel = new DefaultListModel<>();
-//        não entendi esse updateTeams
-		updateTeams();
 		
         JList<Team> list = new JList<>(listModel);
         
@@ -252,7 +250,7 @@ public class TeamMainWindow extends JInternalFrame {
         });
         
         JLabel teamImgLBL = new JLabel("");
-        teamImgLBL.setBounds(37, 76, 84, 77);
+        teamImgLBL.setBounds(13, 76, 130, 77);
         teamImgLBL.setIcon(new ImageIcon(TeamMainWindow.class.getResource("/resources/bolacha.png")));
         dataPanel.add(teamImgLBL);
         
@@ -273,7 +271,7 @@ public class TeamMainWindow extends JInternalFrame {
         panel.add(lblTimesCorrespondentes);
         lblTimesCorrespondentes.setForeground(new Color(255, 255, 255));
         lblTimesCorrespondentes.setFont(new Font("Comic Sans MS", Font.PLAIN, 20));
-
+        updateTeams();
         setVisible(true);
     }
     

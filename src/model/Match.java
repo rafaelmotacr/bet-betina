@@ -87,4 +87,11 @@ public class Match {
 		this.awayTeamName = awayTeamName;
 	}
 
+	@Override
+	public String toString() {
+		return homeTeamName + " X " + awayTeamName;
+	}
+	
+	
+
 }

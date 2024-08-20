@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
+import dao.match.MatchDaoPostgres;
 import dao.team.TeamDaoPostgres;
 import model.Team;
 
@@ -21,7 +22,8 @@ public class ConfirmDeleteTeamPanel extends JInternalFrame {
 	
 	private static final long serialVersionUID = 1L;
 	private Team team;
-	private TeamDaoPostgres dao = new TeamDaoPostgres();
+	private TeamDaoPostgres teamDao = new TeamDaoPostgres();
+	private MatchDaoPostgres matchDao = new MatchDaoPostgres();
 	private TeamMainWindow teamMainWindow;
 	private JLabel confirmDeleteLBL;
 
@@ -37,12 +39,30 @@ public class ConfirmDeleteTeamPanel extends JInternalFrame {
         JButton yesBTN = new JButton("Sim");
         yesBTN.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
+        		int teamMatches = 0;
+        		try {
+					teamMatches = matchDao.findTeamMatches(team).size();
+				} catch (SQLException e1) {
+					dispose();
+					System.out.println("here");
+					e1.printStackTrace();
+				}
+        		if(teamMatches > 0 ) {
+        			JOptionPane.showMessageDialog(ConfirmDeleteTeamPanel.this.getParent(),
+        					"Não é possivel deletar o time " + team.getName() +
+        					" pois ele está registrado em " +
+        					teamMatches +
+        					" partida (s)!");
+        			dispose();
+        			return;
+        		}
+
         		try {
 //        			Apaga o time
-					dao.deleteTeam(team); 
+        			teamDao.deleteTeam(team); 
 //        			Procura todos os usuários que possuem como time favorito
 //        			o time que vai ser excluído e altera para nulo, possibilitando a exclusão
-					dao.fixUsersFavoriteTeamAfterDelete(team);
+        			teamDao.fixUsersFavoriteTeamAfterDelete(team);
 					JOptionPane.showMessageDialog(ConfirmDeleteTeamPanel.this, "Time deletado com sucesso.");
 					teamMainWindow.updateTeams();
 					dispose();
