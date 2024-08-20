@@ -528,7 +528,7 @@ public class ProfileWindow extends JInternalFrame {
 				try {
 					favoriteTeamLBL.setText("Time Favorito: " + dao.getFavoriteTeam(currentUser) + ".");
 				} catch (SQLException e1) {
-					favoriteTeamLBL.setText("Time Favorito: Nulo.");
+					favoriteTeamLBL.setText("Time Favorito: Nenhum.");
 				}
 				totalLosesLBL.setText("Total de Derrotas:");
 				totalWinsLBL.setText("Total de Vitórias: ");

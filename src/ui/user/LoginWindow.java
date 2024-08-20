@@ -136,6 +136,7 @@ public class LoginWindow extends JInternalFrame {
 					// Caso ocorra algum erro no banco de dados
 					// avisa ao usuário
 					JOptionPane.showMessageDialog(LoginWindow.this, "Algo deu errado ao fazer login");
+					e1.printStackTrace();
 				}finally {
 					// limpa os campos de email e senha 
 					// para caso a janela seja aberta novamente.

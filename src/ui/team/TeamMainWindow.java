@@ -50,69 +50,86 @@ public class TeamMainWindow extends JInternalFrame {
     	
         super();
         
+//      Título da janela
         setTitle("Bet-Betina v1.23 - Menu de Times ");
         setClosable(true);
         setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
         setBounds(0, 0, 640, 360);
         getContentPane().setLayout(null);
 
+//		Criação de painel de update de time
 		UpdateTeamWindow updateTeamWindow = new UpdateTeamWindow();
 		updateTeamWindow.setBounds(159, 62, 320, 208);
 		getContentPane().add(updateTeamWindow);
 		updateTeamWindow.setVisible(false);
-        
+		
+//		Criação de painel de time
 		CreateTeamWindow createTeamWindow = new CreateTeamWindow();
 		createTeamWindow.setBounds(159, 62, 320, 208);
 		getContentPane().add(createTeamWindow);
 		createTeamWindow.setVisible(false);
 		
+//		Painel de confirmação de exclusão
 		ConfirmDeleteTeamPanel confirmDeleteTeamPanel = new ConfirmDeleteTeamPanel();
 		confirmDeleteTeamPanel.setBounds(0, 32, 157, 254);
 		getContentPane().add(confirmDeleteTeamPanel);
 		confirmDeleteTeamPanel.setVisible(false);
-
+		
+//      Lista de times
         listModel = new DefaultListModel<>();
+//        não entendi esse updateTeams
 		updateTeams();
-
+		
         JList<Team> list = new JList<>(listModel);
         
+//        fru fru
         list.setOpaque(false);
         list.setFont(new Font("Comic Sans MS", Font.BOLD, 16));
         list.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION); 
         list.setCellRenderer(CustomListRenderer);
 
+//		Cria o painel com scroll para visualizar a lista de times
         JScrollPane scrollPane = new JScrollPane(list);
         scrollPane.setBorder(new LineBorder(new Color(0, 0, 0), 2, true));
         scrollPane.setBounds(163, 32, 475, 300);
         getContentPane().add(scrollPane);
 
+//        Painel de onde será feita a busca dos times
         JPanel dataPanel = new JPanel();
-        dataPanel.setLayout(null);
         dataPanel.setBorder(new LineBorder(new Color(0, 0, 0), 2, true));
         dataPanel.setBackground(new Color(0, 128, 128));
         dataPanel.setBounds(0, 32, 157, 300);
         getContentPane().add(dataPanel);
+        dataPanel.setLayout(null);
 
+//        Botão de busca e suas partes estéticas
         JButton searchBTN = new JButton("Buscar");
+        searchBTN.setBounds(10, 42, 137, 23);
         searchBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
         searchBTN.setForeground(new Color(255, 255, 255));
         searchBTN.setContentAreaFilled(false);
         searchBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
-        searchBTN.setBounds(10, 42, 137, 23);
         dataPanel.add(searchBTN);
+//        Ação realizada pelo botão
         searchBTN.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String searchText = searchFLD.getText();
+//                Verifica se a busca contém algum texto e faz o tratamento
                 if(searchText == null || searchText.equals("") || !searchFLD.isEnabled()) {
-                	JOptionPane.showMessageDialog(TeamMainWindow.this, "Você não pode realizar uma busca vazia!");
+//                	JOptionPane.showMessageDialog(TeamMainWindow.this, "Você não pode realizar uma busca vazia!");
+//                	comentei porque geralmente os sites etc não fazem nada quando se busca string vazia, mas fica a gosto
+//                	só toma cuidado pra não deixar chegar em setembro
                 	return;
                 }
+//                realiza propriamente a busca
                 updateTeams(searchText);
             }
         });
         
+//        Criação do campo de busca
         searchFLD = new JTextField();
+        searchFLD.setBounds(10, 11, 111, 23);
         searchFLD.setBorder(new LineBorder(new Color(0, 0, 0)));
         searchFLD.addMouseListener(new MouseAdapter() {
         	public void mouseClicked(MouseEvent e) {
@@ -124,17 +141,16 @@ public class TeamMainWindow extends JInternalFrame {
         searchFLD.setEnabled(false);
         searchFLD.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
         searchFLD.setText("Nome do time...");
-        searchFLD.setBounds(10, 11, 111, 23);
         dataPanel.add(searchFLD);
         searchFLD.setColumns(10);
         
         createTeamBTN = new JButton("Criar Time");
+        createTeamBTN.setBounds(10, 164, 137, 23);
         createTeamBTN.setVisible(false);
         createTeamBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
         createTeamBTN.setForeground(new Color(255, 255, 255));
         createTeamBTN.setContentAreaFilled(false);
         createTeamBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-        createTeamBTN.setBounds(10, 164, 137, 23);
         dataPanel.add(createTeamBTN);
         createTeamBTN.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
@@ -144,12 +160,12 @@ public class TeamMainWindow extends JInternalFrame {
         });
         
         updateTeamBTN = new JButton("Atualizar Time");
+        updateTeamBTN.setBounds(10, 198, 137, 23);
         updateTeamBTN.setVisible(false);
         updateTeamBTN.setForeground(Color.WHITE);
         updateTeamBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
         updateTeamBTN.setContentAreaFilled(false);
         updateTeamBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-        updateTeamBTN.setBounds(10, 198, 137, 23);
         dataPanel.add(updateTeamBTN);
         updateTeamBTN.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
@@ -165,12 +181,12 @@ public class TeamMainWindow extends JInternalFrame {
         });
         
         DeleteTeamBTN = new JButton("Deletar Time");
+        DeleteTeamBTN.setBounds(43, 266, 104, 23);
         DeleteTeamBTN.setVisible(false);
         DeleteTeamBTN.setForeground(Color.WHITE);
         DeleteTeamBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
         DeleteTeamBTN.setContentAreaFilled(false);
         DeleteTeamBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-        DeleteTeamBTN.setBounds(43, 266, 104, 23);
         dataPanel.add(DeleteTeamBTN);
         DeleteTeamBTN.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
@@ -186,10 +202,10 @@ public class TeamMainWindow extends JInternalFrame {
         });
         
         JButton backBTN = new JButton("");
+        backBTN.setBounds(10, 266, 30, 23);
         backBTN.setIcon(new ImageIcon(TeamMainWindow.class.getResource("/resources/backBTN.png")));
         backBTN.setContentAreaFilled(false);
         backBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-        backBTN.setBounds(10, 266, 30, 23);
         dataPanel.add(backBTN);
         backBTN.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
@@ -198,12 +214,12 @@ public class TeamMainWindow extends JInternalFrame {
         });
         
         bookmarkTeamBTN = new JButton("Favoritar Time");
+        bookmarkTeamBTN.setBounds(10, 232, 137, 23);
         bookmarkTeamBTN.setVisible(false);
         bookmarkTeamBTN.setForeground(Color.WHITE);
         bookmarkTeamBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
         bookmarkTeamBTN.setContentAreaFilled(false);
         bookmarkTeamBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-        bookmarkTeamBTN.setBounds(10, 232, 137, 23);
         dataPanel.add(bookmarkTeamBTN);
         bookmarkTeamBTN.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
@@ -220,13 +236,13 @@ public class TeamMainWindow extends JInternalFrame {
         });
         
         JButton refreshBTN = new JButton("");
+        refreshBTN.setBounds(124, 11, 23, 23);
         refreshBTN.setToolTipText("Clique aqui para limpar a busca.");
         refreshBTN.setBorderPainted(false);
         refreshBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
         refreshBTN.setIcon(new ImageIcon(TeamMainWindow.class.getResource("/resources/reload.png")));
         refreshBTN.setContentAreaFilled(false);
         refreshBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 8));
-        refreshBTN.setBounds(124, 11, 23, 23);
         dataPanel.add(refreshBTN);
         refreshBTN.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
@@ -235,10 +251,10 @@ public class TeamMainWindow extends JInternalFrame {
         	}
         });
         
-        JLabel lblNewLabel_1 = new JLabel("");
-        lblNewLabel_1.setIcon(new ImageIcon(TeamMainWindow.class.getResource("/resources/bolacha.png")));
-        lblNewLabel_1.setBounds(10, 76, 130, 77);
-        dataPanel.add(lblNewLabel_1);
+        JLabel teamImgLBL = new JLabel("");
+        teamImgLBL.setBounds(37, 76, 84, 77);
+        teamImgLBL.setIcon(new ImageIcon(TeamMainWindow.class.getResource("/resources/bolacha.png")));
+        dataPanel.add(teamImgLBL);
         
         JPanel panel = new JPanel();
         panel.setBackground(new Color(0, 0, 0));

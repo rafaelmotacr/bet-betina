@@ -9,7 +9,7 @@ public class InputManipulation {
 	public static final int minPasswordLength = 8;
 	public static final int minNameLength = 4;
 	public static final int minEmailLenght = 10;
-	public static final int minTeamNameLength = 8;
+	public static final int minTeamNameLength = 3; 
 	public static final int minTeamAbbreviationLength = 2;
 	public static final int maxTeamAbbreviationLentgth = 5;
 	private static final String regex = "^[a-zA0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";

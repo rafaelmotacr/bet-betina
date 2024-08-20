@@ -92,6 +92,7 @@ public class RegisterUserWindow extends RegisterWindow {
 			this.mainWindow.updateUser(dao.findUserByEmail(email));
 			JOptionPane.showMessageDialog(RegisterUserWindow.this, "Usuário criado com sucesso.");
 		} catch (SQLException e1) {
+			e1.printStackTrace();
 			JOptionPane.showMessageDialog(RegisterUserWindow.this, "Erro ao cadastrar Usuário.");
 		}
 		// Limpa todos os campos para caso a janela seja aberta novamente posteriormente

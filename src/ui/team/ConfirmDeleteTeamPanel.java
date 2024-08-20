@@ -22,7 +22,7 @@ public class ConfirmDeleteTeamPanel extends JInternalFrame {
 	private static final long serialVersionUID = 1L;
 	private Team team;
 	private TeamDaoPostgres dao = new TeamDaoPostgres();
-	private TeamMainWindow testeClass;
+	private TeamMainWindow teamMainWindow;
 	private JLabel confirmDeleteLBL;
 
 	ConfirmDeleteTeamPanel(){
@@ -32,38 +32,51 @@ public class ConfirmDeleteTeamPanel extends JInternalFrame {
         setBounds(0, 0, 157, 255);
         getContentPane().setLayout(null);
         
+        
+//        Confirmação de exclusão (botão "sim")
         JButton yesBTN = new JButton("Sim");
         yesBTN.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		try {
-					dao.deleteTeam(team);
+//        			Apaga o time
+					dao.deleteTeam(team); 
+//        			Procura todos os usuários que possuem como time favorito
+//        			o time que vai ser excluído e altera para nulo, possibilitando a exclusão
+					dao.fixUsersFavoriteTeamAfterDelete(team);
 					JOptionPane.showMessageDialog(ConfirmDeleteTeamPanel.this, "Time deletado com sucesso.");
-					testeClass.updateTeams();
+					teamMainWindow.updateTeams();
 					dispose();
 				} catch (SQLException e1) {
+//					Lida com exceção
 					JOptionPane.showMessageDialog(ConfirmDeleteTeamPanel.this, "Não foi possível deletar o time.");
 					dispose();
 				}
         	}
         });
+//        Design do botão
         yesBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
         yesBTN.setContentAreaFilled(false);
         yesBTN.setOpaque(false);
         yesBTN.setBounds(10, 191, 56, 23);
         getContentPane().add(yesBTN);
         
+        
+//      Negação de exclusão (botão "não")
         JButton noBTN = new JButton("Não");
         noBTN.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
+//        		Simplesmente fecha a janela
         		dispose();
         	}
         });
+//        Design do botão
         noBTN.setOpaque(false);
         noBTN.setContentAreaFilled(false);
         noBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
         noBTN.setBounds(76, 191, 56, 23);
         getContentPane().add(noBTN);
         
+//        PNG de time ilustrativo pra enfeitar
         JLabel lblNewLabel = new JLabel("");
         lblNewLabel.setIcon(new ImageIcon(TeamMainWindow.class.getResource("/resources/time.png")));
         lblNewLabel.setBounds(45, 0, 50, 46);
@@ -74,6 +87,8 @@ public class ConfirmDeleteTeamPanel extends JInternalFrame {
         confirmDeleteLBL.setBounds(10, 57, 121, 123);
         getContentPane().add(confirmDeleteLBL);
         
+        
+//        Linha estética preta
         JPanel blackLine = new JPanel();
         blackLine.setForeground(Color.BLACK);
         blackLine.setBackground(Color.BLACK);
@@ -82,12 +97,14 @@ public class ConfirmDeleteTeamPanel extends JInternalFrame {
         setVisible(true);
 	}
 	
+//	Gambiarra de código que não é gambiarra porque se funciona tá certo
+	
 	public void setTeam(Team team){
 		this.team = team;
 	}
 	
-	public void setTesteClass(TeamMainWindow testeClass) {
-		this.testeClass = testeClass;
+	public void setTesteClass(TeamMainWindow teamMainWindow) {
+		this.teamMainWindow = teamMainWindow;
 	}
 	
 	public void turnOn() {

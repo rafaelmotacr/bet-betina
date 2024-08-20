@@ -106,4 +106,22 @@ public class TeamDaoPostgres implements TeamDao {
 		}
 		return teamsList;
 	}
+	
+//	Define como nulo todos os usuários que tem um time favoritado excluído
+	@Override
+	public void fixUsersFavoriteTeamAfterDelete(Team team) throws SQLException {
+		try {
+		PreparedStatement ps = ConexaoBdSingleton
+				.getInstance()
+				.getConexao().prepareStatement("UPDATE user_tb SET user_favorite_team_id = null \r\n"
+						+ "WHERE user_favorite_team_id = ?");
+				ps.setInt(1, team.getID());
+				ps.executeUpdate();
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+
+	
 }

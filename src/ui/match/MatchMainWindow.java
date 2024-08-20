@@ -61,7 +61,6 @@ public class MatchMainWindow extends JInternalFrame {
         
         list.setOpaque(false);
         list.setFont(new Font("Comic Sans MS", Font.BOLD, 16));
-        list.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION); 
         list.setCellRenderer(CustomListRenderer);
 
         JScrollPane scrollPane = new JScrollPane(list);

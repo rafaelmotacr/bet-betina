@@ -22,7 +22,7 @@ public class UpdateTeamWindow extends JInternalFrame {
 	
 	private static final long serialVersionUID = 1L;
 	private TeamDaoPostgres dao = new TeamDaoPostgres ();
-	private TeamMainWindow testeClass;
+	private TeamMainWindow teamMainWindow;
 	private Team team;
 	private JTextField teamNameFLD = new JTextField();
 	private JTextField teamAbbreviationFLD = new JTextField();
@@ -96,26 +96,27 @@ public class UpdateTeamWindow extends JInternalFrame {
 					try {
 						dao.updateTeamName(team, newName);
 						JOptionPane.showMessageDialog(UpdateTeamWindow.this, "Nome do time atualizado com sucesso.");
-						testeClass.updateTeams();
+						teamMainWindow.updateTeams();
 					} catch (SQLException e1) {
 						JOptionPane.showMessageDialog(UpdateTeamWindow.this, "Não foi possível atualizar o nome do time.");
 					}
-				}else {
-					JOptionPane.showMessageDialog(UpdateTeamWindow.this, "O novo nome não pode ser igual ao anterior.");
-					return;
 				}
+				else {
+					JOptionPane.showMessageDialog(UpdateTeamWindow.this, "Sem alterações no campo de nome.");
+				}
+				
 				
 				if(!newAbbreviation.equals(team.getAbbreviation())) {
 					try {
 						dao.updateAbbreviation(team, newAbbreviation);
-						testeClass.updateTeams();
+						teamMainWindow.updateTeams();
 						JOptionPane.showMessageDialog(UpdateTeamWindow.this, "Abreviação do time atualizado com sucesso.");
 					} catch (SQLException e1) {
 						JOptionPane.showMessageDialog(UpdateTeamWindow.this, "Não foi possível atualizar a abreviação do time.");
 					}
-				}else {
-					JOptionPane.showMessageDialog(UpdateTeamWindow.this, "A nova abreviação não pode ser igual à anterior.");
-					return;
+				}
+				else {
+					JOptionPane.showMessageDialog(UpdateTeamWindow.this, "Sem alterações no campo de abreviação.");
 				}
 				dispose();
 			}
@@ -127,8 +128,8 @@ public class UpdateTeamWindow extends JInternalFrame {
 		getContentPane().add(bgImageLBL);
 	}
 	
-	public void setTesteClass(TeamMainWindow testeClass) {
-		this.testeClass = testeClass;
+	public void setTesteClass(TeamMainWindow teamMainWindow) {
+		this.teamMainWindow = teamMainWindow;
 	}
 	
 	public void setTeam(Team team) {

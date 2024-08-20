@@ -4,16 +4,21 @@ public class Match {
 	
 	private int id;
 	private int state;
-	private Double odd;
 	private int result;
+	private Double homeTeamOdd;
+	private Double awayTeamOdd;
+	private Double drawOdd;
 	private String homeTeamName;
 	private String awayTeamName;
 	
-	public Match(int id, int state, Double odd, String homeTeamName, String awayTeamName) {
+	public Match(int id, int state, Double homeTeamOdd, Double awayTeamOdd, Double drawOdd,
+			String homeTeamName, String awayTeamName) {
 		super();
 		this.id = id;
 		this.state = state;
-		this.odd = odd;
+		this.homeTeamOdd = homeTeamOdd;
+		this.awayTeamOdd = awayTeamOdd;
+		this.drawOdd = drawOdd;
 		this.homeTeamName = homeTeamName;
 		this.awayTeamName = awayTeamName;
 	}
@@ -34,20 +39,36 @@ public class Match {
 		this.state = state;
 	}
 
-	public Double getOdd() {
-		return odd;
-	}
-
-	public void setOdd(Double odd) {
-		this.odd = odd;
-	}
-
 	public int getResult() {
 		return result;
 	}
 
 	public void setResult(int result) {
 		this.result = result;
+	}
+
+	public Double getHomeTeamOdd() {
+		return homeTeamOdd;
+	}
+
+	public void setHomeTeamOdd(Double homeTeamOdd) {
+		this.homeTeamOdd = homeTeamOdd;
+	}
+
+	public Double getAwayTeamOdd() {
+		return awayTeamOdd;
+	}
+
+	public void setAwayTeamOdd(Double awayTeamOdd) {
+		this.awayTeamOdd = awayTeamOdd;
+	}
+
+	public Double getDrawOdd() {
+		return drawOdd;
+	}
+
+	public void setDrawOdd(Double drawOdd) {
+		this.drawOdd = drawOdd;
 	}
 
 	public String getHomeTeamName() {
@@ -64,11 +85,6 @@ public class Match {
 
 	public void setAwayTeamName(String awayTeamName) {
 		this.awayTeamName = awayTeamName;
-	}
-
-	@Override
-	public String toString() {
-		return  "ODD:" + odd + " - " + homeTeamName + " x " + awayTeamName;
 	}
 
 }
