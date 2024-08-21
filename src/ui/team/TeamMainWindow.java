@@ -101,7 +101,7 @@ public class TeamMainWindow extends JInternalFrame {
         dataPanel.setLayout(null);
 
 //        Botão de busca e suas partes estéticas
-        JButton searchBTN = new JButton("Buscar");
+        JButton searchBTN = new JButton("Buscar Time");
         searchBTN.setBounds(10, 42, 137, 23);
         searchBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
         searchBTN.setForeground(new Color(255, 255, 255));

@@ -49,6 +49,7 @@ CREATE TABLE bid_tb (
     FOREIGN KEY (match_id) REFERENCES match_tb (match_id) ON DELETE CASCADE
 );
 
+
 -- Insere dados na tabela team_tb
 INSERT INTO team_tb (team_abbreviation, team_name) VALUES
 ('FLA', 'Flamengo'),

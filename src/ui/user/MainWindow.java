@@ -249,7 +249,7 @@ public class MainWindow {
 		// Botão de ver jogos TODOS
 		// -- parent = mainPanel
 
-		JButton matchBTN = new JButton("Ver Jogos");
+		JButton matchBTN = new JButton("Apostar");
 		matchBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		matchBTN.setBounds(12, 50, 98, 26);
 		matchBTN.setContentAreaFilled(false);
@@ -413,13 +413,13 @@ public class MainWindow {
 
 		JPanel highlitsPNL = new JPanel();
 		highlitsPNL.setBorder(new LineBorder(new Color(0, 0, 0)));
-		highlitsPNL.setBounds(564, 33, 194, 41);
+		highlitsPNL.setBounds(564, 33, 194, 26);
 		highlitsPNL.setBackground(Color.WHITE);
 		frame.getContentPane().add(highlitsPNL);
 		highlitsPNL.setLayout(null);
 		
 		JLabel highlitsLBL = new JLabel("Destaques");
-		highlitsLBL.setBounds(53, 0, 87, 33);
+		highlitsLBL.setBounds(53, 2, 87, 22);
 		highlitsLBL.setFont(new Font("Comic Sans MS", Font.BOLD, 18));
 		highlitsPNL.add(highlitsLBL);
 		
@@ -433,7 +433,7 @@ public class MainWindow {
 		
         JScrollPane scrollPane = new JScrollPane(highlitsList);
         scrollPane.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-		scrollPane.setBounds(564, 69, 194, 350);
+		scrollPane.setBounds(564, 67, 194, 352);
 		frame.getContentPane().add(scrollPane);
 		
 		

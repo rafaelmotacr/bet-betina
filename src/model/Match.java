@@ -89,7 +89,7 @@ public class Match {
 
 	@Override
 	public String toString() {
-		return homeTeamName + " X " + awayTeamName;
+		return homeTeamName + " X " + awayTeamName.concat(this.getState() == 1 ? " - Ativa": " - Finalizada");
 	}
 	
 	

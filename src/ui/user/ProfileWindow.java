@@ -451,7 +451,7 @@ public class ProfileWindow extends JInternalFrame {
 		// -- parent = this
 
 		JPanel statementPNL = new JPanel();
-		statementPNL.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+		statementPNL.setBorder(new LineBorder(new Color(0, 0, 0), 2, true));
 		statementPNL.setLayout(null);
 		statementPNL.setBackground(new Color(0, 128, 128));
 		statementPNL.setBounds(436, 11, 194, 280);
