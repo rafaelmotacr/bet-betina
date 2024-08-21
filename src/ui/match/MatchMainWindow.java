@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
@@ -25,21 +26,21 @@ import javax.swing.border.LineBorder;
 
 import dao.match.MatchDaoPostgres;
 import dao.user.UserDaoPostgres;
+import model.Bid;
 import model.Match;
 import model.User;
-import ui.user.MainWindow;
 
 public class MatchMainWindow extends JInternalFrame {
 
     private static final long serialVersionUID = 1L;
 
     private MatchDaoPostgres matchDao = new MatchDaoPostgres();
-    private UserDaoPostgres userDao = new UserDaoPostgres();
-    private User currentUser = new User(50, 40, Double.MAX_VALUE, "ademiro", "null", "senha");
-    private MainWindow mainWindow;
+    @SuppressWarnings("unused")
+	private UserDaoPostgres userDao = new UserDaoPostgres();
+    private User currentUser = new User(50, 0, Double.MAX_VALUE, "ademiro", "null", "senha");
     private JTextField searchFLD;
     private JButton createBetBTN;
-    private ui.match.CustomListRenderer CustomListRenderer = new ui.match.CustomListRenderer();
+    private CustomListRenderer CustomListRenderer = new ui.match.CustomListRenderer();
     private DefaultListModel<Match> listModel; 
     
     private JLabel totalCostLBL;
@@ -48,8 +49,11 @@ public class MatchMainWindow extends JInternalFrame {
     private JLabel betStateLBL;
     
     private boolean isUserAdmin = false;
+    private int betStatus = 0;
     private int totalBids = 0;
     private double totalCost = 0.0d;
+    
+    private ArrayList <Bid> bidArray = new ArrayList<Bid>();
     
     public MatchMainWindow() {
     	
@@ -62,8 +66,6 @@ public class MatchMainWindow extends JInternalFrame {
         getContentPane().setLayout(null);
 
         listModel = new DefaultListModel<>();
-		updateTeams();
-
         JList<Match> list = new JList<>(listModel);
         
         list.setOpaque(false);
@@ -97,7 +99,7 @@ public class MatchMainWindow extends JInternalFrame {
                 	JOptionPane.showMessageDialog(MatchMainWindow.this, "Você não pode realizar uma busca vazia!");
                 	return;
                 }
-                updateTeams();
+                updateMatchs(searchText);
             }
         });
         
@@ -118,6 +120,7 @@ public class MatchMainWindow extends JInternalFrame {
         searchFLD.setColumns(10);
     
         JButton backBTN = new JButton("");
+        backBTN.setIcon(new ImageIcon(MatchMainWindow.class.getResource("/resources/backBTN.png")));
         backBTN.setContentAreaFilled(false);
         backBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
         backBTN.setBounds(10, 271, 30, 23);
@@ -129,10 +132,11 @@ public class MatchMainWindow extends JInternalFrame {
         });
 
         JButton refreshBTN = new JButton("");
+        refreshBTN.setIcon(new ImageIcon(MatchMainWindow.class.getResource("/resources/reload.png")));
         refreshBTN.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		searchFLD.setText(null);
-        		updateTeams();
+        		updateMatchs();
         	}
         });
         
@@ -144,31 +148,22 @@ public class MatchMainWindow extends JInternalFrame {
         refreshBTN.setBounds(124, 11, 23, 23);
         dataPanel.add(refreshBTN);
         
-        JButton btnAdicionarNovoLance = new JButton("Fazer Lance");
-        btnAdicionarNovoLance.setEnabled(false);
-        btnAdicionarNovoLance.setForeground(Color.WHITE);
-        btnAdicionarNovoLance.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
-        btnAdicionarNovoLance.setContentAreaFilled(false);
-        btnAdicionarNovoLance.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-        btnAdicionarNovoLance.setBounds(10, 203, 137, 23);
-        dataPanel.add(btnAdicionarNovoLance);
+        JButton makeBidBTN = new JButton("Fazer Lance");
+        makeBidBTN.setEnabled(false);
+        makeBidBTN.setForeground(Color.WHITE);
+        makeBidBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
+        makeBidBTN.setContentAreaFilled(false);
+        makeBidBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+        makeBidBTN.setBounds(10, 210, 137, 23);
+        dataPanel.add(makeBidBTN);
         
         JButton btnMinhasApostas = new JButton("Minhas Apostas");
         btnMinhasApostas.setForeground(Color.WHITE);
         btnMinhasApostas.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
         btnMinhasApostas.setContentAreaFilled(false);
         btnMinhasApostas.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-        btnMinhasApostas.setBounds(44, 271, 105, 23);
+        btnMinhasApostas.setBounds(44, 271, 103, 23);
         dataPanel.add(btnMinhasApostas);
-        
-        JButton btnRemoverLance = new JButton("Remover Lance");
-        btnRemoverLance.setEnabled(false);
-        btnRemoverLance.setForeground(Color.WHITE);
-        btnRemoverLance.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
-        btnRemoverLance.setContentAreaFilled(false);
-        btnRemoverLance.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-        btnRemoverLance.setBounds(10, 237, 137, 23);
-        dataPanel.add(btnRemoverLance);
         
         JPanel panel = new JPanel();
         panel.setBackground(new Color(0, 0, 0));
@@ -216,7 +211,7 @@ public class MatchMainWindow extends JInternalFrame {
         userBalanceLBL = new JLabel();
         userBalanceLBL.setForeground(Color.WHITE);
         userBalanceLBL.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
-        userBalanceLBL.setBounds(6, 248, 133, 14);
+        userBalanceLBL.setBounds(6, 248, 137, 14);
         panel_1.add(userBalanceLBL);
         
         totalCostLBL = new JLabel();
@@ -225,7 +220,7 @@ public class MatchMainWindow extends JInternalFrame {
         totalCostLBL.setBounds(7, 267, 133, 14);
         panel_1.add(totalCostLBL);
         
-        betStateLBL = new JLabel("Estado: Não iniciada.");
+        betStateLBL = new JLabel();
         betStateLBL.setForeground(Color.WHITE);
         betStateLBL.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
         betStateLBL.setBounds(10, 53, 133, 14);
@@ -254,28 +249,47 @@ public class MatchMainWindow extends JInternalFrame {
         createBetBTN.setForeground(new Color(255, 255, 255));
         createBetBTN.setContentAreaFilled(false);
         createBetBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-        createBetBTN.setBounds(10, 166, 137, 23);
+        createBetBTN.setBounds(10, 176, 137, 23);
         dataPanel.add(createBetBTN);
+        
+        JButton btnVerLances = new JButton("Conferir Lances");
+        btnVerLances.setForeground(Color.WHITE);
+        btnVerLances.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
+        btnVerLances.setEnabled(false);
+        btnVerLances.setContentAreaFilled(false);
+        btnVerLances.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+        btnVerLances.setBounds(10, 244, 137, 23);
+        dataPanel.add(btnVerLances);
         createBetBTN.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
+        		betStatus = 1;
+        		updateStatus();
         		cancelBetBTN.setEnabled(true);
         		confirmBetBTN.setEnabled(true);
+        		makeBidBTN.setEnabled(true);
         	}
         });
         
         setVisible(true);
+        updateMatchs();
         updateStatus();
+        CustomListRenderer.setUser(currentUser);
     }
     
     
     public void updateStatus() {
     	totalBidsLBL.setText("Lances feitos: " + totalBids + ".");
     	totalCostLBL.setText(("Custo Total: " + totalCost + "."));
-    	userBalanceLBL.setText("Saldo Atual: R$ " + currentUser.getBalance() + ".");
+    	userBalanceLBL.setText("Saldo Atual: R$ " + String.format("%2f", currentUser.getBalance()) + ".");
+    	if(betStatus == 0) {
+    		betStateLBL.setText("Estado: Não iniciada.");
+    	}else {
+    		betStateLBL.setText("Estado: Em crição.");
+    	}
     	
     }
     
-    public void updateTeams( ) {
+    public void updateMatchs() {
     	ArrayList<Match> matchs = null;
     	if(isUserAdmin) {
     		try {
@@ -298,16 +312,42 @@ public class MatchMainWindow extends JInternalFrame {
         	listModel.addElement(match); 
         }
     }
+    
+    public void updateMatchs(String filter) {
+    	ArrayList<Match> matchs = null;
+    	if(isUserAdmin) {
+    		try {
+    			matchs = matchDao.getAllMatchs(filter);
+    		} catch (SQLException e) {
+    			JOptionPane.showMessageDialog(MatchMainWindow.this, "Nenhuma partida encontrada.");
+    			e.printStackTrace();
+    		}
+    	}else {
+       		try {
+    			matchs = matchDao.getActiveMatchs(filter);
+    		} catch (SQLException e) {
+    			JOptionPane.showMessageDialog(MatchMainWindow.this, "Nenhuma partida encontrada.");
+    			e.printStackTrace();
+    		}
+    	}
+
+    	listModel.clear();
+        for (Match match : matchs) {
+        	listModel.addElement(match); 
+        }
+    }
+    
+    
+    public void addBid(Bid bid) {
+    	bidArray.add(bid);
+    }
+    
    /* 
     public void setUser(User user) {
     	currentUser = user;
     	CustomListRenderer.setUser(user);
     }
     */
-    public void setMainWindow(MainWindow mainWindow) {
-    	this.mainWindow = mainWindow;
-    	
-    }
 
     public static void main(String[] args) {
         // Garantir que a criação da GUI ocorra na Event Dispatch Thread

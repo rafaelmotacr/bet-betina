@@ -49,6 +49,47 @@ public class MatchDaoPostgres implements MatchDao {
 	    }
 	    return matchsArray;
 	}
+	
+	@Override
+	public ArrayList<Match> getAllMatchs(String filter) throws SQLException {
+	    ArrayList<Match> matchsArray = new ArrayList<Match>();
+	    String sql = "SELECT " +
+	                 "    match_tb.match_id AS id, " +
+	                 "    match_tb.match_state AS state, " +
+	                 "    match_tb.match_home_team_odd AS home_team_odd, " +
+	                 "    match_tb.match_away_team_odd AS away_team_odd, " +
+	                 "    match_tb.match_draw_odd AS draw_odd, " +
+	                 "    home_team.team_id AS home_team_id, " +
+	                 "    away_team.team_id AS away_team_id " +
+	                 "FROM " +
+	                 "    match_tb " +
+	                 "JOIN " +
+	                 "    team_tb AS home_team ON match_tb.match_home_team = home_team.team_id " +
+	                 "JOIN " +
+	                 "    team_tb AS away_team ON match_tb.match_away_team = away_team.team_id;";
+
+	    PreparedStatement ps = ConexaoBdSingleton
+	            .getInstance()
+	            .getConexao()
+	            .prepareStatement(sql);
+	    ResultSet rs = ps.executeQuery();
+
+	    while (rs.next()) {
+	    	Match match = new Match(
+		            rs.getInt("id"),
+		            rs.getInt("state"),
+		            rs.getInt("home_team_id"),
+		            rs.getInt("away_team_id"),
+		            rs.getDouble("home_team_odd"),
+		            rs.getDouble("away_team_odd"),
+		            rs.getDouble("draw_odd"));
+	    	
+	    	if(match.toString().toLowerCase().contains(filter)) {
+	    		matchsArray.add(match);	
+	    	}
+	    }
+	    return matchsArray;
+	}
 
 //calma calabreso
 	@Override
@@ -126,6 +167,49 @@ public class MatchDaoPostgres implements MatchDao {
 	            rs.getDouble("away_team_odd"),
 	            rs.getDouble("draw_odd")
 	        ));
+	    }
+	    return matchsArray;
+	}
+	
+	
+	@Override
+	public ArrayList<Match> getActiveMatchs(String filter) throws SQLException {
+	    ArrayList<Match> matchsArray = new ArrayList<Match>();
+	    String sql = "SELECT " +
+                "    match_tb.match_id AS id, " +
+                "    match_tb.match_state AS state, " +
+                "    match_tb.match_home_team_odd AS home_team_odd, " +
+                "    match_tb.match_away_team_odd AS away_team_odd, " +
+                "    match_tb.match_draw_odd AS draw_odd, " +
+                "    home_team.team_id AS home_team_id, " +
+                "    away_team.team_id AS away_team_id " +
+	                 "FROM " +
+	                 "    match_tb " +
+	                 "JOIN " +
+	                 "    team_tb AS home_team ON match_tb.match_home_team = home_team.team_id " +
+	                 "JOIN " +
+	                 "    team_tb AS away_team ON match_tb.match_away_team = away_team.team_id " +
+	                 "WHERE " +
+	                 "    match_tb.match_state = 1;";
+	    PreparedStatement ps = ConexaoBdSingleton
+	            .getInstance()
+	            .getConexao()
+	            .prepareStatement(sql);
+	    ResultSet rs = ps.executeQuery();
+
+	    while (rs.next()) {
+	    	Match match = new Match(
+		            rs.getInt("id"),
+		            rs.getInt("state"),
+		            rs.getInt("home_team_id"),
+		            rs.getInt("away_team_id"),
+		            rs.getDouble("home_team_odd"),
+		            rs.getDouble("away_team_odd"),
+		            rs.getDouble("draw_odd"));
+	    	
+	    	if(match.toString().toLowerCase().contains(filter)) {
+	    		matchsArray.add(match);	
+	    	}
 	    }
 	    return matchsArray;
 	}

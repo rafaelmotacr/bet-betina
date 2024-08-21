@@ -9,10 +9,12 @@ import javax.swing.ListCellRenderer;
 import javax.swing.border.LineBorder;
 
 import model.Match;
+import model.User;
 
 class CustomListRenderer extends JLabel implements ListCellRenderer<Match> {
 
 	private static final long serialVersionUID = 1L;
+	private User user;
 
 		public CustomListRenderer() {
             setOpaque(true);
@@ -21,15 +23,23 @@ class CustomListRenderer extends JLabel implements ListCellRenderer<Match> {
 		@Override
 		public Component getListCellRendererComponent(JList<? extends Match> list, Match value, int index,
 				boolean isSelected, boolean cellHasFocus) {
-        	String text;
+        	String text = null;
         	index ++;
-        	if(index < 10) {
-        		text = "0" + String.valueOf(index) + " - " + value + (value.getState() == 1 ? " - Ativa": " - Finalizada");
-        		
+        	if(user.getAccessLevel() == 1) {	
+	        	if(index < 10) {
+	        		text = "0" + String.valueOf(index) + " - " + value + (value.getState() == 1 ? " - Ativa": " - Finalizada");
+	        		
+	        	}else {
+	        		text = String.valueOf(index) + " - " + value + (value.getState() == 1 ? " - Ativa": " - Finalizada"); 
+	        	}
         	}else {
-        		text = String.valueOf(index) + " - " + value + (value.getState() == 1 ? " - Ativa": " - Finalizada"); 
-        	}
-        	
+	        	if(index < 10) {
+	        		text = "0" + String.valueOf(index) + " - " + value;
+	        		
+	        	}else {
+	        		text = String.valueOf(index) + " - " + value; 
+	        	}
+        	}		
         	setText(text);
             setFont(new Font("Comic Sans MS", Font.BOLD, 14));
             if (isSelected) {
@@ -46,4 +56,7 @@ class CustomListRenderer extends JLabel implements ListCellRenderer<Match> {
             return this;
 		}
 		
+        public void setUser(User user) {
+        	this.user = user;
+        }
     }
