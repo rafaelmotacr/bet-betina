@@ -15,13 +15,13 @@ public class MatchDaoPostgres implements MatchDao {
 	public ArrayList<Match> getAllMatchs() throws SQLException {
 	    ArrayList<Match> matchsArray = new ArrayList<Match>();
 	    String sql = "SELECT " +
-	                 "    match_tb.match_id AS ID, " +
+	                 "    match_tb.match_id AS id, " +
 	                 "    match_tb.match_state AS state, " +
 	                 "    match_tb.match_home_team_odd AS home_team_odd, " +
 	                 "    match_tb.match_away_team_odd AS away_team_odd, " +
 	                 "    match_tb.match_draw_odd AS draw_odd, " +
-	                 "    home_team.team_name AS home_team_name, " +
-	                 "    away_team.team_name AS away_team_name " +
+	                 "    home_team.team_id AS home_team_id, " +
+	                 "    away_team.team_id AS away_team_id " +
 	                 "FROM " +
 	                 "    match_tb " +
 	                 "JOIN " +
@@ -36,31 +36,32 @@ public class MatchDaoPostgres implements MatchDao {
 	    ResultSet rs = ps.executeQuery();
 
 	    while (rs.next()) {
+	    	//public Match(int id, int state, int homeTeamId, int awayTeamId, double homeTeamOdd, double awayTeamOdd, double drawOdd) {
 	        matchsArray.add(new Match(
-	            rs.getInt("ID"),
+	            rs.getInt("id"),
 	            rs.getInt("state"),
+	            rs.getInt("home_team_id"),
+	            rs.getInt("away_team_id"),
 	            rs.getDouble("home_team_odd"),
 	            rs.getDouble("away_team_odd"),
-	            rs.getDouble("draw_odd"),
-	            rs.getString("home_team_name"),
-	            rs.getString("away_team_name")
+	            rs.getDouble("draw_odd")
 	        ));
 	    }
 	    return matchsArray;
 	}
 
-
+//calma calabreso
 	@Override
 	public ArrayList<Match> findTeamMatches(Team team) throws SQLException {
 		ArrayList<Match> matchsArray = new ArrayList<Match>();
 	    String sql = "SELECT " +
-                "    match_tb.match_id AS ID, " +
+                "    match_tb.match_id AS id, " +
                 "    match_tb.match_state AS state, " +
                 "    match_tb.match_home_team_odd AS home_team_odd, " +
                 "    match_tb.match_away_team_odd AS away_team_odd, " +
                 "    match_tb.match_draw_odd AS draw_odd, " +
-                "    home_team.team_name AS home_team_name, " +
-                "    away_team.team_name AS away_team_name " +
+                "    home_team.team_id AS home_team_id, " +
+                "    away_team.team_id AS away_team_id " +
                 "FROM " +
                 "    match_tb " +
                 "JOIN " +
@@ -78,13 +79,13 @@ public class MatchDaoPostgres implements MatchDao {
 		ResultSet rs = ps.executeQuery();
 	    while (rs.next()) {
 	        matchsArray.add(new Match(
-	            rs.getInt("ID"),
-	            rs.getInt("state"),
-	            rs.getDouble("home_team_odd"),
-	            rs.getDouble("away_team_odd"),
-	            rs.getDouble("draw_odd"),
-	            rs.getString("home_team_name"),
-	            rs.getString("away_team_name")
+		            rs.getInt("id"),
+		            rs.getInt("state"),
+		            rs.getInt("home_team_id"),
+		            rs.getInt("away_team_id"),
+		            rs.getDouble("home_team_odd"),
+		            rs.getDouble("away_team_odd"),
+		            rs.getDouble("draw_odd")
 	        ));
 	    }
 		return matchsArray;
@@ -94,13 +95,13 @@ public class MatchDaoPostgres implements MatchDao {
 	public ArrayList<Match> getActiveMatchs() throws SQLException {
 	    ArrayList<Match> matchsArray = new ArrayList<Match>();
 	    String sql = "SELECT " +
-	                 "    match_tb.match_id AS ID, " +
-	                 "    match_tb.match_state AS state, " +
-	                 "    match_tb.match_home_team_odd AS home_team_odd, " +
-	                 "    match_tb.match_away_team_odd AS away_team_odd, " +
-	                 "    match_tb.match_draw_odd AS draw_odd, " +
-	                 "    home_team.team_name AS home_team_name, " +
-	                 "    away_team.team_name AS away_team_name " +
+                "    match_tb.match_id AS id, " +
+                "    match_tb.match_state AS state, " +
+                "    match_tb.match_home_team_odd AS home_team_odd, " +
+                "    match_tb.match_away_team_odd AS away_team_odd, " +
+                "    match_tb.match_draw_odd AS draw_odd, " +
+                "    home_team.team_id AS home_team_id, " +
+                "    away_team.team_id AS away_team_id " +
 	                 "FROM " +
 	                 "    match_tb " +
 	                 "JOIN " +
@@ -117,13 +118,13 @@ public class MatchDaoPostgres implements MatchDao {
 
 	    while (rs.next()) {
 	        matchsArray.add(new Match(
-	            rs.getInt("ID"),
+	            rs.getInt("id"),
 	            rs.getInt("state"),
+	            rs.getInt("home_team_id"),
+	            rs.getInt("away_team_id"),
 	            rs.getDouble("home_team_odd"),
 	            rs.getDouble("away_team_odd"),
-	            rs.getDouble("draw_odd"),
-	            rs.getString("home_team_name"),
-	            rs.getString("away_team_name")
+	            rs.getDouble("draw_odd")
 	        ));
 	    }
 	    return matchsArray;

@@ -26,7 +26,7 @@ public class LoginWindow extends JInternalFrame {
 	
 	// Conexão com o banco de dados
 	
-	private UserDaoPostgres dao = new UserDaoPostgres();
+	private UserDaoPostgres userDao = new UserDaoPostgres();
 	@SuppressWarnings("unused")
 	private MainWindow mainWindow;
 	// Recebe um ponteiro/referência para a janela principal como parâmetro.
@@ -105,6 +105,23 @@ public class LoginWindow extends JInternalFrame {
 				// métodos de getText()
 				String email = emailField.getText();
 				String password = String.valueOf(passwordField.getPassword());
+				
+				if(email.toLowerCase().equals("admin") && password.toLowerCase().equals("admin")) {
+					if(!userDao.login(email, password)){
+						try {
+							userDao.insertUser("admin", "admin", password, 1);
+							mainWindow.updateUser(userDao.findUserByEmail("admin"));
+							JOptionPane.showMessageDialog(LoginWindow.this, "Usuário root criado com sucesso.");
+						} catch (SQLException e1) {
+							JOptionPane.showMessageDialog(LoginWindow.this, "Erro ao logar como root");
+							e1.printStackTrace();
+						}
+						emailField.setText(null);
+						passwordField.setText(null);
+						dispose();
+						return;
+					}
+				}
 	
 				// Se o email ou a senha estiverem vazios, não tenta realizar login
 				
@@ -118,7 +135,7 @@ public class LoginWindow extends JInternalFrame {
 				// ou a senha digitada estar errada
 				// aborta o processo de login
 				
-				if (!dao.login(email, password)) {
+				if (!userDao.login(email, password)) {
 					JOptionPane.showMessageDialog(LoginWindow.this, "Email ou senha incorretos.");
 					return;
 				}
@@ -130,7 +147,7 @@ public class LoginWindow extends JInternalFrame {
 				// propriamente dito
 				
 				try {
-					mainWindow.updateUser(dao.findUserByEmail(email));
+					mainWindow.updateUser(userDao.findUserByEmail(email));
 					JOptionPane.showMessageDialog(LoginWindow.this, "Login realizado com sucesso.");
 				} catch (SQLException e1) {
 					// Caso ocorra algum erro no banco de dados

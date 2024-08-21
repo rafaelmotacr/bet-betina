@@ -24,10 +24,10 @@ class CustomListRenderer extends JLabel implements ListCellRenderer<Match> {
         	String text;
         	index ++;
         	if(index < 10) {
-        		text = "0" + String.valueOf(index) + " - " + value;
+        		text = "0" + String.valueOf(index) + " - " + value + (value.getState() == 1 ? " - Ativa": " - Finalizada");
         		
         	}else {
-        		text = String.valueOf(index) + " - " + value; 
+        		text = String.valueOf(index) + " - " + value + (value.getState() == 1 ? " - Ativa": " - Finalizada"); 
         	}
         	
         	setText(text);

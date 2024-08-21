@@ -47,7 +47,6 @@ public class RegisterUserWindow extends RegisterWindow {
 		String name = this.nameField.getText();
 		String email = this.emailField.getText();
 		String password = null;
-		String encryptedPassword = null;
 		try {
 			password = InputManipulation.joinPasswords(String.valueOf(passwordField.getPassword()),String.valueOf(confirmPasswordField.getPassword()));
 		} catch (PasswordsDontMatchException e1) {
@@ -78,8 +77,6 @@ public class RegisterUserWindow extends RegisterWindow {
 		} catch (HeadlessException | SQLException e1) {
 			
 		}
-
-		encryptedPassword = InputManipulation.generateHashedPassword(password);
 		
 		// Se todas as validações forem bem sucedidas,
 		// tenta criar um novo usuário comum no banco de dados, 
@@ -88,7 +85,7 @@ public class RegisterUserWindow extends RegisterWindow {
 		// Em caso de sucesso ou falha , fecha a janela
 		
 		try {
-			dao.insertUser(name, email, encryptedPassword, 0);
+			dao.insertUser(name, email, password, 0);
 			this.mainWindow.updateUser(dao.findUserByEmail(email));
 			JOptionPane.showMessageDialog(RegisterUserWindow.this, "Usuário criado com sucesso.");
 		} catch (SQLException e1) {

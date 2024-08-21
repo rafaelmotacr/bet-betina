@@ -1,28 +1,32 @@
 package model;
 
+import java.sql.SQLException;
+
+import dao.team.TeamDaoPostgres;
+
 public class Match {
 	
 	private int id;
 	private int state;
 	private int result;
-	private Double homeTeamOdd;
-	private Double awayTeamOdd;
-	private Double drawOdd;
-	private String homeTeamName;
-	private String awayTeamName;
-	
-	public Match(int id, int state, Double homeTeamOdd, Double awayTeamOdd, Double drawOdd,
-			String homeTeamName, String awayTeamName) {
+	private int homeTeamId;
+	private int awayTeamId;
+	private double homeTeamOdd;
+	private double awayTeamOdd;
+	private double drawOdd;
+	private TeamDaoPostgres teamDao = new TeamDaoPostgres();
+
+	public Match(int id, int state, int homeTeamId, int awayTeamId, double homeTeamOdd, double awayTeamOdd, double drawOdd) {
 		super();
 		this.id = id;
 		this.state = state;
+		this.homeTeamId = homeTeamId;
+		this.awayTeamId = awayTeamId;
 		this.homeTeamOdd = homeTeamOdd;
 		this.awayTeamOdd = awayTeamOdd;
 		this.drawOdd = drawOdd;
-		this.homeTeamName = homeTeamName;
-		this.awayTeamName = awayTeamName;
 	}
-
+	
 	public int getId() {
 		return id;
 	}
@@ -47,49 +51,56 @@ public class Match {
 		this.result = result;
 	}
 
-	public Double getHomeTeamOdd() {
+	public int getHomeTeamId() {
+		return homeTeamId;
+	}
+
+	public void setHomeTeamId(int homeTeamId) {
+		this.homeTeamId = homeTeamId;
+	}
+
+	public int getAwayTeamId() {
+		return awayTeamId;
+	}
+
+	public void setAwayTeamId(int awayTeamId) {
+		this.awayTeamId = awayTeamId;
+	}
+
+	public double getHomeTeamOdd() {
 		return homeTeamOdd;
 	}
 
-	public void setHomeTeamOdd(Double homeTeamOdd) {
+	public void setHomeTeamOdd(double homeTeamOdd) {
 		this.homeTeamOdd = homeTeamOdd;
 	}
 
-	public Double getAwayTeamOdd() {
+	public double getAwayTeamOdd() {
 		return awayTeamOdd;
 	}
 
-	public void setAwayTeamOdd(Double awayTeamOdd) {
+	public void setAwayTeamOdd(double awayTeamOdd) {
 		this.awayTeamOdd = awayTeamOdd;
 	}
 
-	public Double getDrawOdd() {
+	public double getDrawOdd() {
 		return drawOdd;
 	}
 
-	public void setDrawOdd(Double drawOdd) {
+	public void setDrawOdd(double drawOdd) {
 		this.drawOdd = drawOdd;
-	}
-
-	public String getHomeTeamName() {
-		return homeTeamName;
-	}
-
-	public void setHomeTeamName(String homeTeamName) {
-		this.homeTeamName = homeTeamName;
-	}
-
-	public String getAwayTeamName() {
-		return awayTeamName;
-	}
-
-	public void setAwayTeamName(String awayTeamName) {
-		this.awayTeamName = awayTeamName;
 	}
 
 	@Override
 	public String toString() {
-		return homeTeamName + " X " + awayTeamName.concat(this.getState() == 1 ? " - Ativa": " - Finalizada");
+		String toString = null;
+		try {
+			toString = teamDao.findTeamById(homeTeamId).getName() +" X " + teamDao.findTeamById(awayTeamId).getName();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return toString;
 	}
 	
 	

@@ -121,6 +121,27 @@ public class TeamDaoPostgres implements TeamDao {
 			e.printStackTrace();
 		}
 	}
+
+
+@Override
+public Team findTeamById(int id) throws SQLException {
+	
+	Team team = null;
+	
+	PreparedStatement ps = ConexaoBdSingleton
+			.getInstance()
+			.getConexao().prepareStatement("SELECT * FROM team_tb WHERE team_id = ?");	
+
+	ps.setInt(1, id);
+	
+	ResultSet rs = ps.executeQuery();
+	rs.next();
+	
+	team = new Team(rs.getInt("team_id"),
+			rs.getString("team_name"), 
+			rs.getString("team_abbreviation"));
+	return team;	
+}
 	
 
 	

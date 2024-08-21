@@ -13,4 +13,5 @@ public interface TeamDao {
 	public ArrayList <Team> getAllTeams() throws SQLException;
 	public ArrayList<Team> getAllTeams(String filter) throws SQLException;
 	public void fixUsersFavoriteTeamAfterDelete(Team team) throws SQLException;
+	public Team findTeamById(int id) throws SQLException;
 }

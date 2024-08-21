@@ -35,12 +35,22 @@ public class MatchMainWindow extends JInternalFrame {
 
     private MatchDaoPostgres matchDao = new MatchDaoPostgres();
     private UserDaoPostgres userDao = new UserDaoPostgres();
-    private User currentUser;
+    private User currentUser = new User(50, 40, Double.MAX_VALUE, "ademiro", "null", "senha");
     private MainWindow mainWindow;
     private JTextField searchFLD;
-    private JButton createTeamBTN;
+    private JButton createBetBTN;
     private ui.match.CustomListRenderer CustomListRenderer = new ui.match.CustomListRenderer();
     private DefaultListModel<Match> listModel; 
+    
+    private JLabel totalCostLBL;
+    private JLabel totalBidsLBL;
+    private JLabel userBalanceLBL;
+    private JLabel betStateLBL;
+    
+    private boolean isUserAdmin = false;
+    private int totalBids = 0;
+    private double totalCost = 0.0d;
+    
     public MatchMainWindow() {
     	
         super();
@@ -106,14 +116,6 @@ public class MatchMainWindow extends JInternalFrame {
         searchFLD.setBounds(10, 11, 111, 23);
         dataPanel.add(searchFLD);
         searchFLD.setColumns(10);
-        
-        createTeamBTN = new JButton("Iniciar Aposta");
-        createTeamBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
-        createTeamBTN.setForeground(new Color(255, 255, 255));
-        createTeamBTN.setContentAreaFilled(false);
-        createTeamBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-        createTeamBTN.setBounds(10, 164, 137, 23);
-        dataPanel.add(createTeamBTN);
     
         JButton backBTN = new JButton("");
         backBTN.setContentAreaFilled(false);
@@ -143,14 +145,15 @@ public class MatchMainWindow extends JInternalFrame {
         dataPanel.add(refreshBTN);
         
         JButton btnAdicionarNovoLance = new JButton("Fazer Lance");
+        btnAdicionarNovoLance.setEnabled(false);
         btnAdicionarNovoLance.setForeground(Color.WHITE);
         btnAdicionarNovoLance.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
         btnAdicionarNovoLance.setContentAreaFilled(false);
         btnAdicionarNovoLance.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-        btnAdicionarNovoLance.setBounds(10, 198, 137, 23);
+        btnAdicionarNovoLance.setBounds(10, 203, 137, 23);
         dataPanel.add(btnAdicionarNovoLance);
         
-        JButton btnMinhasApostas = new JButton("Editar Partida");
+        JButton btnMinhasApostas = new JButton("Minhas Apostas");
         btnMinhasApostas.setForeground(Color.WHITE);
         btnMinhasApostas.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
         btnMinhasApostas.setContentAreaFilled(false);
@@ -158,13 +161,14 @@ public class MatchMainWindow extends JInternalFrame {
         btnMinhasApostas.setBounds(44, 271, 105, 23);
         dataPanel.add(btnMinhasApostas);
         
-        JButton btnCriarPartida = new JButton("Criar Partida [ADM]");
-        btnCriarPartida.setForeground(Color.WHITE);
-        btnCriarPartida.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
-        btnCriarPartida.setContentAreaFilled(false);
-        btnCriarPartida.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-        btnCriarPartida.setBounds(10, 232, 137, 23);
-        dataPanel.add(btnCriarPartida);
+        JButton btnRemoverLance = new JButton("Remover Lance");
+        btnRemoverLance.setEnabled(false);
+        btnRemoverLance.setForeground(Color.WHITE);
+        btnRemoverLance.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
+        btnRemoverLance.setContentAreaFilled(false);
+        btnRemoverLance.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+        btnRemoverLance.setBounds(10, 237, 137, 23);
+        dataPanel.add(btnRemoverLance);
         
         JPanel panel = new JPanel();
         panel.setBackground(new Color(0, 0, 0));
@@ -203,57 +207,92 @@ public class MatchMainWindow extends JInternalFrame {
         blackLine_1.setBounds(2, 29, 155, 3);
         panel_1.add(blackLine_1);
         
-        JLabel lblNewLabel = new JLabel("Lances Feitos: X");
-        lblNewLabel.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
-        lblNewLabel.setForeground(new Color(255, 255, 255));
-        lblNewLabel.setBounds(10, 34, 133, 14);
-        panel_1.add(lblNewLabel);
+        totalBidsLBL = new JLabel();
+        totalBidsLBL.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
+        totalBidsLBL.setForeground(new Color(255, 255, 255));
+        totalBidsLBL.setBounds(10, 34, 133, 14);
+        panel_1.add(totalBidsLBL);
         
-        JLabel lblSaldoRestante = new JLabel("Saldo Atual: X");
-        lblSaldoRestante.setForeground(Color.WHITE);
-        lblSaldoRestante.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
-        lblSaldoRestante.setBounds(6, 248, 133, 14);
-        panel_1.add(lblSaldoRestante);
+        userBalanceLBL = new JLabel();
+        userBalanceLBL.setForeground(Color.WHITE);
+        userBalanceLBL.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
+        userBalanceLBL.setBounds(6, 248, 133, 14);
+        panel_1.add(userBalanceLBL);
         
-        JLabel lblCustoTotal = new JLabel("Custo Total:");
-        lblCustoTotal.setForeground(Color.WHITE);
-        lblCustoTotal.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
-        lblCustoTotal.setBounds(7, 267, 133, 14);
-        panel_1.add(lblCustoTotal);
+        totalCostLBL = new JLabel();
+        totalCostLBL.setForeground(Color.WHITE);
+        totalCostLBL.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
+        totalCostLBL.setBounds(7, 267, 133, 14);
+        panel_1.add(totalCostLBL);
         
-        JLabel lblEstadoEmAberto = new JLabel("Estado: Não iniciada.");
-        lblEstadoEmAberto.setForeground(Color.WHITE);
-        lblEstadoEmAberto.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
-        lblEstadoEmAberto.setBounds(10, 53, 133, 14);
-        panel_1.add(lblEstadoEmAberto);
+        betStateLBL = new JLabel("Estado: Não iniciada.");
+        betStateLBL.setForeground(Color.WHITE);
+        betStateLBL.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
+        betStateLBL.setBounds(10, 53, 133, 14);
+        panel_1.add(betStateLBL);
         
-        JButton btnConcluirAposta = new JButton("Concluir Aposta");
-        btnConcluirAposta.setBounds(324, 303, 150, 23);
-        getContentPane().add(btnConcluirAposta);
-        btnConcluirAposta.setForeground(new Color(0, 0, 0));
-        btnConcluirAposta.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
-        btnConcluirAposta.setContentAreaFilled(false);
-        btnConcluirAposta.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+        JButton confirmBetBTN = new JButton("Confirmar Aposta");
+        confirmBetBTN.setEnabled(false);
+        confirmBetBTN.setBounds(324, 303, 150, 23);
+        getContentPane().add(confirmBetBTN);
+        confirmBetBTN.setForeground(new Color(0, 0, 0));
+        confirmBetBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
+        confirmBetBTN.setContentAreaFilled(false);
+        confirmBetBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
         
-        JButton btnCancelaraposta = new JButton("Cancelar Aposta");
-        btnCancelaraposta.setBounds(163, 303, 150, 23);
-        getContentPane().add(btnCancelaraposta);
-        btnCancelaraposta.setForeground(new Color(0, 0, 0));
-        btnCancelaraposta.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
-        btnCancelaraposta.setContentAreaFilled(false);
-        btnCancelaraposta.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+        JButton cancelBetBTN = new JButton("Cancelar Aposta");
+        cancelBetBTN.setEnabled(false);
+        cancelBetBTN.setBounds(163, 303, 150, 23);
+        getContentPane().add(cancelBetBTN);
+        cancelBetBTN.setForeground(new Color(255, 0, 0));
+        cancelBetBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
+        cancelBetBTN.setContentAreaFilled(false);
+        cancelBetBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 
+        createBetBTN = new JButton("Iniciar Aposta");
+        createBetBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
+        createBetBTN.setForeground(new Color(255, 255, 255));
+        createBetBTN.setContentAreaFilled(false);
+        createBetBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+        createBetBTN.setBounds(10, 166, 137, 23);
+        dataPanel.add(createBetBTN);
+        createBetBTN.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		cancelBetBTN.setEnabled(true);
+        		confirmBetBTN.setEnabled(true);
+        	}
+        });
+        
         setVisible(true);
+        updateStatus();
+    }
+    
+    
+    public void updateStatus() {
+    	totalBidsLBL.setText("Lances feitos: " + totalBids + ".");
+    	totalCostLBL.setText(("Custo Total: " + totalCost + "."));
+    	userBalanceLBL.setText("Saldo Atual: R$ " + currentUser.getBalance() + ".");
+    	
     }
     
     public void updateTeams( ) {
     	ArrayList<Match> matchs = null;
-		try {
-			matchs = matchDao.getAllMatchs();
-		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(MatchMainWindow.this, "Nenhum time foi encontrado.");
-			e.printStackTrace();
-		}
+    	if(isUserAdmin) {
+    		try {
+    			matchs = matchDao.getAllMatchs();
+    		} catch (SQLException e) {
+    			JOptionPane.showMessageDialog(MatchMainWindow.this, "Nenhuma partida encontrada.");
+    			e.printStackTrace();
+    		}
+    	}else {
+       		try {
+    			matchs = matchDao.getActiveMatchs();
+    		} catch (SQLException e) {
+    			JOptionPane.showMessageDialog(MatchMainWindow.this, "Nenhuma partida encontrada.");
+    			e.printStackTrace();
+    		}
+    	}
+
     	listModel.clear();
         for (Match match : matchs) {
         	listModel.addElement(match); 
@@ -269,23 +308,7 @@ public class MatchMainWindow extends JInternalFrame {
     	this.mainWindow = mainWindow;
     	
     }
-    
-    public void turnOn() {
-    	if(currentUser == null) {
-    		createTeamBTN.setVisible(false);
-    		updateTeamBTN.setVisible(false);
-    	    DeleteTeamBTN.setVisible(false);
-    	    bookmarkTeamBTN.setVisible(false);
-    		return;
-    	}
-    	if(currentUser.getAccessLevel() == 1) {
-    		createTeamBTN.setVisible(true);
-    		updateTeamBTN.setVisible(true);
-    	    DeleteTeamBTN.setVisible(true);
-    	}
-    	bookmarkTeamBTN.setVisible(true);
-    }
-    
+
     public static void main(String[] args) {
         // Garantir que a criação da GUI ocorra na Event Dispatch Thread
         SwingUtilities.invokeLater(() -> {

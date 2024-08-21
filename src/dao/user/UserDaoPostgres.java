@@ -8,6 +8,7 @@ import dao.connection.ConexaoBdSingleton;
 import model.Team;
 import model.User;
 import util.BCrypt;
+import util.InputManipulation;
 
 public class UserDaoPostgres implements UserDao {
 	
@@ -55,15 +56,15 @@ public class UserDaoPostgres implements UserDao {
 		return user;	
 	}
 	@Override
-	public void insertUser(String nome, String email, String senha, int accessLevel) throws SQLException {
-		
+	public void insertUser(String name, String email, String password, int accessLevel) throws SQLException {
+	String encryptedPassword = InputManipulation.generateHashedPassword(password);
 	PreparedStatement ps = ConexaoBdSingleton
 			.getInstance()
 			.getConexao().prepareStatement("INSERT INTO user_tb (user_access_level, user_name, user_email, user_password, user_balance) VALUES (?, ?, ?, ?, ?)");
 			ps.setInt(1, accessLevel);
-			ps.setString(2, nome);
+			ps.setString(2, name);
 			ps.setString(3, email);
-			ps.setString(4, senha);
+			ps.setString(4, encryptedPassword);
 			ps.setDouble(5, saldoInicialPadrao);
 			ps.executeUpdate();
 

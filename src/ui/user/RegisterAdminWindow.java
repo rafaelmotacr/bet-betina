@@ -46,7 +46,6 @@ public class RegisterAdminWindow extends RegisterWindow {
 		String name = this.nameField.getText();
 		String email = this.emailField.getText();
 		String password = null;
-		String encryptedPassword = null;
 		try {
 			password = InputManipulation.joinPasswords(String.valueOf(passwordField.getPassword()),String.valueOf(confirmPasswordField.getPassword()));
 		} catch (PasswordsDontMatchException e1) {
@@ -77,8 +76,6 @@ public class RegisterAdminWindow extends RegisterWindow {
 		} catch (HeadlessException | SQLException e1) {
 			
 		}
-		encryptedPassword = InputManipulation.generateHashedPassword(password);
-		
 		// Se todas as validações forem bem sucedidas,
 		// tenta criar um novo admnistrador no banco de dados, 
 		// através do DAO. Caso contrário, nem sequer chega a este ponto.
@@ -86,7 +83,7 @@ public class RegisterAdminWindow extends RegisterWindow {
 		// Em caso de sucesso ou falha, fecha a janela
 		
 		try {
-			dao.insertUser(name, email, encryptedPassword, 1);
+			dao.insertUser(name, email, password, 1);
 			this.mainWindow.updateUser(dao.findUserByEmail(email));
 			JOptionPane.showMessageDialog(RegisterAdminWindow.this, "Administrador criado com sucesso.");
 		} catch (SQLException e1) {

@@ -271,8 +271,9 @@ public class TeamMainWindow extends JInternalFrame {
         panel.add(lblTimesCorrespondentes);
         lblTimesCorrespondentes.setForeground(new Color(255, 255, 255));
         lblTimesCorrespondentes.setFont(new Font("Comic Sans MS", Font.PLAIN, 20));
-        updateTeams();
         setVisible(true);
+        
+     	updateTeams();
     }
     
     public void updateTeams(){
