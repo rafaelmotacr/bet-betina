@@ -31,20 +31,19 @@ public class BidWindow extends JInternalFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	private TeamDaoPostgres teamDao = new TeamDaoPostgres(); 
-	private Match match = new Match (20, 1, 4,1, 1.28,1.45, 7.45);
+	private Match match = new Match (20, 1, 1,1, 1.28,1.45, 7.45);
 	private String homeTeamName;
 	private String awayTeamName;
 	private int betId;
-	private MatchMainWindow matchMainWindow = new MatchMainWindow();
+	private MatchMainWindow matchMainWindow;
+	
+	private JRadioButton rdbtnDraw;
+	private JRadioButton rdbtnAwayTeamWin;
+	private JRadioButton rdbtnHomeTeamWin;
+	private JLabel matchTitleLBL;
 	
     public BidWindow() {
-    	try {
-			homeTeamName = teamDao.findTeamById(match.getHomeTeamId()).getName();
-			awayTeamName = teamDao.findTeamById(match.getAwayTeamId()).getName();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+    	
     	getContentPane().setBackground(new Color(255, 255, 255));
         setTitle("Bet-Betina v1.23 - Menu de Lances");
         setClosable(true);
@@ -57,11 +56,11 @@ public class BidWindow extends JInternalFrame {
         panel.setBounds(0, 0, 498, 28);
         getContentPane().add(panel);
         
-        JLabel OperationsTextPNL = new JLabel(match.toString());
-        OperationsTextPNL.setForeground(Color.WHITE);
-        OperationsTextPNL.setFont(new Font("Comic Sans MS", Font.PLAIN, 20));
-        OperationsTextPNL.setBounds(10, 0, 346, 28);
-        panel.add(OperationsTextPNL);
+        matchTitleLBL = new JLabel();
+        matchTitleLBL.setForeground(Color.WHITE);
+        matchTitleLBL.setFont(new Font("Comic Sans MS", Font.PLAIN, 20));
+        matchTitleLBL.setBounds(10, 0, 346, 28);
+        panel.add(matchTitleLBL);
         
         ButtonGroup group = new ButtonGroup();
         
@@ -74,9 +73,44 @@ public class BidWindow extends JInternalFrame {
         bidValueLBL.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
         bidValueLBL.setBounds(14, 144, 284, 20);
         getContentPane().add(bidValueLBL);
+        
+        JPanel panel_1 = new JPanel();
+        panel_1.setBackground(new Color(255, 255, 255));
+        panel_1.setBorder(new LineBorder(new Color(0, 0, 0)));
+        panel_1.setBounds(14, 56, 326, 89);
+        getContentPane().add(panel_1);
+        panel_1.setLayout(null);
+        
+        rdbtnHomeTeamWin = new JRadioButton();
+        rdbtnHomeTeamWin.setSelected(true);
+        rdbtnHomeTeamWin.setOpaque(false);
+        rdbtnHomeTeamWin.setBounds(6, 7, 314, 23);
+        rdbtnHomeTeamWin.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
+        rdbtnHomeTeamWin.setActionCommand("1");
+        panel_1.add(rdbtnHomeTeamWin);
+        group.add(rdbtnHomeTeamWin);
+        
+        rdbtnAwayTeamWin = new JRadioButton();
+        rdbtnAwayTeamWin.setOpaque(false);
+        rdbtnAwayTeamWin.setBounds(6, 33, 314, 23);
+        rdbtnAwayTeamWin.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
+        rdbtnAwayTeamWin.setActionCommand("2");
+        panel_1.add(rdbtnAwayTeamWin);
+        group.add(rdbtnAwayTeamWin);
+        
+        rdbtnDraw = new JRadioButton();
+        rdbtnDraw.setOpaque(false);
+        rdbtnDraw.setBounds(6, 59, 314, 23);
+        rdbtnDraw.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
+        rdbtnDraw.setActionCommand("3");
+        panel_1.add(rdbtnDraw);
+        group.add(rdbtnDraw);
+        
+        
         JButton cancelBidBTN = new JButton("Cancelar Lance");
         cancelBidBTN.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
+        		dispose();
         	}
         });
         cancelBidBTN.setBackground(new Color(255, 0, 0));
@@ -109,46 +143,51 @@ public class BidWindow extends JInternalFrame {
         	public void actionPerformed(ActionEvent e) {
         		//public Bid(int iD, double paidValue, int guess, int betID, int matchID
         		matchMainWindow.addBid(new Bid(
-        				Double.valueOf(bidValueFLD.getSelectedText()),
+        				Double.parseDouble(bidValueFLD.getText()),
         				Integer.parseInt(group.getSelection().getActionCommand()),
         				betId,
         				match.getId()));
+        		dispose();
         	}
         });
         
-        JPanel panel_1 = new JPanel();
-        panel_1.setBackground(new Color(255, 255, 255));
-        panel_1.setBorder(new LineBorder(new Color(0, 0, 0)));
-        panel_1.setBounds(14, 56, 326, 89);
-        getContentPane().add(panel_1);
-        panel_1.setLayout(null);
-        
-        JRadioButton rdbtnVitoriaDoVitoria = new JRadioButton("Vitória do " + homeTeamName + " - ODD: "+ match.getHomeTeamOdd() + "%");
-        rdbtnVitoriaDoVitoria.setOpaque(false);
-        rdbtnVitoriaDoVitoria.setBounds(6, 7, 314, 23);
-        panel_1.add(rdbtnVitoriaDoVitoria);
-        rdbtnVitoriaDoVitoria.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
-        group.add(rdbtnVitoriaDoVitoria);
-        
-        JRadioButton rdbtnVitoriaDoFlamengo = new JRadioButton("Vitória do " + awayTeamName + " - ODD: " + match.getAwayTeamOdd() + "%");
-        rdbtnVitoriaDoFlamengo.setOpaque(false);
-        rdbtnVitoriaDoFlamengo.setBounds(6, 33, 314, 23);
-        panel_1.add(rdbtnVitoriaDoFlamengo);
-        rdbtnVitoriaDoFlamengo.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
-        group.add(rdbtnVitoriaDoFlamengo);
-        
-        JRadioButton rdbtnEmpate = new JRadioButton("Empate - ODD: " + match.getDrawOdd() + "%");
-        rdbtnEmpate.setOpaque(false);
-        rdbtnEmpate.setBounds(6, 59, 314, 23);
-        panel_1.add(rdbtnEmpate);
-        rdbtnEmpate.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
-        group.add(rdbtnEmpate);
-        
+    	setMatch(match);
+    	update();
+        setVisible(true);
         setSize(357, 244); 
-        setVisible(true); 
     }
-    
-    public static void main(String[] args) {
+   
+    public Match getMatch() {
+		return match;
+	}
+
+	public void setMatch(Match match) {
+		this.match = match;
+    	try {
+			homeTeamName = teamDao.findTeamById(match.getHomeTeamId()).getName();
+			awayTeamName = teamDao.findTeamById(match.getAwayTeamId()).getName();
+		} catch (SQLException e) {
+			System.out.println("error");
+		}
+		update();
+	}
+	
+	public MatchMainWindow getMatchMainWindow() {
+		return matchMainWindow;
+	}
+
+	public void setMatchMainWindow(MatchMainWindow matchMainWindow) {
+		this.matchMainWindow = matchMainWindow;
+	}
+	
+	public void update() {
+		rdbtnHomeTeamWin.setText("Vitória do " + homeTeamName + " - ODD: "+ match.getHomeTeamOdd() + "%");
+		rdbtnAwayTeamWin.setText("Vitória do " + awayTeamName + " - ODD: " + match.getAwayTeamOdd() + "%");
+		rdbtnDraw.setText("Empate - ODD: " + match.getDrawOdd() + "%");
+		matchTitleLBL.setText(match.toString());
+	}
+
+	public static void main(String[] args) {
         // Garantir que a criação da GUI ocorra na Event Dispatch Thread
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Main Frame");

@@ -37,27 +37,27 @@ public class MatchMainWindow extends JInternalFrame {
     private MatchDaoPostgres matchDao = new MatchDaoPostgres();
     @SuppressWarnings("unused")
 	private UserDaoPostgres userDao = new UserDaoPostgres();
-    private User currentUser = new User(50, 0, Double.MAX_VALUE, "ademiro", "null", "senha");
+    private User currentUser = new User(50, 0, 1.578, "ademiro", "null", "senha");
     private JTextField searchFLD;
     private JButton createBetBTN;
-    private CustomListRenderer CustomListRenderer = new ui.match.CustomListRenderer();
+    private CustomListRenderer CustomListRenderer;
     private DefaultListModel<Match> listModel; 
     
     private JLabel totalCostLBL;
     private JLabel totalBidsLBL;
     private JLabel userBalanceLBL;
     private JLabel betStateLBL;
+    private JLabel balanceAfterBetLBL;
     
     private boolean isUserAdmin = false;
     private int betStatus = 0;
-    private int totalBids = 0;
-    private double totalCost = 0.0d;
     
-    private ArrayList <Bid> bidArray = new ArrayList<Bid>();
+    private ArrayList <Bid> bidArray;
     
     public MatchMainWindow() {
     	
         super();
+        bidArray = new ArrayList<Bid>();
         
         setTitle("Bet-Betina v1.23 - Menu de Partidas");
         setClosable(true);
@@ -65,9 +65,15 @@ public class MatchMainWindow extends JInternalFrame {
         setBounds(0, 0, 640, 360);
         getContentPane().setLayout(null);
 
+        BidWindow bidWindow = new BidWindow();
+        bidWindow.setLocation(140, 44);
+        setLocation(259, 78);
+        getContentPane().add(bidWindow);
+        
         listModel = new DefaultListModel<>();
         JList<Match> list = new JList<>(listModel);
         
+        CustomListRenderer = new ui.match.CustomListRenderer();
         list.setOpaque(false);
         list.setFont(new Font("Comic Sans MS", Font.BOLD, 16));
         list.setCellRenderer(CustomListRenderer);
@@ -96,7 +102,6 @@ public class MatchMainWindow extends JInternalFrame {
             public void actionPerformed(ActionEvent e) {
                 String searchText = searchFLD.getText();
                 if(searchText == null || searchText.equals("") || !searchFLD.isEnabled()) {
-                	JOptionPane.showMessageDialog(MatchMainWindow.this, "Você não pode realizar uma busca vazia!");
                 	return;
                 }
                 updateMatchs(searchText);
@@ -149,6 +154,17 @@ public class MatchMainWindow extends JInternalFrame {
         dataPanel.add(refreshBTN);
         
         JButton makeBidBTN = new JButton("Fazer Lance");
+        makeBidBTN.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		if(list.getSelectedValue() == null) {
+        			JOptionPane.showMessageDialog(MatchMainWindow.this, "Selecione uma partida primeiro.");
+        			return;
+        		}
+        		bidWindow.setMatchMainWindow(MatchMainWindow.this);
+        		bidWindow.setMatch(list.getSelectedValue());
+        		bidWindow.setVisible(true);
+        	}
+        });
         makeBidBTN.setEnabled(false);
         makeBidBTN.setForeground(Color.WHITE);
         makeBidBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
@@ -211,13 +227,13 @@ public class MatchMainWindow extends JInternalFrame {
         userBalanceLBL = new JLabel();
         userBalanceLBL.setForeground(Color.WHITE);
         userBalanceLBL.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
-        userBalanceLBL.setBounds(6, 248, 137, 14);
+        userBalanceLBL.setBounds(13, 235, 137, 14);
         panel_1.add(userBalanceLBL);
         
         totalCostLBL = new JLabel();
         totalCostLBL.setForeground(Color.WHITE);
         totalCostLBL.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
-        totalCostLBL.setBounds(7, 267, 133, 14);
+        totalCostLBL.setBounds(13, 249, 133, 14);
         panel_1.add(totalCostLBL);
         
         betStateLBL = new JLabel();
@@ -225,6 +241,12 @@ public class MatchMainWindow extends JInternalFrame {
         betStateLBL.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
         betStateLBL.setBounds(10, 53, 133, 14);
         panel_1.add(betStateLBL);
+        
+        balanceAfterBetLBL = new JLabel();
+        balanceAfterBetLBL.setForeground(Color.WHITE);
+        balanceAfterBetLBL.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
+        balanceAfterBetLBL.setBounds(13, 266, 137, 14);
+        panel_1.add(balanceAfterBetLBL);
         
         JButton confirmBetBTN = new JButton("Confirmar Aposta");
         confirmBetBTN.setEnabled(false);
@@ -264,6 +286,7 @@ public class MatchMainWindow extends JInternalFrame {
         	public void actionPerformed(ActionEvent e) {
         		betStatus = 1;
         		updateStatus();
+        		createBetBTN.setEnabled(false);
         		cancelBetBTN.setEnabled(true);
         		confirmBetBTN.setEnabled(true);
         		makeBidBTN.setEnabled(true);
@@ -278,9 +301,13 @@ public class MatchMainWindow extends JInternalFrame {
     
     
     public void updateStatus() {
-    	totalBidsLBL.setText("Lances feitos: " + totalBids + ".");
-    	totalCostLBL.setText(("Custo Total: " + totalCost + "."));
-    	userBalanceLBL.setText("Saldo Atual: R$ " + String.format("%2f", currentUser.getBalance()) + ".");
+    	double totalCost = bidArray.stream().mapToDouble(Bid::getPaidValue).sum();
+    	double userBalance = currentUser.getBalance();
+    	double balanceAfterBet = userBalance - totalCost;
+    	totalBidsLBL.setText("Lances feitos: " + bidArray.size() + ".");
+    	totalCostLBL.setText("Custo Total: " + totalCost + ".");
+    	userBalanceLBL.setText("Saldo Atual: R$ " + userBalance + ".");
+    	balanceAfterBetLBL.setText("Saldo Restante: " + balanceAfterBet + ".");
     	if(betStatus == 0) {
     		betStateLBL.setText("Estado: Não iniciada.");
     	}else {
@@ -340,6 +367,7 @@ public class MatchMainWindow extends JInternalFrame {
     
     public void addBid(Bid bid) {
     	bidArray.add(bid);
+    	updateStatus();
     }
     
    /* 

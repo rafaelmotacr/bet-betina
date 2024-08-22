@@ -221,6 +221,10 @@ public class TeamMainWindow extends JInternalFrame {
         dataPanel.add(bookmarkTeamBTN);
         bookmarkTeamBTN.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
+        		if(list.getSelectedValue() == null) {
+        			JOptionPane.showMessageDialog(TeamMainWindow.this, "Selecione um time primeiro.");
+        			return;
+        		}
         		try {
 					userDao.updateUserFavoriteTeam(currentUser, list.getSelectedValue());
 					setUser(userDao.findUserByEmail(currentUser.getEmail()));
