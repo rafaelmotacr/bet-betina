@@ -1,1 +1,51 @@
-/bin/
+# Arquivos e diretórios gerados pelo Eclipse
+/target/
+tmp/
+/.apt_generated/
+/.factorypath
+/.externalToolBuilders/
+/.metadata/
+/.recommenders/
+/tmp/
+/.sts4-cache/
+/.ionide/
+/.mvn/
+
+# Diretório gerado pelo Maven para dependências baixadas
+.mvn/
+!.mvn/wrapper/maven-wrapper.jar
+
+# Arquivos gerados pelo sistema operacional
+.DS_Store
+Thumbs.db
+.idea/
+*.iml
+*.swp
+*~
+
+# Arquivos de log
+*.log
+
+# Arquivos específicos do Maven
+target/
+
+# Arquivos temporários de compilação
+*.class
+*.jar
+*.war
+*.ear
+
+# Arquivos de configuração da IDE IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+# Arquivos de pacotes ou builds
+*.jar
+*.war
+*.ear
+
+# Configurações locais (opcional, caso você tenha essas configurações no repositório)
+!/.mvn/wrapper/maven-wrapper.properties

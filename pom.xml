@@ -1,0 +1,43 @@
+<project xmlns="https://maven.apache.org/POM/4.0.0" xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.ifba</groupId>
+  <artifactId>bet</artifactId>
+  <version>1.23.1-SNAPSHOT</version>
+  
+    <dependencies>
+    
+        <dependency>
+        
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.5.0</version>
+        </dependency>
+        
+        <dependency>
+  			<groupId>de.svenkubiak</groupId>
+    		<artifactId>jBCrypt</artifactId>
+  			<version>0.4</version>
+		</dependency>
+
+    </dependencies>
+  
+  <properties>
+  
+  	<maven.compiler.source>21</maven.compiler.source>
+ 	<maven.compiler.target>21</maven.compiler.target>
+ 	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+ 	
+  </properties>
+  
+  <build>
+  
+	  <resources>
+	    <resource>
+	      <directory>src/main/resources</directory>
+	    </resource>
+ 	 </resources>
+ 	 
+</build>
+  
+</project>
