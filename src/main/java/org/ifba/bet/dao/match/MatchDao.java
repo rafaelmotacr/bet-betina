@@ -7,6 +7,9 @@ import org.ifba.bet.model.Match;
 import org.ifba.bet.model.Team;
 
 public interface MatchDao {
+	
+	public ArrayList<Match> findTeamMatches(Team team) throws SQLException;
+	
 	public ArrayList<Match> getAllMatchs() throws SQLException;
 
 	public ArrayList<Match> getAllMatchs(String filter) throws SQLException;
@@ -15,5 +18,5 @@ public interface MatchDao {
 
 	public ArrayList<Match> getActiveMatchs(String filter) throws SQLException;
 
-	public ArrayList<Match> findTeamMatches(Team team) throws SQLException;
+
 }

@@ -1,25 +1,25 @@
+CREATE TABLE team_tb (
+    team_id SERIAL PRIMARY KEY,
+    team_abbreviation VARCHAR(10) NOT NULL,
+    team_name VARCHAR(100) NOT NULL
+);
+
 CREATE TABLE user_tb (
     user_id SERIAL PRIMARY KEY,
     user_access_level INT NOT NULL,
     user_name VARCHAR(100) NOT NULL,
     user_email VARCHAR(100) NOT NULL UNIQUE,
     user_password VARCHAR(255) NOT NULL,
-	user_balance FLOAT NOT NULL
+	user_balance FLOAT NOT NULL,
+    user_favorite_team_id INT 
+    FOREIGN KEY (user_id) REFERENCES team_tb (team_id) ON DELETE SET NULL
 );
-
 
 CREATE TABLE bet_tb (
     bet_id SERIAL PRIMARY KEY,
-    bet_state INT NOT NULL,
     user_id INT NOT NULL,
+    bet_state INT NOT NULL
     FOREIGN KEY (user_id) REFERENCES user_tb (user_id) ON DELETE CASCADE
-);
-
-
-CREATE TABLE team_tb (
-    team_id SERIAL PRIMARY KEY,
-    team_abbreviation VARCHAR(10) NOT NULL,
-    team_name VARCHAR(100) NOT NULL
 );
 
 
@@ -41,10 +41,9 @@ CREATE TABLE match_tb (
 
 
 CREATE TABLE bid_tb (
-    bid_id SERIAL PRIMARY KEY,
-    bid_guess INT NOT NULL,
     bet_id INT NOT NULL,
     match_id INT NOT NULL,
+    bid_guess INT NOT NULL,
 	bid_paid_value FLOAT NOT NULL,
     FOREIGN KEY (bet_id) REFERENCES bet_tb (bet_id) ON DELETE CASCADE,
     FOREIGN KEY (match_id) REFERENCES match_tb (match_id) ON DELETE CASCADE

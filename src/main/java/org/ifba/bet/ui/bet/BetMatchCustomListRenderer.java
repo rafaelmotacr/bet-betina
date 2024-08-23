@@ -1,4 +1,4 @@
-package org.ifba.bet.ui.match;
+package org.ifba.bet.ui.bet;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -13,13 +13,13 @@ import javax.swing.border.LineBorder;
 import org.ifba.bet.model.Bid;
 import org.ifba.bet.model.Match;
 
-class MatchCustomListRenderer extends JLabel implements ListCellRenderer<Match> {
+class BetMatchCustomListRenderer extends JLabel implements ListCellRenderer<Match> {
 
 	private static final long serialVersionUID = 1L;
 
 	private ArrayList<Bid> bidArray;
 
-	public MatchCustomListRenderer() {
+	public BetMatchCustomListRenderer() {
 		setOpaque(true);
 	}
 
@@ -41,11 +41,6 @@ class MatchCustomListRenderer extends JLabel implements ListCellRenderer<Match> 
 			}
 		}
 
-		if (hasBid) {
-			text = text + " - [Lance feito]";
-			setForeground(Color.RED);
-		}
-
 		setText(text);
 		setFont(new Font("Georgia", Font.PLAIN, 14));
 		if (isSelected) {
@@ -54,6 +49,11 @@ class MatchCustomListRenderer extends JLabel implements ListCellRenderer<Match> 
 		} else {
 			setBackground(list.getBackground());
 			setForeground(list.getForeground());
+		}
+
+		if (hasBid) {
+			setText(text + " - [Lance feito]");
+			setForeground(Color.RED);
 		}
 
 		setBorder(LineBorder.createGrayLineBorder());

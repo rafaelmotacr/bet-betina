@@ -2,7 +2,6 @@ package org.ifba.bet.model;
 
 public class Bid {
 
-	private int ID;
 	private Double paidValue;
 	private int guess;
 	private int betID;
@@ -15,12 +14,12 @@ public class Bid {
 		this.matchID = matchID;
 	}
 
-	public int getID() {
-		return ID;
-	}
-
-	public void setID(int iD) {
-		ID = iD;
+	public Bid(double paidValue, int guess, int betId, int matchID) {
+		super();
+		this.paidValue = paidValue;
+		this.guess = guess;
+		this.betID = betId;
+		this.matchID = matchID;
 	}
 
 	public double getPaidValue() {

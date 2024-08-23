@@ -1,4 +1,4 @@
-package org.ifba.bet.ui.match;
+package org.ifba.bet.ui.bet;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -24,23 +24,26 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
+import org.ifba.bet.dao.bet.BetDaoPostgres;
+import org.ifba.bet.dao.bid.BidDaoPostgres;
 import org.ifba.bet.dao.match.MatchDaoPostgres;
 import org.ifba.bet.dao.user.UserDaoPostgres;
 import org.ifba.bet.model.Bid;
 import org.ifba.bet.model.Match;
 import org.ifba.bet.model.User;
 
-public class MatchMainWindow extends JInternalFrame {
+public class BetMainWindow extends JInternalFrame {
 
 	private static final long serialVersionUID = 1L;
 
 	private MatchDaoPostgres matchDao = new MatchDaoPostgres();
-	@SuppressWarnings("unused")
 	private UserDaoPostgres userDao = new UserDaoPostgres();
-	private User currentUser = new User(50, 0, 1578.00, "ademiro", "null", "senha");
+	private BetDaoPostgres betDao = new BetDaoPostgres();
+	private BidDaoPostgres bidDao = new BidDaoPostgres();
+
+	private User currentUser;
 	private JTextField searchFLD;
-	private JButton createBetBTN;
-	private MatchCustomListRenderer CustomListRenderer;
+	private BetMatchCustomListRenderer customListRenderer;
 	private DefaultListModel<Match> listModel;
 
 	private JLabel totalCostLBL;
@@ -49,39 +52,63 @@ public class MatchMainWindow extends JInternalFrame {
 	private JLabel betStateLBL;
 	private JLabel balanceAfterBetLBL;
 
-	private boolean isUserAdmin = false;
-	private int betStatus = 0;
+	private JButton createBetBTN;
+	private JButton cancelBetBTN;
+	private JButton cancelBidBTN;
+	private JButton updateBidBTN;
+	private JButton makeBidBTN;
+	private JButton historyBTN;
+	private JButton confirmBetBTN;
+
+	private int betState = 0;
+	private int foreignBetId = 0;
+	private double betTotalCost = 0;
 
 	private ArrayList<Bid> bidArray;
 
-	public MatchMainWindow() {
+	public BetMainWindow() {
 
 		super();
+		try {
+			currentUser = userDao.findUserByEmail("rafaelmota@gmail.com");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		bidArray = new ArrayList<Bid>();
 
-		setTitle("Bet-Betina v1.23 - Menu de Partidas");
+		setTitle("Bet-Betina v1.23 - Menu de Apostas");
 		setClosable(true);
 		setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		setBounds(0, 0, 704, 396);
+		setLocation(259, 78);
 		getContentPane().setLayout(null);
 
 		BidWindow bidWindow = new BidWindow();
 		bidWindow.setVisible(false);
 		bidWindow.setClosable(true);
-		bidWindow.setMatchMainWindow(MatchMainWindow.this);
+		bidWindow.setBetMainWindow(BetMainWindow.this);
 		bidWindow.setLocation(140, 44);
-		setLocation(259, 78);
 		getContentPane().add(bidWindow);
+
+		BetHistoryWindow betHistoryWindow = new BetHistoryWindow();
+		betHistoryWindow.setVisible(false);
+		betHistoryWindow.setClosable(true);
+		betHistoryWindow.setBetMainWindow(BetMainWindow.this);
+		betHistoryWindow.setCurrentUser(currentUser);
+		betHistoryWindow.setLocation(140, 44);
+
+		getContentPane().add(betHistoryWindow);
 
 		listModel = new DefaultListModel<>();
 		JList<Match> list = new JList<>(listModel);
 
-		CustomListRenderer = new MatchCustomListRenderer();
-		CustomListRenderer.setBidArray(bidArray);
+		customListRenderer = new BetMatchCustomListRenderer();
+		customListRenderer.setBidArray(bidArray);
 
 		list.setOpaque(false);
 		list.setFont(new Font("Georgia", Font.BOLD, 16));
-		list.setCellRenderer(CustomListRenderer);
+		list.setCellRenderer(customListRenderer);
 
 		JScrollPane scrollPane = new JScrollPane(list);
 		scrollPane.setBorder(new LineBorder(new Color(0, 0, 0), 2, true));
@@ -158,17 +185,19 @@ public class MatchMainWindow extends JInternalFrame {
 		refreshBTN.setBounds(124, 11, 23, 23);
 		dataPanel.add(refreshBTN);
 
-		JButton makeBidBTN = new JButton("Fazer Lance");
+		makeBidBTN = new JButton("Fazer Lance");
 		makeBidBTN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Match match = list.getSelectedValue();
 				if (match == null) {
-					JOptionPane.showMessageDialog(MatchMainWindow.this, "Selecione uma partida primeiro.");
+					JOptionPane.showMessageDialog(BetMainWindow.this, "Selecione uma partida primeiro.", "Aviso",
+							JOptionPane.INFORMATION_MESSAGE);
 					return;
 				}
 				for (Bid bid : bidArray) {
 					if (bid.getMatchID() == match.getId()) {
-						JOptionPane.showMessageDialog(MatchMainWindow.this, "Você já fez um lance nesta partida.");
+						JOptionPane.showMessageDialog(BetMainWindow.this, "Você já fez um lance nesta partida.",
+								"Aviso", JOptionPane.INFORMATION_MESSAGE);
 						return;
 					}
 				}
@@ -186,13 +215,21 @@ public class MatchMainWindow extends JInternalFrame {
 		makeBidBTN.setBounds(10, 203, 137, 23);
 		dataPanel.add(makeBidBTN);
 
-		JButton btnMinhasApostas = new JButton("Minhas Apostas");
-		btnMinhasApostas.setForeground(Color.WHITE);
-		btnMinhasApostas.setFont(new Font("Georgia", Font.PLAIN, 14));
-		btnMinhasApostas.setContentAreaFilled(false);
-		btnMinhasApostas.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-		btnMinhasApostas.setBounds(44, 302, 103, 23);
-		dataPanel.add(btnMinhasApostas);
+		historyBTN = new JButton("Minhas Apostas");
+		historyBTN.setEnabled(false);
+		historyBTN.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				betHistoryWindow.setBetMainWindow(BetMainWindow.this);
+				betHistoryWindow.updateBets();
+				betHistoryWindow.setVisible(true);
+			}
+		});
+		historyBTN.setForeground(Color.WHITE);
+		historyBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
+		historyBTN.setContentAreaFilled(false);
+		historyBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+		historyBTN.setBounds(44, 302, 103, 23);
+		dataPanel.add(historyBTN);
 
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(0, 0, 0));
@@ -222,7 +259,7 @@ public class MatchMainWindow extends JInternalFrame {
 		JLabel lblStatus = new JLabel("Status Da Aposta");
 		lblStatus.setForeground(Color.WHITE);
 		lblStatus.setFont(new Font("Georgia", Font.PLAIN, 16));
-		lblStatus.setBounds(13, 5, 130, 23);
+		lblStatus.setBounds(45, 5, 130, 23);
 		panel_1.add(lblStatus);
 
 		JPanel blackLine_1 = new JPanel();
@@ -234,34 +271,52 @@ public class MatchMainWindow extends JInternalFrame {
 		totalBidsLBL = new JLabel();
 		totalBidsLBL.setFont(new Font("Georgia", Font.PLAIN, 12));
 		totalBidsLBL.setForeground(new Color(255, 255, 255));
-		totalBidsLBL.setBounds(10, 34, 133, 14);
+		totalBidsLBL.setBounds(10, 34, 201, 14);
 		panel_1.add(totalBidsLBL);
 
 		userBalanceLBL = new JLabel();
 		userBalanceLBL.setForeground(Color.WHITE);
 		userBalanceLBL.setFont(new Font("Georgia", Font.PLAIN, 12));
-		userBalanceLBL.setBounds(13, 261, 198, 14);
+		userBalanceLBL.setBounds(10, 217, 198, 14);
 		panel_1.add(userBalanceLBL);
 
 		totalCostLBL = new JLabel();
 		totalCostLBL.setForeground(Color.WHITE);
 		totalCostLBL.setFont(new Font("Georgia", Font.PLAIN, 12));
-		totalCostLBL.setBounds(13, 286, 198, 14);
+		totalCostLBL.setBounds(10, 242, 198, 14);
 		panel_1.add(totalCostLBL);
 
-		betStateLBL = new JLabel();
+		betStateLBL = new JLabel("Sem Apostas para exibir.");
 		betStateLBL.setForeground(Color.WHITE);
 		betStateLBL.setFont(new Font("Georgia", Font.PLAIN, 12));
-		betStateLBL.setBounds(10, 53, 133, 14);
+		betStateLBL.setBounds(10, 53, 201, 14);
 		panel_1.add(betStateLBL);
 
 		balanceAfterBetLBL = new JLabel();
 		balanceAfterBetLBL.setForeground(Color.WHITE);
 		balanceAfterBetLBL.setFont(new Font("Georgia", Font.PLAIN, 12));
-		balanceAfterBetLBL.setBounds(13, 311, 198, 14);
+		balanceAfterBetLBL.setBounds(10, 267, 198, 14);
 		panel_1.add(balanceAfterBetLBL);
 
-		JButton confirmBetBTN = new JButton("Confirmar Aposta");
+		JPanel blackLine_1_1 = new JPanel();
+		blackLine_1_1.setForeground(Color.BLACK);
+		blackLine_1_1.setBackground(Color.BLACK);
+		blackLine_1_1.setBounds(0, 78, 221, 3);
+		panel_1.add(blackLine_1_1);
+
+		JPanel blackLine_1_1_1 = new JPanel();
+		blackLine_1_1_1.setForeground(Color.BLACK);
+		blackLine_1_1_1.setBackground(Color.BLACK);
+		blackLine_1_1_1.setBounds(0, 203, 221, 3);
+		panel_1.add(blackLine_1_1_1);
+
+		JPanel blackLine_1_1_2 = new JPanel();
+		blackLine_1_1_2.setForeground(Color.BLACK);
+		blackLine_1_1_2.setBackground(Color.BLACK);
+		blackLine_1_1_2.setBounds(0, 291, 221, 3);
+		panel_1.add(blackLine_1_1_2);
+
+		confirmBetBTN = new JButton("Confirmar Aposta");
 		confirmBetBTN.setEnabled(false);
 		confirmBetBTN.setBounds(324, 342, 150, 23);
 		getContentPane().add(confirmBetBTN);
@@ -270,7 +325,84 @@ public class MatchMainWindow extends JInternalFrame {
 		confirmBetBTN.setContentAreaFilled(false);
 		confirmBetBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 
-		JButton cancelBetBTN = new JButton("Cancelar Aposta");
+		// A esta altura do campeonato, esse código tá uma bela de uma bagunça
+
+		confirmBetBTN.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (bidArray.size() < 1) {
+					JOptionPane.showMessageDialog(BetMainWindow.this, "Inclua ao menos um lance em sua aposta.",
+							"Aviso", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+
+				if (betState == 7) {
+					for (Bid bid : bidArray) {
+
+						// Adiciona somente os novos lances ao banco
+
+						if (bid.getBetID() != foreignBetId) {
+							try {
+								bidDao.insertBid(foreignBetId, bid.getMatchID(), bid.getGuess(), bid.getPaidValue());
+								userDao.updateUserBalance(currentUser, (currentUser.getBalance() - bid.getPaidValue()));
+							} catch (SQLException e1) {
+								JOptionPane.showMessageDialog(BetMainWindow.this,
+										"Ocorreu um erro ao cadastrar\n um de seus lances.", "Aviso",
+										JOptionPane.ERROR_MESSAGE);
+								return;
+							}
+						} else {
+							currentUser.setBalance(currentUser.getBalance() - bid.getPaidValue());
+							try {
+								bidDao.updateBid(bid);
+							} catch (SQLException e1) {
+								e1.printStackTrace();
+							}
+						}
+					}
+					JOptionPane.showMessageDialog(BetMainWindow.this, "Aposta Atualizada com Sucesso.",
+							"Confirmação de Aposta", JOptionPane.INFORMATION_MESSAGE);
+					removeAllBids();
+					updateStatus();
+					updateMatchs();
+					return;
+				}
+
+				int betId = 0;
+				try {
+					betId = betDao.insertBet(currentUser.getID(), 1);
+				} catch (SQLException e1) {
+					JOptionPane.showMessageDialog(BetMainWindow.this, "Ocorreu um erro ao criar a aposta", "Aviso",
+							JOptionPane.ERROR_MESSAGE);
+					e1.printStackTrace();
+					return;
+				}
+				for (Bid bid : bidArray) {
+					try {
+						bidDao.insertBid(betId, bid.getMatchID(), bid.getGuess(), bid.getPaidValue());
+					} catch (SQLException e1) {
+						JOptionPane.showMessageDialog(BetMainWindow.this,
+								"Ocorreu um erro ao cadastrar\n um de seus lances.", "Aviso",
+								JOptionPane.ERROR_MESSAGE);
+						e1.printStackTrace();
+						return;
+					}
+				}
+				JOptionPane.showMessageDialog(BetMainWindow.this, "Aposta criada com sucesso.", "Confirmação de Aposta",
+						JOptionPane.INFORMATION_MESSAGE);
+				betState = 0;
+
+				try {
+					userDao.updateUserBalance(currentUser, (currentUser.getBalance() - betTotalCost));
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+				removeAllBids();
+				updateStatus();
+				updateMatchs();
+			}
+		});
+
+		cancelBetBTN = new JButton("Cancelar Aposta");
 		cancelBetBTN.setEnabled(false);
 		cancelBetBTN.setBounds(164, 342, 150, 23);
 		getContentPane().add(cancelBetBTN);
@@ -278,8 +410,28 @@ public class MatchMainWindow extends JInternalFrame {
 		cancelBetBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
 		cancelBetBTN.setContentAreaFilled(false);
 		cancelBetBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+		cancelBetBTN.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (betState == 7) {
+					try {
+						betDao.deleteBet(foreignBetId);
+						userDao.updateUserBalance(currentUser, currentUser.getBalance());
+						removeAllBids();
+						JOptionPane.showMessageDialog(BetMainWindow.this, "Aposta Cancelada. Saldo Devolvido.",
+								"Cancelamento Bem Sucedido.", JOptionPane.INFORMATION_MESSAGE);
+					} catch (SQLException e1) {
+						JOptionPane.showMessageDialog(BetMainWindow.this, "Não foi Possível Cancelar sua Aposta.",
+								"Erro.", JOptionPane.INFORMATION_MESSAGE);
+						e1.printStackTrace();
+					}
+					betHistoryWindow.updateBets();
+				}
+				removeAllBids();
+				updateStatus();
+			}
+		});
 
-		JButton cancelBidBTN = new JButton("Cancelar Lance");
+		cancelBidBTN = new JButton("Cancelar Lance");
 		cancelBidBTN.setForeground(Color.WHITE);
 		cancelBidBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
 		cancelBidBTN.setEnabled(false);
@@ -291,7 +443,26 @@ public class MatchMainWindow extends JInternalFrame {
 			public void actionPerformed(ActionEvent e) {
 				Match match = list.getSelectedValue();
 				if (match == null) {
-					JOptionPane.showMessageDialog(MatchMainWindow.this, "Selecione uma partida primeiro.");
+					JOptionPane.showMessageDialog(BetMainWindow.this, "Selecione uma partida primeiro.", "Aviso",
+							JOptionPane.INFORMATION_MESSAGE);
+					return;
+				}
+				if (betState == 7) {
+					for (Bid bid : bidArray) {
+						if (bid.getMatchID() == match.getId()) {
+							try {
+								bidDao.deleteBid(bid);
+								userDao.updateUserBalance(currentUser, (currentUser.getBalance() + bid.getPaidValue()));
+							} catch (SQLException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							removeBid(match);
+							return;
+						}
+					}
+					JOptionPane.showMessageDialog(BetMainWindow.this, "Você não fez um lance nesta partida.", "Aviso",
+							JOptionPane.INFORMATION_MESSAGE);
 					return;
 				}
 				for (Bid bid : bidArray) {
@@ -300,19 +471,30 @@ public class MatchMainWindow extends JInternalFrame {
 						return;
 					}
 				}
-				JOptionPane.showMessageDialog(MatchMainWindow.this, "Você não fez um lance nesta partida.");
+				JOptionPane.showMessageDialog(BetMainWindow.this, "Você não fez um lance nesta partida.", "Aviso",
+						JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
 
 		createBetBTN = new JButton("Iniciar Aposta");
+		createBetBTN.setEnabled(false);
 		createBetBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
 		createBetBTN.setForeground(new Color(255, 255, 255));
 		createBetBTN.setContentAreaFilled(false);
 		createBetBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		createBetBTN.setBounds(10, 169, 137, 23);
 		dataPanel.add(createBetBTN);
+		createBetBTN.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				betState = 1;
+				updateStatus();
+				JOptionPane.showMessageDialog(BetMainWindow.this,
+						"Selecione uma partida para fazer um lance.\n Após definir seus lances, confirme a aposta.",
+						"Tutorial", JOptionPane.INFORMATION_MESSAGE);
+			}
+		});
 
-		JButton updateBidBTN = new JButton("Modificar Lance");
+		updateBidBTN = new JButton("Modificar Lance");
 		updateBidBTN.setForeground(Color.WHITE);
 		updateBidBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
 		updateBidBTN.setEnabled(false);
@@ -324,8 +506,27 @@ public class MatchMainWindow extends JInternalFrame {
 			public void actionPerformed(ActionEvent e) {
 				Match match = list.getSelectedValue();
 				if (match == null) {
-					JOptionPane.showMessageDialog(MatchMainWindow.this, "Selecione uma partida primeiro.");
+					JOptionPane.showMessageDialog(BetMainWindow.this, "Selecione uma partida primeiro.", "Aviso",
+							JOptionPane.INFORMATION_MESSAGE);
 					return;
+				}
+				if (betState == 7) {
+					for (Bid bid : bidArray) {
+						if (bid.getMatchID() == match.getId()) {
+							if (bid.getBetID() == foreignBetId) {
+								try {
+									bidDao.deleteBid(bid);
+								} catch (SQLException e1) {
+									e1.printStackTrace();
+								}
+							}
+							removeBid(match);
+							bidWindow.setCurrentUser(currentUser);
+							bidWindow.setMatch(match);
+							bidWindow.setVisible(true);
+							return;
+						}
+					}
 				}
 				for (Bid bid : bidArray) {
 					if (bid.getMatchID() == match.getId()) {
@@ -336,60 +537,58 @@ public class MatchMainWindow extends JInternalFrame {
 						return;
 					}
 				}
-				JOptionPane.showMessageDialog(MatchMainWindow.this, "Você não fez um lance nesta partida.");
+				JOptionPane.showMessageDialog(BetMainWindow.this, "Você não fez um lance nesta partida.", "Aviso",
+						JOptionPane.ERROR_MESSAGE);
 
-			}
-		});
-
-		cancelBetBTN.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				bidArray.clear();
-				betStatus = 0;
-				createBetBTN.setEnabled(false);
-				updateBidBTN.setEnabled(false);
-				createBetBTN.setEnabled(true);
-				cancelBidBTN.setEnabled(false);
-				cancelBetBTN.setEnabled(false);
-				confirmBetBTN.setEnabled(false);
-				makeBidBTN.setEnabled(false);
-			}
-		});
-
-		createBetBTN.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				betStatus = 1;
-				updateStatus();
-				JOptionPane.showMessageDialog(MatchMainWindow.this,
-						"Selecione uma partida para fazer um lance.\n Após definir seus lances, confirme a aposta.",
-						"Tutorial", JOptionPane.INFORMATION_MESSAGE);
-				updateBidBTN.setEnabled(true);
-				createBetBTN.setEnabled(false);
-				cancelBidBTN.setEnabled(true);
-				cancelBetBTN.setEnabled(true);
-				confirmBetBTN.setEnabled(true);
-				makeBidBTN.setEnabled(true);
 			}
 		});
 
 		setVisible(true);
-		updateMatchs();
-		updateStatus();
+		updateButtons();
+	}
+
+	private void updateButtons() {
+		switch (betState) {
+		case 0:
+			createBetBTN.setEnabled(true);
+			historyBTN.setEnabled(true);
+			updateBidBTN.setEnabled(false);
+			cancelBidBTN.setEnabled(false);
+			cancelBetBTN.setEnabled(false);
+			confirmBetBTN.setEnabled(false);
+			makeBidBTN.setEnabled(false);
+			break;
+		default:
+			updateBidBTN.setEnabled(true);
+			cancelBidBTN.setEnabled(true);
+			cancelBetBTN.setEnabled(true);
+			confirmBetBTN.setEnabled(true);
+			makeBidBTN.setEnabled(true);
+			createBetBTN.setEnabled(false);
+			historyBTN.setEnabled(false);
+			break;
+		}
 	}
 
 	public void updateStatus() {
-		double totalCost = bidArray.stream().mapToDouble(Bid::getPaidValue).sum();
+		updateButtons();
 		double userBalance = currentUser.getBalance();
-		double balanceAfterBet = userBalance - totalCost;
-		totalCostLBL.setText(String.format("Custo Total: R$ %.2f.", totalCost));
+		double balanceAfterBet = userBalance - betTotalCost;
+
+		totalCostLBL.setText(String.format("Custo Total: R$ %.2f.", betTotalCost));
 		userBalanceLBL.setText(String.format("Saldo Atual: R$ %.2f.", userBalance));
 		balanceAfterBetLBL.setText(String.format("Saldo Restante: R$ %.2f.", balanceAfterBet));
-
-		switch (betStatus) {
+		switch (betState) {
 		case 0:
 			betStateLBL.setText("Estado: Não iniciada.");
+			totalBidsLBL.setText("");
 			break;
 		case 1:
 			betStateLBL.setText("Estado: Em criação.");
+			totalBidsLBL.setText("Lances feitos: " + bidArray.size() + ".");
+			break;
+		case 7:
+			betStateLBL.setText("Estado: Em modificação.");
 			totalBidsLBL.setText("Lances feitos: " + bidArray.size() + ".");
 			break;
 		default:
@@ -400,22 +599,12 @@ public class MatchMainWindow extends JInternalFrame {
 
 	public void updateMatchs() {
 		ArrayList<Match> matchs = null;
-		if (isUserAdmin) {
-			try {
-				matchs = matchDao.getAllMatchs();
-			} catch (SQLException e) {
-				JOptionPane.showMessageDialog(MatchMainWindow.this, "Nenhuma partida encontrada.");
-				e.printStackTrace();
-			}
-		} else {
-			try {
-				matchs = matchDao.getActiveMatchs();
-			} catch (SQLException e) {
-				JOptionPane.showMessageDialog(MatchMainWindow.this, "Nenhuma partida encontrada.");
-				e.printStackTrace();
-			}
+		try {
+			matchs = matchDao.getActiveMatchs();
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(BetMainWindow.this, "Nenhuma partida encontrada.");
+			e.printStackTrace();
 		}
-
 		listModel.clear();
 		for (Match match : matchs) {
 			listModel.addElement(match);
@@ -424,22 +613,13 @@ public class MatchMainWindow extends JInternalFrame {
 
 	public void updateMatchs(String filter) {
 		ArrayList<Match> matchs = null;
-		if (isUserAdmin) {
-			try {
-				matchs = matchDao.getAllMatchs(filter);
-			} catch (SQLException e) {
-				JOptionPane.showMessageDialog(MatchMainWindow.this, "Nenhuma partida encontrada.");
-				e.printStackTrace();
-			}
-		} else {
-			try {
-				matchs = matchDao.getActiveMatchs(filter);
-			} catch (SQLException e) {
-				JOptionPane.showMessageDialog(MatchMainWindow.this, "Nenhuma partida encontrada.");
-				e.printStackTrace();
-			}
-		}
 
+		try {
+			matchs = matchDao.getActiveMatchs(filter);
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(BetMainWindow.this, "Nenhuma partida encontrada.");
+			e.printStackTrace();
+		}
 		listModel.clear();
 		for (Match match : matchs) {
 			listModel.addElement(match);
@@ -447,19 +627,49 @@ public class MatchMainWindow extends JInternalFrame {
 	}
 
 	public void addBid(Bid bid) {
+		betTotalCost += bid.getPaidValue();
 		bidArray.add(bid);
 		updateStatus();
 	}
 
 	public void removeBid(Match match) {
-		bidArray.removeIf(bid -> bid.getMatchID() == match.getId());
+		for (Bid bid : bidArray) {
+			if (bid.getMatchID() == match.getId()) {
+				betTotalCost -= bid.getPaidValue();
+				bidArray.remove(bid);
+				break;
+			}
+		}
 		updateStatus();
 	}
 
-	/*
-	 * public void setUser(User user) { currentUser = user;
-	 * CustomListRenderer.setUser(user); }
-	 */
+	public void loadBids(ArrayList<Bid> arr) {
+		bidArray.addAll(arr);
+		betState = 7;
+		betTotalCost = arr.stream().mapToDouble(Bid::getPaidValue).sum();
+		currentUser.setBalance(currentUser.getBalance() + betTotalCost);
+		updateMatchs();
+		updateStatus();
+	}
+
+	public void removeAllBids() {
+		betState = 0;
+		betTotalCost = 0;
+		bidArray.clear();
+		updateStatus();
+	}
+
+	public User getCurrentUser() {
+		return currentUser;
+	}
+
+	public void setCurrentUser(User currentUser) {
+		this.currentUser = currentUser;
+	}
+
+	public void setForeignBetId(int foreignBetId) {
+		this.foreignBetId = foreignBetId;
+	}
 
 	public static void main(String[] args) {
 		// Garantir que a criação da GUI ocorra na Event Dispatch Thread
@@ -473,7 +683,7 @@ public class MatchMainWindow extends JInternalFrame {
 			frame.setContentPane(desktopPane);
 
 			// Adicionar uma instância de TesteClass ao JDesktopPane
-			MatchMainWindow testeClass = new MatchMainWindow();
+			BetMainWindow testeClass = new BetMainWindow();
 			desktopPane.add(testeClass);
 
 			frame.setVisible(true);

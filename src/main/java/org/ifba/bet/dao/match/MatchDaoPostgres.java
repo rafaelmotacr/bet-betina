@@ -12,8 +12,9 @@ import org.ifba.bet.model.Team;
 public class MatchDaoPostgres implements MatchDao {
 
 	@Override
+
 	public ArrayList<Match> getAllMatchs() throws SQLException {
-		ArrayList<Match> matchsArray = new ArrayList<Match>();
+		ArrayList<Match> matchArray = new ArrayList<Match>();
 		String sql = "SELECT " + "    match_tb.match_id AS id, " + "    match_tb.match_state AS state, "
 				+ "    match_tb.match_home_team_odd AS home_team_odd, "
 				+ "    match_tb.match_away_team_odd AS away_team_odd, " + "    match_tb.match_draw_odd AS draw_odd, "
@@ -28,16 +29,16 @@ public class MatchDaoPostgres implements MatchDao {
 		while (rs.next()) {
 			// public Match(int id, int state, int homeTeamId, int awayTeamId, double
 			// homeTeamOdd, double awayTeamOdd, double drawOdd) {
-			matchsArray.add(
+			matchArray.add(
 					new Match(rs.getInt("id"), rs.getInt("state"), rs.getInt("home_team_id"), rs.getInt("away_team_id"),
 							rs.getDouble("home_team_odd"), rs.getDouble("away_team_odd"), rs.getDouble("draw_odd")));
 		}
-		return matchsArray;
+		return matchArray;
 	}
 
 	@Override
 	public ArrayList<Match> getAllMatchs(String filter) throws SQLException {
-		ArrayList<Match> matchsArray = new ArrayList<Match>();
+		ArrayList<Match> matchArray = new ArrayList<Match>();
 		String sql = "SELECT " + "    match_tb.match_id AS id, " + "    match_tb.match_state AS state, "
 				+ "    match_tb.match_home_team_odd AS home_team_odd, "
 				+ "    match_tb.match_away_team_odd AS away_team_odd, " + "    match_tb.match_draw_odd AS draw_odd, "
@@ -55,16 +56,16 @@ public class MatchDaoPostgres implements MatchDao {
 					rs.getDouble("draw_odd"));
 
 			if (match.toString().toLowerCase().contains(filter)) {
-				matchsArray.add(match);
+				matchArray.add(match);
 			}
 		}
-		return matchsArray;
+		return matchArray;
 	}
 
 //calma calabreso
 	@Override
 	public ArrayList<Match> findTeamMatches(Team team) throws SQLException {
-		ArrayList<Match> matchsArray = new ArrayList<Match>();
+		ArrayList<Match> matchArray = new ArrayList<Match>();
 		String sql = "SELECT " + "    match_tb.match_id AS id, " + "    match_tb.match_state AS state, "
 				+ "    match_tb.match_home_team_odd AS home_team_odd, "
 				+ "    match_tb.match_away_team_odd AS away_team_odd, " + "    match_tb.match_draw_odd AS draw_odd, "
@@ -78,16 +79,16 @@ public class MatchDaoPostgres implements MatchDao {
 		ps.setInt(2, team.getID());
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
-			matchsArray.add(
+			matchArray.add(
 					new Match(rs.getInt("id"), rs.getInt("state"), rs.getInt("home_team_id"), rs.getInt("away_team_id"),
 							rs.getDouble("home_team_odd"), rs.getDouble("away_team_odd"), rs.getDouble("draw_odd")));
 		}
-		return matchsArray;
+		return matchArray;
 	}
 
 	@Override
 	public ArrayList<Match> getActiveMatchs() throws SQLException {
-		ArrayList<Match> matchsArray = new ArrayList<Match>();
+		ArrayList<Match> matchArray = new ArrayList<Match>();
 		String sql = "SELECT " + "    match_tb.match_id AS id, " + "    match_tb.match_state AS state, "
 				+ "    match_tb.match_home_team_odd AS home_team_odd, "
 				+ "    match_tb.match_away_team_odd AS away_team_odd, " + "    match_tb.match_draw_odd AS draw_odd, "
@@ -100,16 +101,16 @@ public class MatchDaoPostgres implements MatchDao {
 		ResultSet rs = ps.executeQuery();
 
 		while (rs.next()) {
-			matchsArray.add(
+			matchArray.add(
 					new Match(rs.getInt("id"), rs.getInt("state"), rs.getInt("home_team_id"), rs.getInt("away_team_id"),
 							rs.getDouble("home_team_odd"), rs.getDouble("away_team_odd"), rs.getDouble("draw_odd")));
 		}
-		return matchsArray;
+		return matchArray;
 	}
 
 	@Override
 	public ArrayList<Match> getActiveMatchs(String filter) throws SQLException {
-		ArrayList<Match> matchsArray = new ArrayList<Match>();
+		ArrayList<Match> matchArray = new ArrayList<Match>();
 		String sql = "SELECT " + "    match_tb.match_id AS id, " + "    match_tb.match_state AS state, "
 				+ "    match_tb.match_home_team_odd AS home_team_odd, "
 				+ "    match_tb.match_away_team_odd AS away_team_odd, " + "    match_tb.match_draw_odd AS draw_odd, "
@@ -127,10 +128,10 @@ public class MatchDaoPostgres implements MatchDao {
 					rs.getDouble("draw_odd"));
 
 			if (match.toString().toLowerCase().contains(filter)) {
-				matchsArray.add(match);
+				matchArray.add(match);
 			}
 		}
-		return matchsArray;
+		return matchArray;
 	}
 
 }

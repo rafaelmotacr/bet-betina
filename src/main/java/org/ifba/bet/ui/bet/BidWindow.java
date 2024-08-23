@@ -1,4 +1,4 @@
-package org.ifba.bet.ui.match;
+package org.ifba.bet.ui.bet;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -8,6 +8,7 @@ import java.sql.SQLException;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -30,7 +31,7 @@ public class BidWindow extends JInternalFrame {
 	private Match match = new Match(20, 1, 1, 1, 1.28, 1.45, 7.45);
 	private String homeTeamName;
 	private String awayTeamName;
-	private MatchMainWindow matchMainWindow;
+	private BetMainWindow matchMainWindow;
 
 	private User currentUser;
 
@@ -43,6 +44,8 @@ public class BidWindow extends JInternalFrame {
 	public BidWindow() {
 
 		super();
+
+		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 
 		getContentPane().setBackground(new Color(255, 255, 255));
 		setBounds(0, 0, 357, 244);
@@ -136,6 +139,12 @@ public class BidWindow extends JInternalFrame {
 		confirmBidBTN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
+				if (bidValueFLD.getText().equals("") || bidValueFLD.getText() == null) {
+					JOptionPane.showMessageDialog(BidWindow.this.getParent(), "Insira o Valor do Lance.", "Aviso",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+
 				double paidValue = Double.parseDouble(bidValueFLD.getText());
 				int guess = Integer.parseInt(group.getSelection().getActionCommand());
 				int matchId = match.getId();
@@ -185,11 +194,7 @@ public class BidWindow extends JInternalFrame {
 		update();
 	}
 
-	public MatchMainWindow getMatchMainWindow() {
-		return matchMainWindow;
-	}
-
-	public void setMatchMainWindow(MatchMainWindow matchMainWindow) {
+	public void setBetMainWindow(BetMainWindow matchMainWindow) {
 		this.matchMainWindow = matchMainWindow;
 	}
 
@@ -203,7 +208,7 @@ public class BidWindow extends JInternalFrame {
 
 	public void update() {
 		rdbtnHomeTeamWin.setText("Vitória do time " + homeTeamName + " - ODD: " + match.getHomeTeamOdd() + "%");
-		rdbtnAwayTeamWin.setText("Vitória do time" + awayTeamName + " - ODD: " + match.getAwayTeamOdd() + "%");
+		rdbtnAwayTeamWin.setText("Vitória do time " + awayTeamName + " - ODD: " + match.getAwayTeamOdd() + "%");
 		rdbtnDraw.setText("Empate - ODD: " + match.getDrawOdd() + "%");
 		matchTitleLBL.setText(match.toString());
 	}

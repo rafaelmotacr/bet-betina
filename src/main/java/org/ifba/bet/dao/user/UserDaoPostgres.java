@@ -1,10 +1,13 @@
 package org.ifba.bet.dao.user;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import org.ifba.bet.dao.connection.DatabaseConnectionSingleton;
+import org.ifba.bet.model.Bet;
 import org.ifba.bet.model.Team;
 import org.ifba.bet.model.User;
 import org.ifba.bet.util.InputManipulation;
@@ -62,19 +65,14 @@ public class UserDaoPostgres implements UserDao {
 		ps.setString(4, encryptedPassword);
 		ps.setDouble(5, saldoInicialPadrao);
 		ps.executeUpdate();
-
 	}
 
 	@Override
 	public void deletUser(User user) throws SQLException {
-		try {
-			PreparedStatement ps = DatabaseConnectionSingleton.getInstance().getConexao()
-					.prepareStatement("DELETE FROM user_tb WHERE user_id = ? ");
-			ps.setInt(1, user.getID());
-			ps.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		PreparedStatement ps = DatabaseConnectionSingleton.getInstance().getConexao()
+				.prepareStatement("DELETE FROM user_tb WHERE user_id = ? ");
+		ps.setInt(1, user.getID());
+		ps.executeUpdate();
 	}
 
 	@Override
@@ -107,58 +105,65 @@ public class UserDaoPostgres implements UserDao {
 
 	@Override
 	public void updateUserPassword(User user, String newPassword) throws SQLException {
-		try {
-			PreparedStatement ps = DatabaseConnectionSingleton.getInstance().getConexao()
-					.prepareStatement("UPDATE user_tb SET user_password = ? \r\n" + "WHERE(user_id = ?)");
-			ps.setString(1, newPassword);
-			ps.setInt(2, user.getID());
-			ps.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		PreparedStatement ps = DatabaseConnectionSingleton.getInstance().getConexao()
+				.prepareStatement("UPDATE user_tb SET user_password = ? \r\n" + "WHERE(user_id = ?)");
+		ps.setString(1, newPassword);
+		ps.setInt(2, user.getID());
+		ps.executeUpdate();
 	}
 
 	@Override
 	public void updateUserName(User user, String newUserName) throws SQLException {
-		try {
-			PreparedStatement ps = DatabaseConnectionSingleton.getInstance().getConexao()
-					.prepareStatement("UPDATE user_tb SET user_name = ? \r\n" + "WHERE(user_id = ?)");
-			ps.setString(1, newUserName);
-			ps.setInt(2, user.getID());
-			ps.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		PreparedStatement ps = DatabaseConnectionSingleton.getInstance().getConexao()
+				.prepareStatement("UPDATE user_tb SET user_name = ? \r\n" + "WHERE(user_id = ?)");
+		ps.setString(1, newUserName);
+		ps.setInt(2, user.getID());
+		ps.executeUpdate();
+		user = findUserByEmail(user.getEmail());
 	}
 
 	@Override
 	public void updateUserEmail(User user, String newEmail) throws SQLException {
-		try {
-			PreparedStatement ps = DatabaseConnectionSingleton.getInstance().getConexao()
-					.prepareStatement("UPDATE user_tb SET user_email = ? \r\n" + "WHERE(user_id = ?)");
-			ps.setString(1, newEmail);
-			ps.setInt(2, user.getID());
-			ps.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			user.setName(newEmail);
-		}
+		PreparedStatement ps = DatabaseConnectionSingleton.getInstance().getConexao()
+				.prepareStatement("UPDATE user_tb SET user_email = ? \r\n" + "WHERE(user_id = ?)");
+		ps.setString(1, newEmail);
+		ps.setInt(2, user.getID());
+		ps.executeUpdate();
+		user = findUserByEmail(newEmail);
 	}
 
 	@Override
 	public void updateUserFavoriteTeam(User user, Team team) throws SQLException {
-		try {
-			PreparedStatement ps = DatabaseConnectionSingleton.getInstance().getConexao()
-					.prepareStatement("UPDATE user_tb SET user_favorite_team_id = ? \r\n" + "WHERE user_id = ?");
-			ps.setInt(1, team.getID());
-			ps.setInt(2, user.getID());
-			ps.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			user.setFavoriteTeam(team.getID());
+		PreparedStatement ps = DatabaseConnectionSingleton.getInstance().getConexao()
+				.prepareStatement("UPDATE user_tb SET user_favorite_team_id = ? \r\n" + "WHERE user_id = ?");
+		ps.setInt(1, team.getID());
+		ps.setInt(2, user.getID());
+		ps.executeUpdate();
+		user = findUserByEmail(user.getEmail());
+	}
+
+	@Override
+	public void updateUserBalance(User user, Double newBalance) throws SQLException {
+		PreparedStatement ps = DatabaseConnectionSingleton.getInstance().getConexao()
+				.prepareStatement("UPDATE user_tb SET user_balance = ? \r\n" + "WHERE user_id = ?");
+		ps.setDouble(1, newBalance);
+		ps.setInt(2, user.getID());
+		ps.executeUpdate();
+		user.setBalance(newBalance);
+	}
+
+	@Override
+	public ArrayList<Bet> getAllBets(int userId) throws SQLException {
+		String sql = "SELECT * FROM bet_tb WHERE user_id = ? ORDER BY bet_id";
+		Connection conn = DatabaseConnectionSingleton.getInstance().getConexao();
+		ArrayList<Bet> betArray = new ArrayList<Bet>();
+		PreparedStatement ps = conn.prepareStatement(sql);
+		ps.setInt(1, userId);
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			betArray.add(new Bet(rs.getInt("bet_id"), rs.getInt("bet_state"), rs.getInt("user_id")));
 		}
+		return betArray;
 	}
 
 }
