@@ -140,7 +140,7 @@ public class ConfirmDeleteUserPanel extends JInternalFrame {
 
 		confirmationTextLabel.setVerticalAlignment(SwingConstants.TOP);
 		confirmationTextLabel.setBounds(8, 86, 178, 99);
-		confirmationTextLabel.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
+		confirmationTextLabel.setFont(new Font("Georgia", Font.PLAIN, 12));
 		getContentPane().add(confirmationTextLabel);
 	}
 

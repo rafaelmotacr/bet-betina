@@ -8,11 +8,10 @@ public class Bid {
 	private int betID;
 	private int matchID;
 
-	public Bid(double paidValue, int guess, int betID, int matchID) {
+	public Bid(double paidValue, int guess, int matchID) {
 		super();
 		this.paidValue = paidValue;
 		this.guess = guess;
-		this.betID = betID;
 		this.matchID = matchID;
 	}
 

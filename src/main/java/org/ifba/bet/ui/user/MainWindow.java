@@ -134,7 +134,7 @@ public class MainWindow {
 		logOutBTN.setForeground(new Color(255, 255, 255));
 		logOutBTN.setContentAreaFilled(false);
 		logOutBTN.setMnemonic('O');
-		logOutBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
+		logOutBTN.setFont(new Font("Georgia", Font.BOLD, 14));
 		logOutBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		logOutBTN.setVisible(false);
 
@@ -162,7 +162,7 @@ public class MainWindow {
 		createADMBTN = new JButton("Criar Novo ADM");
 		createADMBTN.setForeground(new Color(255, 255, 255));
 		createADMBTN.setContentAreaFilled(false);
-		createADMBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
+		createADMBTN.setFont(new Font("Georgia", Font.BOLD, 14));
 		createADMBTN.setBounds(271, 33, 150, 26);
 		createADMBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		createADMBTN.setVisible(false);
@@ -191,7 +191,7 @@ public class MainWindow {
 		greetingLBL.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		greetingLBL.setBounds(140, 386, 415, 34);
 		greetingLBL.setForeground(new Color(255, 255, 255));
-		greetingLBL.setFont(new Font("Comic Sans MS", Font.BOLD, 16));
+		greetingLBL.setFont(new Font("Georgia", Font.BOLD, 16));
 		greetingLBL.setBackground(new Color(51, 51, 51));
 		frame.getContentPane().add(greetingLBL);
 
@@ -220,7 +220,7 @@ public class MainWindow {
 
 		JLabel appNameLBL = new JLabel("BET BETINA");
 		appNameLBL.setBounds(2, 0, 120, 33);
-		appNameLBL.setFont(new Font("Comic Sans MS", Font.BOLD, 18));
+		appNameLBL.setFont(new Font("Georgia", Font.BOLD, 18));
 		mainPNL.add(appNameLBL);
 
 		// Botão de sair
@@ -231,7 +231,7 @@ public class MainWindow {
 		exitBTN.setBounds(12, 355, 98, 26);
 		exitBTN.setContentAreaFilled(false);
 		exitBTN.setMnemonic('S');
-		exitBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
+		exitBTN.setFont(new Font("Georgia", Font.BOLD, 14));
 		mainPNL.add(exitBTN);
 
 		// Fecha a janela principal usando o método dispose
@@ -250,8 +250,8 @@ public class MainWindow {
 		betBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		betBTN.setBounds(12, 50, 98, 26);
 		betBTN.setContentAreaFilled(false);
-		betBTN.setMnemonic('j');
-		betBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
+		betBTN.setMnemonic('A');
+		betBTN.setFont(new Font("Georgia", Font.BOLD, 14));
 		mainPNL.add(betBTN);
 		betBTN.addActionListener(new ActionListener() {
 			@Override
@@ -281,7 +281,7 @@ public class MainWindow {
 		teamBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		teamBTN.setBounds(12, 87, 98, 26);
 		teamBTN.setContentAreaFilled(false);
-		teamBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
+		teamBTN.setFont(new Font("Georgia", Font.BOLD, 14));
 		mainPNL.add(teamBTN);
 		teamBTN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -303,7 +303,7 @@ public class MainWindow {
 		titleBarPNL.setLayout(null);
 
 		JLabel titleLBL = new JLabel("Bet-Betina v1.23 - Home");
-		titleLBL.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
+		titleLBL.setFont(new Font("Georgia", Font.BOLD, 14));
 		titleLBL.setForeground(new Color(255, 255, 255));
 		titleLBL.setBounds(10, 4, 185, 16);
 		titleBarPNL.add(titleLBL);
@@ -323,7 +323,7 @@ public class MainWindow {
 		registerUserBTN = new JButton("Registrar");
 		registerUserBTN.setBounds(431, 33, 124, 26);
 		frame.getContentPane().add(registerUserBTN);
-		registerUserBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
+		registerUserBTN.setFont(new Font("Georgia", Font.BOLD, 14));
 		registerUserBTN.setForeground(new Color(255, 255, 255));
 		registerUserBTN.setContentAreaFilled(false);
 		registerUserBTN.setMnemonic('R');
@@ -338,7 +338,7 @@ public class MainWindow {
 		profileBTN.setForeground(new Color(255, 255, 255));
 		profileBTN.setContentAreaFilled(false);
 		profileBTN.setMnemonic('p');
-		profileBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
+		profileBTN.setFont(new Font("Georgia", Font.BOLD, 14));
 		profileBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		// Botão de log in
 		// -- parent = frame
@@ -346,7 +346,7 @@ public class MainWindow {
 		loginBTN = new JButton("Fazer Log In");
 		loginBTN.setBounds(140, 33, 121, 26);
 		frame.getContentPane().add(loginBTN);
-		loginBTN.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
+		loginBTN.setFont(new Font("Georgia", Font.BOLD, 14));
 		loginBTN.setForeground(new Color(255, 255, 255));
 		loginBTN.setContentAreaFilled(false);
 		loginBTN.setFocusPainted(false);
@@ -420,15 +420,15 @@ public class MainWindow {
 		highlitsPNL.setLayout(null);
 
 		JLabel highlitsLBL = new JLabel("Partidas Ativas");
-		highlitsLBL.setBounds(30, 2, 134, 22);
-		highlitsLBL.setFont(new Font("Comic Sans MS", Font.BOLD, 18));
+		highlitsLBL.setBounds(27, 2, 140, 22);
+		highlitsLBL.setFont(new Font("Georgia", Font.BOLD, 18));
 		highlitsPNL.add(highlitsLBL);
 
 		listModel = new DefaultListModel<>();
 		JList<Match> highlitsList = new JList<>(listModel);
 
 		highlitsList.setOpaque(false);
-		highlitsList.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
+		highlitsList.setFont(new Font("Georgia", Font.PLAIN, 14));
 		highlitsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 		frame.getContentPane().add(logOutBTN);
 		highlitsList.addMouseListener(new MouseAdapter() {

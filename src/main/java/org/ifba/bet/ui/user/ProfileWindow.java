@@ -96,7 +96,7 @@ public class ProfileWindow extends JInternalFrame {
 		nameLBL = new JLabel();
 		nameLBL.setBounds(12, 77, 202, 14);
 		mainPanel.add(nameLBL);
-		nameLBL.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
+		nameLBL.setFont(new Font("Georgia", Font.PLAIN, 12));
 
 		// Label onde o saldo atual do usuário é exibido
 		// -- parent = mainPanel
@@ -104,7 +104,7 @@ public class ProfileWindow extends JInternalFrame {
 		balanceLBL = new JLabel();
 		balanceLBL.setBounds(12, 103, 163, 14);
 		mainPanel.add(balanceLBL);
-		balanceLBL.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
+		balanceLBL.setFont(new Font("Georgia", Font.PLAIN, 12));
 
 		// Label que exibe uma imagem de perfil genérica para o usuário
 		// -- parent = mainPanel
@@ -129,7 +129,7 @@ public class ProfileWindow extends JInternalFrame {
 		JLabel totalBetsLBL = new JLabel();
 		totalBetsLBL.setBounds(12, 153, 163, 14);
 		mainPanel.add(totalBetsLBL);
-		totalBetsLBL.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
+		totalBetsLBL.setFont(new Font("Georgia", Font.PLAIN, 12));
 
 		// Label que exibe o total de derrotas de um usuário
 		// -- parent = dataPanel
@@ -137,7 +137,7 @@ public class ProfileWindow extends JInternalFrame {
 		JLabel totalLosesLBL = new JLabel();
 		totalLosesLBL.setBounds(12, 179, 163, 14);
 		mainPanel.add(totalLosesLBL);
-		totalLosesLBL.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
+		totalLosesLBL.setFont(new Font("Georgia", Font.PLAIN, 12));
 
 		// Label que exibe o total de triunfos de um usuário
 		// -- parent = dataPanel
@@ -145,7 +145,7 @@ public class ProfileWindow extends JInternalFrame {
 		JLabel totalWinsLBL = new JLabel();
 		totalWinsLBL.setBounds(12, 205, 163, 14);
 		mainPanel.add(totalWinsLBL);
-		totalWinsLBL.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
+		totalWinsLBL.setFont(new Font("Georgia", Font.PLAIN, 12));
 
 		// Label que exibe a taxa de acerto de um user
 		// -- parent = dataPanel
@@ -153,7 +153,7 @@ public class ProfileWindow extends JInternalFrame {
 		JLabel victoryRateLBL = new JLabel();
 		victoryRateLBL.setBounds(12, 231, 163, 14);
 		mainPanel.add(victoryRateLBL);
-		victoryRateLBL.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
+		victoryRateLBL.setFont(new Font("Georgia", Font.PLAIN, 12));
 
 		// Label que exibe o time favorito de um usuário
 		// baseado no time que ele mais apostou ao longo do tempo
@@ -162,7 +162,7 @@ public class ProfileWindow extends JInternalFrame {
 		JLabel favoriteTeamLBL = new JLabel();
 		favoriteTeamLBL.setBounds(12, 257, 163, 14);
 		mainPanel.add(favoriteTeamLBL);
-		favoriteTeamLBL.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
+		favoriteTeamLBL.setFont(new Font("Georgia", Font.PLAIN, 12));
 
 		// Painel que contém os dados do usuário
 		// -- parent = this
@@ -180,7 +180,7 @@ public class ProfileWindow extends JInternalFrame {
 		JLabel dataTextPNL = new JLabel("DADOS");
 		dataTextPNL.setBounds(61, 11, 72, 28);
 		dataTextPNL.setForeground(Color.WHITE);
-		dataTextPNL.setFont(new Font("Comic Sans MS", Font.PLAIN, 20));
+		dataTextPNL.setFont(new Font("Georgia", Font.PLAIN, 20));
 		dataPanel.add(dataTextPNL);
 
 		// Label que exibe o id do usuário atual
@@ -188,7 +188,7 @@ public class ProfileWindow extends JInternalFrame {
 
 		idLBL = new JLabel();
 		idLBL.setForeground(Color.WHITE);
-		idLBL.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
+		idLBL.setFont(new Font("Georgia", Font.PLAIN, 12));
 		idLBL.setBounds(11, 50, 46, 14);
 		dataPanel.add(idLBL);
 
@@ -197,7 +197,7 @@ public class ProfileWindow extends JInternalFrame {
 
 		JLabel nameTextPNL = new JLabel("NOME");
 		nameTextPNL.setForeground(new Color(255, 255, 255));
-		nameTextPNL.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
+		nameTextPNL.setFont(new Font("Georgia", Font.PLAIN, 12));
 		nameTextPNL.setBounds(11, 74, 46, 14);
 		dataPanel.add(nameTextPNL);
 
@@ -216,7 +216,7 @@ public class ProfileWindow extends JInternalFrame {
 
 		JLabel emailTextPNL = new JLabel("EMAIL");
 		emailTextPNL.setForeground(Color.WHITE);
-		emailTextPNL.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
+		emailTextPNL.setFont(new Font("Georgia", Font.PLAIN, 12));
 		emailTextPNL.setBounds(11, 118, 46, 14);
 		dataPanel.add(emailTextPNL);
 
@@ -237,7 +237,7 @@ public class ProfileWindow extends JInternalFrame {
 
 		JLabel passwordTextLBL = new JLabel("SENHA");
 		passwordTextLBL.setForeground(Color.WHITE);
-		passwordTextLBL.setFont(new Font("Comic Sans MS", Font.PLAIN, 20));
+		passwordTextLBL.setFont(new Font("Georgia", Font.PLAIN, 20));
 		passwordTextLBL.setBounds(61, 152, 72, 28);
 		dataPanel.add(passwordTextLBL);
 
@@ -246,7 +246,7 @@ public class ProfileWindow extends JInternalFrame {
 
 		JLabel changePasswordTextLBL = new JLabel("NOVA SENHA");
 		changePasswordTextLBL.setForeground(Color.WHITE);
-		changePasswordTextLBL.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
+		changePasswordTextLBL.setFont(new Font("Georgia", Font.PLAIN, 12));
 		changePasswordTextLBL.setBounds(11, 184, 99, 14);
 		dataPanel.add(changePasswordTextLBL);
 
@@ -266,7 +266,7 @@ public class ProfileWindow extends JInternalFrame {
 
 		JLabel confirmPasswordTextLBL = new JLabel("CONFIRMAR NOVA SENHA");
 		confirmPasswordTextLBL.setForeground(Color.WHITE);
-		confirmPasswordTextLBL.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
+		confirmPasswordTextLBL.setFont(new Font("Georgia", Font.PLAIN, 12));
 		confirmPasswordTextLBL.setBounds(11, 229, 173, 14);
 		dataPanel.add(confirmPasswordTextLBL);
 
@@ -465,7 +465,7 @@ public class ProfileWindow extends JInternalFrame {
 
 		JLabel statementLBL = new JLabel("EXTRATO");
 		statementLBL.setForeground(Color.WHITE);
-		statementLBL.setFont(new Font("Comic Sans MS", Font.PLAIN, 20));
+		statementLBL.setFont(new Font("Georgia", Font.PLAIN, 20));
 		statementLBL.setBounds(45, 11, 103, 28);
 		statementPNL.add(statementLBL);
 

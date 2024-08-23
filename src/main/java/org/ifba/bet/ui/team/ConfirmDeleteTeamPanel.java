@@ -99,7 +99,7 @@ public class ConfirmDeleteTeamPanel extends JInternalFrame {
 		getContentPane().add(lblNewLabel);
 
 		confirmDeleteLBL = new JLabel("");
-		confirmDeleteLBL.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
+		confirmDeleteLBL.setFont(new Font("Georgia", Font.PLAIN, 12));
 		confirmDeleteLBL.setBounds(10, 57, 121, 123);
 		getContentPane().add(confirmDeleteLBL);
 

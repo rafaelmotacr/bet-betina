@@ -37,10 +37,10 @@ public class MatchMainWindow extends JInternalFrame {
 	private MatchDaoPostgres matchDao = new MatchDaoPostgres();
 	@SuppressWarnings("unused")
 	private UserDaoPostgres userDao = new UserDaoPostgres();
-	private User currentUser = new User(50, 0, 1.578, "ademiro", "null", "senha");
+	private User currentUser = new User(50, 0, 1578.00, "ademiro", "null", "senha");
 	private JTextField searchFLD;
 	private JButton createBetBTN;
-	private CustomListRenderer CustomListRenderer;
+	private MatchCustomListRenderer CustomListRenderer;
 	private DefaultListModel<Match> listModel;
 
 	private JLabel totalCostLBL;
@@ -62,10 +62,13 @@ public class MatchMainWindow extends JInternalFrame {
 		setTitle("Bet-Betina v1.23 - Menu de Partidas");
 		setClosable(true);
 		setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-		setBounds(0, 0, 640, 360);
+		setBounds(0, 0, 704, 396);
 		getContentPane().setLayout(null);
 
 		BidWindow bidWindow = new BidWindow();
+		bidWindow.setVisible(false);
+		bidWindow.setClosable(true);
+		bidWindow.setMatchMainWindow(MatchMainWindow.this);
 		bidWindow.setLocation(140, 44);
 		setLocation(259, 78);
 		getContentPane().add(bidWindow);
@@ -73,28 +76,30 @@ public class MatchMainWindow extends JInternalFrame {
 		listModel = new DefaultListModel<>();
 		JList<Match> list = new JList<>(listModel);
 
-		CustomListRenderer = new CustomListRenderer();
+		CustomListRenderer = new MatchCustomListRenderer();
+		CustomListRenderer.setBidArray(bidArray);
+
 		list.setOpaque(false);
-		list.setFont(new Font("Comic Sans MS", Font.BOLD, 16));
+		list.setFont(new Font("Georgia", Font.BOLD, 16));
 		list.setCellRenderer(CustomListRenderer);
 
 		JScrollPane scrollPane = new JScrollPane(list);
 		scrollPane.setBorder(new LineBorder(new Color(0, 0, 0), 2, true));
-		scrollPane.setBounds(164, 32, 310, 266);
+		scrollPane.setBounds(164, 32, 310, 299);
 		getContentPane().add(scrollPane);
 
 		JPanel dataPanel = new JPanel();
 		dataPanel.setLayout(null);
 		dataPanel.setBorder(new LineBorder(new Color(0, 0, 0), 2, true));
 		dataPanel.setBackground(new Color(0, 128, 128));
-		dataPanel.setBounds(0, 32, 157, 303);
+		dataPanel.setBounds(0, 32, 157, 336);
 		getContentPane().add(dataPanel);
 
 		JButton searchBTN = new JButton("Buscar Partida");
 		searchBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		searchBTN.setForeground(new Color(255, 255, 255));
 		searchBTN.setContentAreaFilled(false);
-		searchBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
+		searchBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
 		searchBTN.setBounds(10, 42, 137, 23);
 		dataPanel.add(searchBTN);
 		searchBTN.addActionListener(new ActionListener() {
@@ -118,17 +123,17 @@ public class MatchMainWindow extends JInternalFrame {
 			}
 		});
 		searchFLD.setEnabled(false);
-		searchFLD.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
+		searchFLD.setFont(new Font("Georgia", Font.PLAIN, 12));
 		searchFLD.setText("Nome do time...");
 		searchFLD.setBounds(10, 11, 111, 23);
 		dataPanel.add(searchFLD);
 		searchFLD.setColumns(10);
 
 		JButton backBTN = new JButton("");
-		backBTN.setIcon(new ImageIcon(MatchMainWindow.class.getResource("/resources/backBTN.png")));
+		backBTN.setIcon(new ImageIcon("src/main/resources/backBTN.png"));
 		backBTN.setContentAreaFilled(false);
 		backBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-		backBTN.setBounds(10, 271, 30, 23);
+		backBTN.setBounds(10, 302, 30, 23);
 		dataPanel.add(backBTN);
 		backBTN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -137,7 +142,7 @@ public class MatchMainWindow extends JInternalFrame {
 		});
 
 		JButton refreshBTN = new JButton("");
-		refreshBTN.setIcon(new ImageIcon(MatchMainWindow.class.getResource("/resources/reload.png")));
+		refreshBTN.setIcon(new ImageIcon("src/main/resources/reload.png"));
 		refreshBTN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				searchFLD.setText(null);
@@ -149,41 +154,49 @@ public class MatchMainWindow extends JInternalFrame {
 		refreshBTN.setBorderPainted(false);
 		refreshBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		refreshBTN.setContentAreaFilled(false);
-		refreshBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 8));
+		refreshBTN.setFont(new Font("Georgia", Font.PLAIN, 8));
 		refreshBTN.setBounds(124, 11, 23, 23);
 		dataPanel.add(refreshBTN);
 
 		JButton makeBidBTN = new JButton("Fazer Lance");
 		makeBidBTN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (list.getSelectedValue() == null) {
+				Match match = list.getSelectedValue();
+				if (match == null) {
 					JOptionPane.showMessageDialog(MatchMainWindow.this, "Selecione uma partida primeiro.");
 					return;
 				}
-				bidWindow.setMatchMainWindow(MatchMainWindow.this);
+				for (Bid bid : bidArray) {
+					if (bid.getMatchID() == match.getId()) {
+						JOptionPane.showMessageDialog(MatchMainWindow.this, "Você já fez um lance nesta partida.");
+						return;
+					}
+				}
+				bidWindow.setCurrentUser(currentUser);
 				bidWindow.setMatch(list.getSelectedValue());
 				bidWindow.setVisible(true);
 			}
 		});
+
 		makeBidBTN.setEnabled(false);
 		makeBidBTN.setForeground(Color.WHITE);
-		makeBidBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
+		makeBidBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
 		makeBidBTN.setContentAreaFilled(false);
 		makeBidBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-		makeBidBTN.setBounds(10, 210, 137, 23);
+		makeBidBTN.setBounds(10, 203, 137, 23);
 		dataPanel.add(makeBidBTN);
 
 		JButton btnMinhasApostas = new JButton("Minhas Apostas");
 		btnMinhasApostas.setForeground(Color.WHITE);
-		btnMinhasApostas.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
+		btnMinhasApostas.setFont(new Font("Georgia", Font.PLAIN, 14));
 		btnMinhasApostas.setContentAreaFilled(false);
 		btnMinhasApostas.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-		btnMinhasApostas.setBounds(44, 271, 103, 23);
+		btnMinhasApostas.setBounds(44, 302, 103, 23);
 		dataPanel.add(btnMinhasApostas);
 
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(0, 0, 0));
-		panel.setBounds(0, 0, 638, 28);
+		panel.setBounds(0, 0, 702, 28);
 		getContentPane().add(panel);
 		panel.setLayout(null);
 
@@ -191,102 +204,167 @@ public class MatchMainWindow extends JInternalFrame {
 		OperationsTextPNL.setBounds(10, 0, 130, 28);
 		panel.add(OperationsTextPNL);
 		OperationsTextPNL.setForeground(new Color(255, 255, 255));
-		OperationsTextPNL.setFont(new Font("Comic Sans MS", Font.PLAIN, 20));
+		OperationsTextPNL.setFont(new Font("Georgia", Font.PLAIN, 20));
 
 		JLabel lblTimesCorrespondentes = new JLabel("PARTIDAS DISPONÍVEIS");
 		lblTimesCorrespondentes.setBounds(168, 0, 307, 28);
 		panel.add(lblTimesCorrespondentes);
 		lblTimesCorrespondentes.setForeground(new Color(255, 255, 255));
-		lblTimesCorrespondentes.setFont(new Font("Comic Sans MS", Font.PLAIN, 20));
+		lblTimesCorrespondentes.setFont(new Font("Georgia", Font.PLAIN, 20));
 
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		panel_1.setBackground(new Color(0, 128, 128));
-		panel_1.setBounds(481, 32, 157, 303);
+		panel_1.setBounds(481, 32, 221, 336);
 		getContentPane().add(panel_1);
 		panel_1.setLayout(null);
 
 		JLabel lblStatus = new JLabel("Status Da Aposta");
 		lblStatus.setForeground(Color.WHITE);
-		lblStatus.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
+		lblStatus.setFont(new Font("Georgia", Font.PLAIN, 16));
 		lblStatus.setBounds(13, 5, 130, 23);
 		panel_1.add(lblStatus);
 
 		JPanel blackLine_1 = new JPanel();
 		blackLine_1.setForeground(Color.BLACK);
 		blackLine_1.setBackground(Color.BLACK);
-		blackLine_1.setBounds(2, 29, 155, 3);
+		blackLine_1.setBounds(0, 27, 221, 3);
 		panel_1.add(blackLine_1);
 
 		totalBidsLBL = new JLabel();
-		totalBidsLBL.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
+		totalBidsLBL.setFont(new Font("Georgia", Font.PLAIN, 12));
 		totalBidsLBL.setForeground(new Color(255, 255, 255));
 		totalBidsLBL.setBounds(10, 34, 133, 14);
 		panel_1.add(totalBidsLBL);
 
 		userBalanceLBL = new JLabel();
 		userBalanceLBL.setForeground(Color.WHITE);
-		userBalanceLBL.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
-		userBalanceLBL.setBounds(13, 235, 137, 14);
+		userBalanceLBL.setFont(new Font("Georgia", Font.PLAIN, 12));
+		userBalanceLBL.setBounds(13, 261, 198, 14);
 		panel_1.add(userBalanceLBL);
 
 		totalCostLBL = new JLabel();
 		totalCostLBL.setForeground(Color.WHITE);
-		totalCostLBL.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
-		totalCostLBL.setBounds(13, 249, 133, 14);
+		totalCostLBL.setFont(new Font("Georgia", Font.PLAIN, 12));
+		totalCostLBL.setBounds(13, 286, 198, 14);
 		panel_1.add(totalCostLBL);
 
 		betStateLBL = new JLabel();
 		betStateLBL.setForeground(Color.WHITE);
-		betStateLBL.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
+		betStateLBL.setFont(new Font("Georgia", Font.PLAIN, 12));
 		betStateLBL.setBounds(10, 53, 133, 14);
 		panel_1.add(betStateLBL);
 
 		balanceAfterBetLBL = new JLabel();
 		balanceAfterBetLBL.setForeground(Color.WHITE);
-		balanceAfterBetLBL.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
-		balanceAfterBetLBL.setBounds(13, 266, 137, 14);
+		balanceAfterBetLBL.setFont(new Font("Georgia", Font.PLAIN, 12));
+		balanceAfterBetLBL.setBounds(13, 311, 198, 14);
 		panel_1.add(balanceAfterBetLBL);
 
 		JButton confirmBetBTN = new JButton("Confirmar Aposta");
 		confirmBetBTN.setEnabled(false);
-		confirmBetBTN.setBounds(324, 303, 150, 23);
+		confirmBetBTN.setBounds(324, 342, 150, 23);
 		getContentPane().add(confirmBetBTN);
 		confirmBetBTN.setForeground(new Color(0, 0, 0));
-		confirmBetBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
+		confirmBetBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
 		confirmBetBTN.setContentAreaFilled(false);
 		confirmBetBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 
 		JButton cancelBetBTN = new JButton("Cancelar Aposta");
 		cancelBetBTN.setEnabled(false);
-		cancelBetBTN.setBounds(163, 303, 150, 23);
+		cancelBetBTN.setBounds(164, 342, 150, 23);
 		getContentPane().add(cancelBetBTN);
 		cancelBetBTN.setForeground(new Color(255, 0, 0));
-		cancelBetBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
+		cancelBetBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
 		cancelBetBTN.setContentAreaFilled(false);
 		cancelBetBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 
+		JButton cancelBidBTN = new JButton("Cancelar Lance");
+		cancelBidBTN.setForeground(Color.WHITE);
+		cancelBidBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
+		cancelBidBTN.setEnabled(false);
+		cancelBidBTN.setContentAreaFilled(false);
+		cancelBidBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+		cancelBidBTN.setBounds(10, 237, 137, 23);
+		dataPanel.add(cancelBidBTN);
+		cancelBidBTN.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Match match = list.getSelectedValue();
+				if (match == null) {
+					JOptionPane.showMessageDialog(MatchMainWindow.this, "Selecione uma partida primeiro.");
+					return;
+				}
+				for (Bid bid : bidArray) {
+					if (bid.getMatchID() == match.getId()) {
+						removeBid(match);
+						return;
+					}
+				}
+				JOptionPane.showMessageDialog(MatchMainWindow.this, "Você não fez um lance nesta partida.");
+			}
+		});
+
 		createBetBTN = new JButton("Iniciar Aposta");
-		createBetBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
+		createBetBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
 		createBetBTN.setForeground(new Color(255, 255, 255));
 		createBetBTN.setContentAreaFilled(false);
 		createBetBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-		createBetBTN.setBounds(10, 176, 137, 23);
+		createBetBTN.setBounds(10, 169, 137, 23);
 		dataPanel.add(createBetBTN);
 
-		JButton btnVerLances = new JButton("Conferir Lances");
-		btnVerLances.setForeground(Color.WHITE);
-		btnVerLances.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
-		btnVerLances.setEnabled(false);
-		btnVerLances.setContentAreaFilled(false);
-		btnVerLances.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-		btnVerLances.setBounds(10, 244, 137, 23);
-		dataPanel.add(btnVerLances);
+		JButton updateBidBTN = new JButton("Modificar Lance");
+		updateBidBTN.setForeground(Color.WHITE);
+		updateBidBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
+		updateBidBTN.setEnabled(false);
+		updateBidBTN.setContentAreaFilled(false);
+		updateBidBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+		updateBidBTN.setBounds(10, 268, 137, 23);
+		dataPanel.add(updateBidBTN);
+		updateBidBTN.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Match match = list.getSelectedValue();
+				if (match == null) {
+					JOptionPane.showMessageDialog(MatchMainWindow.this, "Selecione uma partida primeiro.");
+					return;
+				}
+				for (Bid bid : bidArray) {
+					if (bid.getMatchID() == match.getId()) {
+						removeBid(match);
+						bidWindow.setCurrentUser(currentUser);
+						bidWindow.setMatch(match);
+						bidWindow.setVisible(true);
+						return;
+					}
+				}
+				JOptionPane.showMessageDialog(MatchMainWindow.this, "Você não fez um lance nesta partida.");
+
+			}
+		});
+
+		cancelBetBTN.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				bidArray.clear();
+				betStatus = 0;
+				createBetBTN.setEnabled(false);
+				updateBidBTN.setEnabled(false);
+				createBetBTN.setEnabled(true);
+				cancelBidBTN.setEnabled(false);
+				cancelBetBTN.setEnabled(false);
+				confirmBetBTN.setEnabled(false);
+				makeBidBTN.setEnabled(false);
+			}
+		});
+
 		createBetBTN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				betStatus = 1;
 				updateStatus();
+				JOptionPane.showMessageDialog(MatchMainWindow.this,
+						"Selecione uma partida para fazer um lance.\n Após definir seus lances, confirme a aposta.",
+						"Tutorial", JOptionPane.INFORMATION_MESSAGE);
+				updateBidBTN.setEnabled(true);
 				createBetBTN.setEnabled(false);
+				cancelBidBTN.setEnabled(true);
 				cancelBetBTN.setEnabled(true);
 				confirmBetBTN.setEnabled(true);
 				makeBidBTN.setEnabled(true);
@@ -296,23 +374,28 @@ public class MatchMainWindow extends JInternalFrame {
 		setVisible(true);
 		updateMatchs();
 		updateStatus();
-		CustomListRenderer.setUser(currentUser);
 	}
 
 	public void updateStatus() {
 		double totalCost = bidArray.stream().mapToDouble(Bid::getPaidValue).sum();
 		double userBalance = currentUser.getBalance();
 		double balanceAfterBet = userBalance - totalCost;
-		totalBidsLBL.setText("Lances feitos: " + bidArray.size() + ".");
-		totalCostLBL.setText("Custo Total: " + totalCost + ".");
-		userBalanceLBL.setText("Saldo Atual: R$ " + userBalance + ".");
-		balanceAfterBetLBL.setText("Saldo Restante: " + balanceAfterBet + ".");
-		if (betStatus == 0) {
-			betStateLBL.setText("Estado: Não iniciada.");
-		} else {
-			betStateLBL.setText("Estado: Em crição.");
-		}
+		totalCostLBL.setText(String.format("Custo Total: R$ %.2f.", totalCost));
+		userBalanceLBL.setText(String.format("Saldo Atual: R$ %.2f.", userBalance));
+		balanceAfterBetLBL.setText(String.format("Saldo Restante: R$ %.2f.", balanceAfterBet));
 
+		switch (betStatus) {
+		case 0:
+			betStateLBL.setText("Estado: Não iniciada.");
+			break;
+		case 1:
+			betStateLBL.setText("Estado: Em criação.");
+			totalBidsLBL.setText("Lances feitos: " + bidArray.size() + ".");
+			break;
+		default:
+			betStateLBL.setText("Estado: Desconhecido.");
+			break;
+		}
 	}
 
 	public void updateMatchs() {
@@ -365,6 +448,11 @@ public class MatchMainWindow extends JInternalFrame {
 
 	public void addBid(Bid bid) {
 		bidArray.add(bid);
+		updateStatus();
+	}
+
+	public void removeBid(Match match) {
+		bidArray.removeIf(bid -> bid.getMatchID() == match.getId());
 		updateStatus();
 	}
 

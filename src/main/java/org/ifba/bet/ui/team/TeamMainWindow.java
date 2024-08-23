@@ -61,7 +61,6 @@ public class TeamMainWindow extends JInternalFrame {
 		UpdateTeamWindow updateTeamWindow = new UpdateTeamWindow();
 		updateTeamWindow.setBounds(159, 62, 320, 208);
 		getContentPane().add(updateTeamWindow);
-		updateTeamWindow.setVisible(false);
 
 //		Criação de painel de time
 		CreateTeamWindow createTeamWindow = new CreateTeamWindow();
@@ -82,7 +81,7 @@ public class TeamMainWindow extends JInternalFrame {
 
 //        fru fru
 		list.setOpaque(false);
-		list.setFont(new Font("Comic Sans MS", Font.BOLD, 16));
+		list.setFont(new Font("Georgia", Font.BOLD, 16));
 		list.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 		list.setCellRenderer(CustomListRenderer);
 
@@ -106,7 +105,7 @@ public class TeamMainWindow extends JInternalFrame {
 		searchBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		searchBTN.setForeground(new Color(255, 255, 255));
 		searchBTN.setContentAreaFilled(false);
-		searchBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
+		searchBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
 		dataPanel.add(searchBTN);
 //        Ação realizada pelo botão
 		searchBTN.addActionListener(new ActionListener() {
@@ -137,7 +136,7 @@ public class TeamMainWindow extends JInternalFrame {
 			}
 		});
 		searchFLD.setEnabled(false);
-		searchFLD.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
+		searchFLD.setFont(new Font("Georgia", Font.PLAIN, 12));
 		searchFLD.setText("Nome do time...");
 		dataPanel.add(searchFLD);
 		searchFLD.setColumns(10);
@@ -145,7 +144,7 @@ public class TeamMainWindow extends JInternalFrame {
 		createTeamBTN = new JButton("Criar Time");
 		createTeamBTN.setBounds(10, 164, 137, 23);
 		createTeamBTN.setVisible(false);
-		createTeamBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
+		createTeamBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
 		createTeamBTN.setForeground(new Color(255, 255, 255));
 		createTeamBTN.setContentAreaFilled(false);
 		createTeamBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
@@ -161,7 +160,7 @@ public class TeamMainWindow extends JInternalFrame {
 		updateTeamBTN.setBounds(10, 198, 137, 23);
 		updateTeamBTN.setVisible(false);
 		updateTeamBTN.setForeground(Color.WHITE);
-		updateTeamBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
+		updateTeamBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
 		updateTeamBTN.setContentAreaFilled(false);
 		updateTeamBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		dataPanel.add(updateTeamBTN);
@@ -182,7 +181,7 @@ public class TeamMainWindow extends JInternalFrame {
 		DeleteTeamBTN.setBounds(43, 266, 104, 23);
 		DeleteTeamBTN.setVisible(false);
 		DeleteTeamBTN.setForeground(Color.WHITE);
-		DeleteTeamBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
+		DeleteTeamBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
 		DeleteTeamBTN.setContentAreaFilled(false);
 		DeleteTeamBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		dataPanel.add(DeleteTeamBTN);
@@ -215,7 +214,7 @@ public class TeamMainWindow extends JInternalFrame {
 		bookmarkTeamBTN.setBounds(10, 232, 137, 23);
 		bookmarkTeamBTN.setVisible(false);
 		bookmarkTeamBTN.setForeground(Color.WHITE);
-		bookmarkTeamBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
+		bookmarkTeamBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
 		bookmarkTeamBTN.setContentAreaFilled(false);
 		bookmarkTeamBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		dataPanel.add(bookmarkTeamBTN);
@@ -244,7 +243,7 @@ public class TeamMainWindow extends JInternalFrame {
 		refreshBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		refreshBTN.setIcon(new ImageIcon("src/main/resources/reload.png"));
 		refreshBTN.setContentAreaFilled(false);
-		refreshBTN.setFont(new Font("Comic Sans MS", Font.PLAIN, 8));
+		refreshBTN.setFont(new Font("Georgia", Font.PLAIN, 8));
 		dataPanel.add(refreshBTN);
 		refreshBTN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -268,13 +267,13 @@ public class TeamMainWindow extends JInternalFrame {
 		OperationsTextPNL.setBounds(10, 0, 130, 28);
 		panel.add(OperationsTextPNL);
 		OperationsTextPNL.setForeground(new Color(255, 255, 255));
-		OperationsTextPNL.setFont(new Font("Comic Sans MS", Font.PLAIN, 20));
+		OperationsTextPNL.setFont(new Font("Georgia", Font.PLAIN, 20));
 
 		JLabel lblTimesCorrespondentes = new JLabel("TIMES CORRESPONDENTES");
 		lblTimesCorrespondentes.setBounds(159, 0, 307, 28);
 		panel.add(lblTimesCorrespondentes);
 		lblTimesCorrespondentes.setForeground(new Color(255, 255, 255));
-		lblTimesCorrespondentes.setFont(new Font("Comic Sans MS", Font.PLAIN, 20));
+		lblTimesCorrespondentes.setFont(new Font("Georgia", Font.PLAIN, 20));
 		setVisible(true);
 
 		updateTeams();
