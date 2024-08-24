@@ -353,7 +353,7 @@ public class ProfileWindow extends JInternalFrame {
 						// Tenta atualizar o email
 
 						try {
-							dao.updateUserName(currentUser, email);
+							dao.updateUserEmail(currentUser, email);
 							JOptionPane.showMessageDialog(ProfileWindow.this, "Email atualizado com sucesso.");
 							userChanged = true;
 						} catch (SQLException e1) {

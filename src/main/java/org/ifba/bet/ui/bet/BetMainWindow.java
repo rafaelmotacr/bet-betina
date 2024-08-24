@@ -43,7 +43,7 @@ public class BetMainWindow extends JInternalFrame {
 
 	private User currentUser;
 	private JTextField searchFLD;
-	private BetMatchCustomListRenderer customListRenderer;
+	private BetMatchCustomListRenderer customListRenderer = new BetMatchCustomListRenderer();
 	private DefaultListModel<Match> listModel;
 
 	private JLabel totalCostLBL;
@@ -69,12 +69,6 @@ public class BetMainWindow extends JInternalFrame {
 	public BetMainWindow() {
 
 		super();
-		try {
-			currentUser = userDao.findUserByEmail("rafaelmota@gmail.com");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		bidArray = new ArrayList<Bid>();
 
 		setTitle("Bet-Betina v1.23 - Menu de Apostas");
@@ -87,23 +81,17 @@ public class BetMainWindow extends JInternalFrame {
 		BidWindow bidWindow = new BidWindow();
 		bidWindow.setVisible(false);
 		bidWindow.setClosable(true);
-		bidWindow.setBetMainWindow(BetMainWindow.this);
 		bidWindow.setLocation(140, 44);
 		getContentPane().add(bidWindow);
 
 		BetHistoryWindow betHistoryWindow = new BetHistoryWindow();
 		betHistoryWindow.setVisible(false);
 		betHistoryWindow.setClosable(true);
-		betHistoryWindow.setBetMainWindow(BetMainWindow.this);
-		betHistoryWindow.setCurrentUser(currentUser);
 		betHistoryWindow.setLocation(140, 44);
-
 		getContentPane().add(betHistoryWindow);
 
 		listModel = new DefaultListModel<>();
 		JList<Match> list = new JList<>(listModel);
-
-		customListRenderer = new BetMatchCustomListRenderer();
 		customListRenderer.setBidArray(bidArray);
 
 		list.setOpaque(false);
@@ -201,6 +189,7 @@ public class BetMainWindow extends JInternalFrame {
 						return;
 					}
 				}
+				bidWindow.setBetMainWindow(BetMainWindow.this);
 				bidWindow.setCurrentUser(currentUser);
 				bidWindow.setMatch(list.getSelectedValue());
 				bidWindow.setVisible(true);
@@ -220,6 +209,7 @@ public class BetMainWindow extends JInternalFrame {
 		historyBTN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				betHistoryWindow.setBetMainWindow(BetMainWindow.this);
+				betHistoryWindow.setCurrentUser(currentUser);
 				betHistoryWindow.updateBets();
 				betHistoryWindow.setVisible(true);
 			}
@@ -286,7 +276,7 @@ public class BetMainWindow extends JInternalFrame {
 		totalCostLBL.setBounds(10, 242, 198, 14);
 		panel_1.add(totalCostLBL);
 
-		betStateLBL = new JLabel("Sem Apostas para exibir.");
+		betStateLBL = new JLabel("Sem Apostas Ativas.");
 		betStateLBL.setForeground(Color.WHITE);
 		betStateLBL.setFont(new Font("Georgia", Font.PLAIN, 12));
 		betStateLBL.setBounds(10, 53, 201, 14);
@@ -545,6 +535,7 @@ public class BetMainWindow extends JInternalFrame {
 
 		setVisible(true);
 		updateButtons();
+		updateMatchs();
 	}
 
 	private void updateButtons() {
@@ -657,10 +648,6 @@ public class BetMainWindow extends JInternalFrame {
 		betTotalCost = 0;
 		bidArray.clear();
 		updateStatus();
-	}
-
-	public User getCurrentUser() {
-		return currentUser;
 	}
 
 	public void setCurrentUser(User currentUser) {

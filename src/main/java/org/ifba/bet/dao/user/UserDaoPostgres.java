@@ -119,7 +119,7 @@ public class UserDaoPostgres implements UserDao {
 		ps.setString(1, newUserName);
 		ps.setInt(2, user.getID());
 		ps.executeUpdate();
-		user = findUserByEmail(user.getEmail());
+		user.setName(newUserName);
 	}
 
 	@Override
@@ -129,7 +129,7 @@ public class UserDaoPostgres implements UserDao {
 		ps.setString(1, newEmail);
 		ps.setInt(2, user.getID());
 		ps.executeUpdate();
-		user = findUserByEmail(newEmail);
+		user.setEmail(newEmail);
 	}
 
 	@Override
@@ -139,7 +139,7 @@ public class UserDaoPostgres implements UserDao {
 		ps.setInt(1, team.getID());
 		ps.setInt(2, user.getID());
 		ps.executeUpdate();
-		user = findUserByEmail(user.getEmail());
+		user.setFavoriteTeam(team.getID());
 	}
 
 	@Override

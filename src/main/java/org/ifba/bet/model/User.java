@@ -10,6 +10,9 @@ public class User {
 	private String password;
 	private int favoriteTeam;
 
+	public static int REGULAR_USER = 0;
+	public static int ADMIN = 1;
+
 	public User(int iD, int accessLevel, Double balance, String name, String email, String password) {
 		super();
 		this.ID = iD;

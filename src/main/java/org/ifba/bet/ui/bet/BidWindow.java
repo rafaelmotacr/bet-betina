@@ -16,8 +16,6 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
-import javax.swing.event.InternalFrameAdapter;
-import javax.swing.event.InternalFrameEvent;
 
 import org.ifba.bet.dao.team.TeamDaoPostgres;
 import org.ifba.bet.model.Bid;
@@ -166,17 +164,7 @@ public class BidWindow extends JInternalFrame {
 				setVisible(false);
 			}
 		});
-
-		addInternalFrameListener(new InternalFrameAdapter() {
-			@Override
-			public void internalFrameClosing(InternalFrameEvent e) {
-				bidValueFLD.setText("");
-				rdbtnHomeTeamWin.setSelected(true);
-			}
-		});
-
 		update();
-
 	}
 
 	public Match getMatch() {

@@ -25,6 +25,7 @@ import javax.swing.border.LineBorder;
 import org.ifba.bet.dao.match.MatchDaoPostgres;
 import org.ifba.bet.model.Match;
 import org.ifba.bet.model.User;
+import org.ifba.bet.ui.bet.BetMainWindow;
 import org.ifba.bet.ui.team.TeamMainWindow;
 
 public class MainWindow {
@@ -113,11 +114,6 @@ public class MainWindow {
 		loginWindow.setLocation(259, 78);
 		frame.getContentPane().add(loginWindow);
 
-		TeamMainWindow teamMainWindow = new TeamMainWindow();
-		teamMainWindow.setVisible(false);
-		teamMainWindow.setLocation(64, 36);
-		frame.getContentPane().add(teamMainWindow);
-
 		RegisterCommonUserWindow registerCommonUserWindow = new RegisterCommonUserWindow(MainWindow.this);
 		registerCommonUserWindow.setLocation(259, 78);
 		frame.getContentPane().add(registerCommonUserWindow);
@@ -125,6 +121,16 @@ public class MainWindow {
 		RegisterAdminUserWindow registerAdminUserWindow = new RegisterAdminUserWindow(MainWindow.this);
 		registerAdminUserWindow.setLocation(259, 78);
 		frame.getContentPane().add(registerAdminUserWindow);
+
+		TeamMainWindow teamMainWindow = new TeamMainWindow();
+		teamMainWindow.setVisible(false);
+		teamMainWindow.setLocation(64, 36);
+		frame.getContentPane().add(teamMainWindow);
+
+		BetMainWindow betMainWindow = new BetMainWindow();
+		betMainWindow.setVisible(false);
+		betMainWindow.setLocation(64, 36);
+		frame.getContentPane().add(betMainWindow);
 
 		// Botão de log out
 		// -- parent = frame
@@ -188,7 +194,7 @@ public class MainWindow {
 		// -- parent = frame
 
 		greetingLBL = new JLabel("Seja Bem Vindo (a), Visitante!");
-		greetingLBL.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+		greetingLBL.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		greetingLBL.setBounds(140, 386, 415, 34);
 		greetingLBL.setForeground(new Color(255, 255, 255));
 		greetingLBL.setFont(new Font("Georgia", Font.BOLD, 16));
@@ -199,7 +205,7 @@ public class MainWindow {
 		// -- parent = frame
 
 		JLabel logoLBL = new JLabel("");
-		logoLBL.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+		logoLBL.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		logoLBL.setBounds(140, 67, 415, 313);
 		logoLBL.setBackground(new Color(102, 0, 0));
 		logoLBL.setIcon(new ImageIcon("src/main/resources/logoMain.png"));
@@ -209,7 +215,7 @@ public class MainWindow {
 		// -- parent = frame
 
 		JPanel mainPNL = new JPanel();
-		mainPNL.setBorder(new LineBorder(new Color(0, 0, 0)));
+		mainPNL.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		mainPNL.setBounds(10, 33, 124, 389);
 		mainPNL.setBackground(Color.WHITE);
 		mainPNL.setLayout(null);
@@ -260,6 +266,13 @@ public class MainWindow {
 					JOptionPane.showMessageDialog(frame, "Você precisa estar logado para apostar!");
 					return;
 				}
+				if (currentUser.getAccessLevel() == User.ADMIN) {
+					JOptionPane.showMessageDialog(frame, "Admnistradores Não Podem Apostar.", "Acesso Negado",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				betMainWindow.setCurrentUser(currentUser);
+				betMainWindow.setVisible(true);
 			}
 		});
 		mainPNL.add(betBTN);
@@ -413,7 +426,7 @@ public class MainWindow {
 		// -- parent = frame
 
 		JPanel highlitsPNL = new JPanel();
-		highlitsPNL.setBorder(new LineBorder(new Color(0, 0, 0)));
+		highlitsPNL.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		highlitsPNL.setBounds(564, 33, 194, 26);
 		highlitsPNL.setBackground(Color.WHITE);
 		frame.getContentPane().add(highlitsPNL);
@@ -442,7 +455,7 @@ public class MainWindow {
 		});
 
 		JScrollPane scrollPane = new JScrollPane(highlitsList);
-		scrollPane.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+		scrollPane.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		scrollPane.setBounds(564, 67, 194, 352);
 		frame.getContentPane().add(scrollPane);
 

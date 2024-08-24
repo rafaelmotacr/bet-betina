@@ -9,13 +9,11 @@ import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
 import org.ifba.bet.dao.bet.BetDaoPostgres;
@@ -29,7 +27,7 @@ public class BetHistoryWindow extends JInternalFrame {
 
 	private static final long serialVersionUID = 1L;
 	private DefaultListModel<Bet> listModel;
-	private BetViewhCustomListRenderer customListRenderer;
+	private BetViewhCustomListRenderer customListRenderer = new BetViewhCustomListRenderer();
 
 	private User currentUser;
 	private BetMainWindow betMainWindow;
@@ -40,6 +38,7 @@ public class BetHistoryWindow extends JInternalFrame {
 	public BetHistoryWindow() {
 
 		super();
+
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 
 		getContentPane().setBackground(new Color(255, 255, 255));
@@ -51,8 +50,6 @@ public class BetHistoryWindow extends JInternalFrame {
 
 		listModel = new DefaultListModel<>();
 		JList<Bet> list = new JList<>(listModel);
-
-		customListRenderer = new BetViewhCustomListRenderer();
 
 		list.setOpaque(false);
 		list.setFont(new Font("Georgia", Font.BOLD, 16));
@@ -127,10 +124,7 @@ public class BetHistoryWindow extends JInternalFrame {
 		btnNewButton_1.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		btnNewButton_1.setBounds(181, 183, 173, 23);
 		getContentPane().add(btnNewButton_1);
-
 		setVisible(true);
-		// updateBets();
-
 	}
 
 	public void updateBets() {
@@ -138,6 +132,7 @@ public class BetHistoryWindow extends JInternalFrame {
 		try {
 			bets = userDao.getAllBets(currentUser.getID());
 		} catch (SQLException e) {
+			System.out.println("foi aqui");
 			e.printStackTrace();
 		}
 		listModel.clear();
@@ -152,25 +147,6 @@ public class BetHistoryWindow extends JInternalFrame {
 
 	public void setBetMainWindow(BetMainWindow betMainWindow) {
 		this.betMainWindow = betMainWindow;
-	}
-
-	public static void main(String[] args) {
-		// Garantir que a criação da GUI ocorra na Event Dispatch Thread
-		SwingUtilities.invokeLater(() -> {
-			JFrame frame = new JFrame("Main Frame");
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			frame.setSize(800, 600);
-
-			// Adicionar um JDesktopPane ao JFrame
-			JDesktopPane desktopPane = new JDesktopPane();
-			frame.setContentPane(desktopPane);
-
-			// Adicionar uma instância de TesteClass ao JDesktopPane
-			BetHistoryWindow testeClass = new BetHistoryWindow();
-			desktopPane.add(testeClass);
-
-			frame.setVisible(true);
-		});
 	}
 
 }
