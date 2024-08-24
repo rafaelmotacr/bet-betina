@@ -20,5 +20,5 @@ public interface TeamDao {
 
 	public void fixUsersFavoriteTeamAfterDelete(Team team) throws SQLException;
 
-	public Team findTeamById(int id) throws SQLException;
+	public Team findTeamById(int id);
 }

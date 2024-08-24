@@ -22,7 +22,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.LineBorder;
 
+import org.ifba.bet.dao.bet.BetDaoPostgres;
 import org.ifba.bet.dao.match.MatchDaoPostgres;
+import org.ifba.bet.dao.user.UserDaoPostgres;
+import org.ifba.bet.model.Bet;
 import org.ifba.bet.model.Match;
 import org.ifba.bet.model.User;
 import org.ifba.bet.ui.bet.BetMainWindow;
@@ -56,7 +59,11 @@ public class MainWindow {
 	private JButton logOutBTN;
 	private JButton profileBTN;
 	private JButton createADMBTN;
+
 	private MatchDaoPostgres matchDao = new MatchDaoPostgres();
+	private BetDaoPostgres betDao = new BetDaoPostgres();
+	private UserDaoPostgres userDao = new UserDaoPostgres();
+
 	private DefaultListModel<Match> listModel;
 
 	// Coordenadas utilizadas para movimentação dinâmica da janela
@@ -129,7 +136,7 @@ public class MainWindow {
 
 		BetMainWindow betMainWindow = new BetMainWindow();
 		betMainWindow.setVisible(false);
-		betMainWindow.setLocation(64, 36);
+		betMainWindow.setLocation(32, 18);
 		frame.getContentPane().add(betMainWindow);
 
 		// Botão de log out
@@ -296,6 +303,14 @@ public class MainWindow {
 		teamBTN.setContentAreaFilled(false);
 		teamBTN.setFont(new Font("Georgia", Font.BOLD, 14));
 		mainPNL.add(teamBTN);
+
+		JButton matchBTN = new JButton("Ver Partidas");
+		matchBTN.setMnemonic('t');
+		matchBTN.setFont(new Font("Georgia", Font.BOLD, 14));
+		matchBTN.setContentAreaFilled(false);
+		matchBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+		matchBTN.setBounds(12, 124, 100, 26);
+		mainPNL.add(matchBTN);
 		teamBTN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				teamMainWindow.setUser(currentUser);
@@ -467,8 +482,40 @@ public class MainWindow {
 
 	public void updateUser(User user) {
 		currentUser = user;
+		updateUserBets();
 		updateButtons();
 		updateGreetingLabel();
+	}
+
+	private void updateUserBets() {
+		if (currentUser == null) {
+			return;
+		}
+		try {
+			ArrayList<Bet> betList = betDao.getAllBets(currentUser.getID());
+			if (betList == null) {
+				return;
+			}
+			for (Bet bet : betList) {
+				int betId = bet.getID();
+				if (bet.getState() != 0) {
+					return;
+				}
+				if (!betDao.isBetCompleted(betId)) {
+					return;
+				}
+
+				if (betDao.isBetCorrect(betId)) {
+					betDao.updateBetState(3, betId);
+				} else {
+					betDao.updateBetState(4, betId);
+				}
+				double betPayout = betDao.getBetPayout(betId);
+				userDao.updateUserBalance(currentUser, (currentUser.getBalance() + betPayout));
+			}
+		} catch (SQLException e) {
+			System.out.println("Unexpected Error");
+		}
 	}
 
 	// Oculta os botões de login e registro se o usuário já estiver logado

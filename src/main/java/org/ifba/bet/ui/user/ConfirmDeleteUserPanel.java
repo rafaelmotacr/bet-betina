@@ -104,7 +104,7 @@ public class ConfirmDeleteUserPanel extends JInternalFrame {
 		// Botão de cancelamento de exclusão
 		// -- parent = this
 
-		JButton cancelDeleteBTN = new JButton("Esquece");
+		JButton cancelDeleteBTN = new JButton("Não");
 		cancelDeleteBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		cancelDeleteBTN.setContentAreaFilled(false);
 		cancelDeleteBTN.setBounds(102, 196, 90, 23);

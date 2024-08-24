@@ -13,7 +13,7 @@ public class DatabaseConnectionSingleton {
 		try {
 
 			// Conexao com o BD de Rafael
-			connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/dia-bet", "postgres", "106927");
+			connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/bet", "postgres", "106927");
 
 			// Conexao com o BD do IFBA
 //			connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/bet-betina-prod", "postgres","alunoifba");

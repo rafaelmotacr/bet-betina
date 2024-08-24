@@ -1,7 +1,5 @@
 package org.ifba.bet.model;
 
-import java.sql.SQLException;
-
 import org.ifba.bet.dao.team.TeamDaoPostgres;
 
 public class Match {
@@ -15,12 +13,28 @@ public class Match {
 	private double awayTeamOdd;
 	private double drawOdd;
 	private TeamDaoPostgres teamDao = new TeamDaoPostgres();
-
+	
+	public static final int MATCH_ON_GOING = 1;
+	public static final int MATCH_FINISHED = 0;
+	
 	public Match(int id, int state, int homeTeamId, int awayTeamId, double homeTeamOdd, double awayTeamOdd,
 			double drawOdd) {
 		super();
 		this.id = id;
 		this.state = state;
+		this.homeTeamId = homeTeamId;
+		this.awayTeamId = awayTeamId;
+		this.homeTeamOdd = homeTeamOdd;
+		this.awayTeamOdd = awayTeamOdd;
+		this.drawOdd = drawOdd;
+	}
+
+	public Match(int id, int state, int result, int homeTeamId, int awayTeamId, double homeTeamOdd, double awayTeamOdd,
+			double drawOdd) {
+		super();
+		this.id = id;
+		this.state = state;
+		this.result = result;
 		this.homeTeamId = homeTeamId;
 		this.awayTeamId = awayTeamId;
 		this.homeTeamOdd = homeTeamOdd;
@@ -95,12 +109,7 @@ public class Match {
 	@Override
 	public String toString() {
 		String toString = null;
-		try {
-			toString = teamDao.findTeamById(homeTeamId).getName() + " X " + teamDao.findTeamById(awayTeamId).getName();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		toString = teamDao.findTeamById(homeTeamId).getName() + " X " + teamDao.findTeamById(awayTeamId).getName();
 		return toString;
 	}
 

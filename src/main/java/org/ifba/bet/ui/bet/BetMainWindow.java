@@ -69,6 +69,7 @@ public class BetMainWindow extends JInternalFrame {
 	public BetMainWindow() {
 
 		super();
+
 		bidArray = new ArrayList<Bid>();
 
 		setTitle("Bet-Betina v1.23 - Menu de Apostas");
@@ -157,14 +158,6 @@ public class BetMainWindow extends JInternalFrame {
 		});
 
 		JButton refreshBTN = new JButton("");
-		refreshBTN.setIcon(new ImageIcon("src/main/resources/reload.png"));
-		refreshBTN.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				searchFLD.setText(null);
-				updateMatchs();
-			}
-		});
-
 		refreshBTN.setToolTipText("Clique aqui para limpar a busca.");
 		refreshBTN.setBorderPainted(false);
 		refreshBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
@@ -172,8 +165,23 @@ public class BetMainWindow extends JInternalFrame {
 		refreshBTN.setFont(new Font("Georgia", Font.PLAIN, 8));
 		refreshBTN.setBounds(124, 11, 23, 23);
 		dataPanel.add(refreshBTN);
+		refreshBTN.setIcon(new ImageIcon("src/main/resources/reload.png"));
+		refreshBTN.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				searchFLD.setText("Nome do time...");
+				searchFLD.setEnabled(false);
+				updateMatchs();
+			}
+		});
 
 		makeBidBTN = new JButton("Fazer Lance");
+		makeBidBTN.setEnabled(false);
+		makeBidBTN.setForeground(Color.WHITE);
+		makeBidBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
+		makeBidBTN.setContentAreaFilled(false);
+		makeBidBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+		makeBidBTN.setBounds(10, 203, 137, 23);
+		dataPanel.add(makeBidBTN);
 		makeBidBTN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Match match = list.getSelectedValue();
@@ -196,16 +204,14 @@ public class BetMainWindow extends JInternalFrame {
 			}
 		});
 
-		makeBidBTN.setEnabled(false);
-		makeBidBTN.setForeground(Color.WHITE);
-		makeBidBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
-		makeBidBTN.setContentAreaFilled(false);
-		makeBidBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-		makeBidBTN.setBounds(10, 203, 137, 23);
-		dataPanel.add(makeBidBTN);
-
 		historyBTN = new JButton("Minhas Apostas");
 		historyBTN.setEnabled(false);
+		historyBTN.setForeground(Color.WHITE);
+		historyBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
+		historyBTN.setContentAreaFilled(false);
+		historyBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+		historyBTN.setBounds(44, 302, 103, 23);
+		dataPanel.add(historyBTN);
 		historyBTN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				betHistoryWindow.setBetMainWindow(BetMainWindow.this);
@@ -214,12 +220,6 @@ public class BetMainWindow extends JInternalFrame {
 				betHistoryWindow.setVisible(true);
 			}
 		});
-		historyBTN.setForeground(Color.WHITE);
-		historyBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
-		historyBTN.setContentAreaFilled(false);
-		historyBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-		historyBTN.setBounds(44, 302, 103, 23);
-		dataPanel.add(historyBTN);
 
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(0, 0, 0));
@@ -309,12 +309,11 @@ public class BetMainWindow extends JInternalFrame {
 		confirmBetBTN = new JButton("Confirmar Aposta");
 		confirmBetBTN.setEnabled(false);
 		confirmBetBTN.setBounds(324, 342, 150, 23);
-		getContentPane().add(confirmBetBTN);
 		confirmBetBTN.setForeground(new Color(0, 0, 0));
 		confirmBetBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
 		confirmBetBTN.setContentAreaFilled(false);
 		confirmBetBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-
+		getContentPane().add(confirmBetBTN);
 		// A esta altura do campeonato, esse código tá uma bela de uma bagunça
 
 		confirmBetBTN.addActionListener(new ActionListener() {
@@ -395,11 +394,11 @@ public class BetMainWindow extends JInternalFrame {
 		cancelBetBTN = new JButton("Cancelar Aposta");
 		cancelBetBTN.setEnabled(false);
 		cancelBetBTN.setBounds(164, 342, 150, 23);
-		getContentPane().add(cancelBetBTN);
 		cancelBetBTN.setForeground(new Color(255, 0, 0));
 		cancelBetBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
 		cancelBetBTN.setContentAreaFilled(false);
 		cancelBetBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+		getContentPane().add(cancelBetBTN);
 		cancelBetBTN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (betState == 7) {

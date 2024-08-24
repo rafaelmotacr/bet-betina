@@ -35,16 +35,16 @@ class BetViewhCustomListRenderer extends JLabel implements ListCellRenderer<Bet>
 
 		switch (value.getState()) {
 		case 0:
-			text = text + "<span style=\"color: red;\">" + "Aposta Finalizada." + "</span>";
+			text = text + "<span style=\"color: orange;\">" + "Aposta Fechada." + "</span>";
 			break;
 		case 1:
 			text = text + "<span style=\"color: green;\">" + "Aposta Em Aberto." + "</span>";
 			break;
 		case 3:
-			text = text + "Aposta Vencida.";
+			text = text + "<span style=\"color: blue;\">" + "Aposta Vencida." + "</span>";
 			break;
 		case 4:
-			text = text + "Aposta Perdida.";
+			text = text + "<span style=\"color: red;\">" + "Aposta Perdida." + "</span>";
 			break;
 		default:
 			text = text + "<span style=\"color: red;\">" + "Estado Desconhecido." + "</span>";
@@ -57,7 +57,7 @@ class BetViewhCustomListRenderer extends JLabel implements ListCellRenderer<Bet>
 			e.printStackTrace();
 		}
 
-		text = text + " Total de lances: " + totalBidsInBet + "</html>";
+		text = text + " Total de lances: " + totalBidsInBet + ".</html>";
 
 		setText(text);
 		setFont(new Font("Georgia", Font.PLAIN, 14));

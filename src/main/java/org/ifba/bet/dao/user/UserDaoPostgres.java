@@ -19,18 +19,18 @@ public class UserDaoPostgres implements UserDao {
 
 	@Override
 	public boolean login(String email, String originalPassword) {
-		try (PreparedStatement ps = DatabaseConnectionSingleton.getInstance().getConexao()
-				.prepareStatement("SELECT user_password FROM user_tb WHERE user_email = ?")) {
-
+		String sql = "SELECT user_password FROM user_tb WHERE user_email = ?;";
+		Connection conn = DatabaseConnectionSingleton.getInstance().getConexao();
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, email);
-			try (ResultSet rs = ps.executeQuery()) {
-				if (rs.next()) {
-					String dbPassword = rs.getString("user_password");
-					return BCrypt.checkpw(originalPassword, dbPassword);
-				}
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				String dbPassword = rs.getString("user_password");
+				return BCrypt.checkpw(originalPassword, dbPassword);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.println("Erro ao Buscar Sua Conta no Banco de Dados.");
 		}
 		return false;
 	}

@@ -57,18 +57,18 @@ public class TeamMainWindow extends JInternalFrame {
 		setBounds(0, 0, 640, 360);
 		getContentPane().setLayout(null);
 
-//		Criação de painel de update de time
+		// Criação de painel de update de time
 		UpdateTeamWindow updateTeamWindow = new UpdateTeamWindow();
 		updateTeamWindow.setBounds(159, 62, 320, 208);
 		getContentPane().add(updateTeamWindow);
 
-//		Criação de painel de time
+		// Criação de painel de time
 		CreateTeamWindow createTeamWindow = new CreateTeamWindow();
 		createTeamWindow.setBounds(159, 62, 320, 208);
 		getContentPane().add(createTeamWindow);
 		createTeamWindow.setVisible(false);
 
-//		Painel de confirmação de exclusão
+		// Painel de confirmação de exclusão
 		ConfirmDeleteTeamPanel confirmDeleteTeamPanel = new ConfirmDeleteTeamPanel();
 		confirmDeleteTeamPanel.setBounds(0, 32, 157, 254);
 		getContentPane().add(confirmDeleteTeamPanel);
@@ -142,7 +142,7 @@ public class TeamMainWindow extends JInternalFrame {
 		searchFLD.setColumns(10);
 
 		createTeamBTN = new JButton("Criar Time");
-		createTeamBTN.setBounds(10, 164, 137, 23);
+		createTeamBTN.setBounds(10, 198, 137, 23);
 		createTeamBTN.setVisible(false);
 		createTeamBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
 		createTeamBTN.setForeground(new Color(255, 255, 255));
@@ -157,7 +157,7 @@ public class TeamMainWindow extends JInternalFrame {
 		});
 
 		updateTeamBTN = new JButton("Atualizar Time");
-		updateTeamBTN.setBounds(10, 198, 137, 23);
+		updateTeamBTN.setBounds(10, 164, 137, 23);
 		updateTeamBTN.setVisible(false);
 		updateTeamBTN.setForeground(Color.WHITE);
 		updateTeamBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
@@ -178,7 +178,7 @@ public class TeamMainWindow extends JInternalFrame {
 		});
 
 		DeleteTeamBTN = new JButton("Deletar Time");
-		DeleteTeamBTN.setBounds(43, 266, 104, 23);
+		DeleteTeamBTN.setBounds(10, 232, 137, 23);
 		DeleteTeamBTN.setVisible(false);
 		DeleteTeamBTN.setForeground(Color.WHITE);
 		DeleteTeamBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
@@ -211,7 +211,7 @@ public class TeamMainWindow extends JInternalFrame {
 		});
 
 		bookmarkTeamBTN = new JButton("Favoritar Time");
-		bookmarkTeamBTN.setBounds(10, 232, 137, 23);
+		bookmarkTeamBTN.setBounds(50, 266, 97, 23);
 		bookmarkTeamBTN.setVisible(false);
 		bookmarkTeamBTN.setForeground(Color.WHITE);
 		bookmarkTeamBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
@@ -247,7 +247,8 @@ public class TeamMainWindow extends JInternalFrame {
 		dataPanel.add(refreshBTN);
 		refreshBTN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				searchFLD.setText(null);
+				searchFLD.setText("Nome do time...");
+				searchFLD.setEnabled(false);
 				updateTeams();
 			}
 		});
@@ -323,7 +324,7 @@ public class TeamMainWindow extends JInternalFrame {
 			bookmarkTeamBTN.setVisible(false);
 			return;
 		}
-		if (currentUser.getAccessLevel() == 1) {
+		if (currentUser.getAccessLevel() == User.ADMIN) {
 			createTeamBTN.setVisible(true);
 			updateTeamBTN.setVisible(true);
 			DeleteTeamBTN.setVisible(true);

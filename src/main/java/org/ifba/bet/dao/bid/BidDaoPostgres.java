@@ -18,7 +18,7 @@ public class BidDaoPostgres implements BidDao {
 		PreparedStatement ps = conn.prepareStatement(sql);
 		ps.setInt(1, betId);
 		ps.setInt(2, matchId);
-		ps.setDouble(3, guess);
+		ps.setInt(3, guess);
 		ps.setDouble(4, paidValue);
 		ps.executeUpdate();
 	}
