@@ -12,8 +12,6 @@ import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JDesktopPane;
-import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -21,7 +19,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
 import org.ifba.bet.dao.team.TeamDaoPostgres;
@@ -54,7 +51,7 @@ public class TeamMainWindow extends JInternalFrame {
 		setTitle("Bet-Betina v1.23 - Menu de Times ");
 		setClosable(true);
 		setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-		setBounds(0, 0, 640, 360);
+		setBounds(0, 0, 704, 396);
 		getContentPane().setLayout(null);
 
 		// Criação de painel de update de time
@@ -67,12 +64,6 @@ public class TeamMainWindow extends JInternalFrame {
 		createTeamWindow.setBounds(159, 62, 320, 208);
 		getContentPane().add(createTeamWindow);
 		createTeamWindow.setVisible(false);
-
-		// Painel de confirmação de exclusão
-		ConfirmDeleteTeamPanel confirmDeleteTeamPanel = new ConfirmDeleteTeamPanel();
-		confirmDeleteTeamPanel.setBounds(0, 32, 157, 254);
-		getContentPane().add(confirmDeleteTeamPanel);
-		confirmDeleteTeamPanel.setVisible(false);
 
 //      Lista de times
 		listModel = new DefaultListModel<>();
@@ -88,16 +79,23 @@ public class TeamMainWindow extends JInternalFrame {
 //		Cria o painel com scroll para visualizar a lista de times
 		JScrollPane scrollPane = new JScrollPane(list);
 		scrollPane.setBorder(new LineBorder(new Color(0, 0, 0), 2, true));
-		scrollPane.setBounds(163, 32, 475, 300);
+		scrollPane.setBounds(163, 32, 529, 336);
 		getContentPane().add(scrollPane);
 
 //        Painel de onde será feita a busca dos times
 		JPanel dataPanel = new JPanel();
 		dataPanel.setBorder(new LineBorder(new Color(0, 0, 0), 2, true));
 		dataPanel.setBackground(new Color(0, 128, 128));
-		dataPanel.setBounds(0, 32, 157, 300);
+		dataPanel.setBounds(0, 32, 157, 336);
 		getContentPane().add(dataPanel);
 		dataPanel.setLayout(null);
+		
+		
+		// Painel de confirmação de exclusão
+		ConfirmDeleteTeamPanel confirmDeleteTeamPanel = new ConfirmDeleteTeamPanel();
+		confirmDeleteTeamPanel.setBounds(0, 0, 157, 254);
+		dataPanel.add(confirmDeleteTeamPanel);
+		confirmDeleteTeamPanel.setVisible(false);
 
 //        Botão de busca e suas partes estéticas
 		JButton searchBTN = new JButton("Buscar Time");
@@ -142,7 +140,7 @@ public class TeamMainWindow extends JInternalFrame {
 		searchFLD.setColumns(10);
 
 		createTeamBTN = new JButton("Criar Time");
-		createTeamBTN.setBounds(10, 198, 137, 23);
+		createTeamBTN.setBounds(10, 234, 137, 23);
 		createTeamBTN.setVisible(false);
 		createTeamBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
 		createTeamBTN.setForeground(new Color(255, 255, 255));
@@ -157,7 +155,7 @@ public class TeamMainWindow extends JInternalFrame {
 		});
 
 		updateTeamBTN = new JButton("Atualizar Time");
-		updateTeamBTN.setBounds(10, 164, 137, 23);
+		updateTeamBTN.setBounds(10, 200, 137, 23);
 		updateTeamBTN.setVisible(false);
 		updateTeamBTN.setForeground(Color.WHITE);
 		updateTeamBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
@@ -178,7 +176,7 @@ public class TeamMainWindow extends JInternalFrame {
 		});
 
 		DeleteTeamBTN = new JButton("Deletar Time");
-		DeleteTeamBTN.setBounds(10, 232, 137, 23);
+		DeleteTeamBTN.setBounds(10, 268, 137, 23);
 		DeleteTeamBTN.setVisible(false);
 		DeleteTeamBTN.setForeground(Color.WHITE);
 		DeleteTeamBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
@@ -199,7 +197,7 @@ public class TeamMainWindow extends JInternalFrame {
 		});
 
 		JButton backBTN = new JButton("");
-		backBTN.setBounds(10, 266, 30, 23);
+		backBTN.setBounds(10, 302, 30, 23);
 		backBTN.setIcon(new ImageIcon("src/main/resources/backBTN.png"));
 		backBTN.setContentAreaFilled(false);
 		backBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
@@ -211,7 +209,7 @@ public class TeamMainWindow extends JInternalFrame {
 		});
 
 		bookmarkTeamBTN = new JButton("Favoritar Time");
-		bookmarkTeamBTN.setBounds(50, 266, 97, 23);
+		bookmarkTeamBTN.setBounds(50, 302, 97, 23);
 		bookmarkTeamBTN.setVisible(false);
 		bookmarkTeamBTN.setForeground(Color.WHITE);
 		bookmarkTeamBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
@@ -260,7 +258,7 @@ public class TeamMainWindow extends JInternalFrame {
 
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(0, 0, 0));
-		panel.setBounds(0, 0, 638, 28);
+		panel.setBounds(0, 0, 702, 28);
 		getContentPane().add(panel);
 		panel.setLayout(null);
 
@@ -330,24 +328,5 @@ public class TeamMainWindow extends JInternalFrame {
 			DeleteTeamBTN.setVisible(true);
 		}
 		bookmarkTeamBTN.setVisible(true);
-	}
-
-	public static void main(String[] args) {
-		// Garantir que a criação da GUI ocorra na Event Dispatch Thread
-		SwingUtilities.invokeLater(() -> {
-			JFrame frame = new JFrame("Main Frame");
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			frame.setSize(800, 600);
-
-			// Adicionar um JDesktopPane ao JFrame
-			JDesktopPane desktopPane = new JDesktopPane();
-			frame.setContentPane(desktopPane);
-
-			// Adicionar uma instância de TesteClass ao JDesktopPane
-			TeamMainWindow testeClass = new TeamMainWindow();
-			desktopPane.add(testeClass);
-
-			frame.setVisible(true);
-		});
 	}
 }

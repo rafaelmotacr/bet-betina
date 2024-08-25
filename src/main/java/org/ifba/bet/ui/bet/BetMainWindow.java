@@ -28,6 +28,7 @@ import org.ifba.bet.dao.bet.BetDaoPostgres;
 import org.ifba.bet.dao.bid.BidDaoPostgres;
 import org.ifba.bet.dao.match.MatchDaoPostgres;
 import org.ifba.bet.dao.user.UserDaoPostgres;
+import org.ifba.bet.model.Bet;
 import org.ifba.bet.model.Bid;
 import org.ifba.bet.model.Match;
 import org.ifba.bet.model.User;
@@ -60,7 +61,7 @@ public class BetMainWindow extends JInternalFrame {
 	private JButton historyBTN;
 	private JButton confirmBetBTN;
 
-	private int betState = 0;
+	private int betLocalState= 0;
 	private int foreignBetId = 0;
 	private double betTotalCost = 0;
 
@@ -324,7 +325,7 @@ public class BetMainWindow extends JInternalFrame {
 					return;
 				}
 
-				if (betState == 7) {
+				if (betLocalState== 7) {
 					for (Bid bid : bidArray) {
 
 						// Adiciona somente os novos lances ao banco
@@ -358,7 +359,7 @@ public class BetMainWindow extends JInternalFrame {
 
 				int betId = 0;
 				try {
-					betId = betDao.insertBet(currentUser.getID(), 1);
+					betId = betDao.insertBet(currentUser.getID(), Bet.OPEN);
 				} catch (SQLException e1) {
 					JOptionPane.showMessageDialog(BetMainWindow.this, "Ocorreu um erro ao criar a aposta", "Aviso",
 							JOptionPane.ERROR_MESSAGE);
@@ -378,7 +379,7 @@ public class BetMainWindow extends JInternalFrame {
 				}
 				JOptionPane.showMessageDialog(BetMainWindow.this, "Aposta criada com sucesso.", "Confirmação de Aposta",
 						JOptionPane.INFORMATION_MESSAGE);
-				betState = 0;
+				betLocalState= 0;
 
 				try {
 					userDao.updateUserBalance(currentUser, (currentUser.getBalance() - betTotalCost));
@@ -401,7 +402,7 @@ public class BetMainWindow extends JInternalFrame {
 		getContentPane().add(cancelBetBTN);
 		cancelBetBTN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (betState == 7) {
+				if (betLocalState== 7) {
 					try {
 						betDao.deleteBet(foreignBetId);
 						userDao.updateUserBalance(currentUser, currentUser.getBalance());
@@ -436,7 +437,7 @@ public class BetMainWindow extends JInternalFrame {
 							JOptionPane.INFORMATION_MESSAGE);
 					return;
 				}
-				if (betState == 7) {
+				if (betLocalState== 7) {
 					for (Bid bid : bidArray) {
 						if (bid.getMatchID() == match.getId()) {
 							try {
@@ -475,7 +476,7 @@ public class BetMainWindow extends JInternalFrame {
 		dataPanel.add(createBetBTN);
 		createBetBTN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				betState = 1;
+				betLocalState= 1;
 				updateStatus();
 				JOptionPane.showMessageDialog(BetMainWindow.this,
 						"Selecione uma partida para fazer um lance.\n Após definir seus lances, confirme a aposta.",
@@ -499,7 +500,7 @@ public class BetMainWindow extends JInternalFrame {
 							JOptionPane.INFORMATION_MESSAGE);
 					return;
 				}
-				if (betState == 7) {
+				if (betLocalState== 7) {
 					for (Bid bid : bidArray) {
 						if (bid.getMatchID() == match.getId()) {
 							if (bid.getBetID() == foreignBetId) {
@@ -538,7 +539,7 @@ public class BetMainWindow extends JInternalFrame {
 	}
 
 	private void updateButtons() {
-		switch (betState) {
+		switch (betLocalState) {
 		case 0:
 			createBetBTN.setEnabled(true);
 			historyBTN.setEnabled(true);
@@ -568,7 +569,7 @@ public class BetMainWindow extends JInternalFrame {
 		totalCostLBL.setText(String.format("Custo Total: R$ %.2f.", betTotalCost));
 		userBalanceLBL.setText(String.format("Saldo Atual: R$ %.2f.", userBalance));
 		balanceAfterBetLBL.setText(String.format("Saldo Restante: R$ %.2f.", balanceAfterBet));
-		switch (betState) {
+		switch (betLocalState) {
 		case 0:
 			betStateLBL.setText("Estado: Não iniciada.");
 			totalBidsLBL.setText("");
@@ -635,7 +636,7 @@ public class BetMainWindow extends JInternalFrame {
 
 	public void loadBids(ArrayList<Bid> arr) {
 		bidArray.addAll(arr);
-		betState = 7;
+		betLocalState= 7;
 		betTotalCost = arr.stream().mapToDouble(Bid::getPaidValue).sum();
 		currentUser.setBalance(currentUser.getBalance() + betTotalCost);
 		updateMatchs();
@@ -643,7 +644,7 @@ public class BetMainWindow extends JInternalFrame {
 	}
 
 	public void removeAllBids() {
-		betState = 0;
+		betLocalState= 0;
 		betTotalCost = 0;
 		bidArray.clear();
 		updateStatus();

@@ -12,8 +12,10 @@ public interface BetDao {
 
 	public void deleteBet(int betId) throws SQLException;
 
-	void updateBetState(int newState, int matchId) throws SQLException;
+	public void updateBetsState(int newState, int matchId) throws SQLException;
 
+	public void updateBetState(int newState, int userId, int betId);
+	
 	public ArrayList<Bet> getAllBets(int user_id) throws SQLException;
 
 	public ArrayList<Bid> getAllBids(int betId) throws SQLException;

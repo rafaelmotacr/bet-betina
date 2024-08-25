@@ -1,5 +1,7 @@
 package org.ifba.bet.dao.bet;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -52,7 +54,7 @@ public class BetDaoPostgres implements BetDao {
 	}
 
 	@Override
-	public void updateBetState(int newState, int matchId) throws SQLException {
+	public void updateBetsState(int newState, int matchId) throws SQLException {
 		String sql = "update bet_tb set bet_state = ?\r\n" + "	where bet_id in\r\n"
 				+ "	(select bet_id from bid_tb\r\n" + "where match_id = ?)";
 		Connection conn = DatabaseConnectionSingleton.getInstance().getConexao();
@@ -60,7 +62,6 @@ public class BetDaoPostgres implements BetDao {
 		ps.setInt(1, newState);
 		ps.setInt(2, matchId);
 		ps.executeUpdate();
-
 	}
 
 	@Override
@@ -159,13 +160,6 @@ public class BetDaoPostgres implements BetDao {
 		return getTotalBids(betId) == getCorrectBids(betId);
 	}
 
-	public static void main(String Args[]) {
-
-		BetDaoPostgres dao = new BetDaoPostgres();
-		System.out.println(dao.isBetCompleted(1));
-
-	}
-
 	@Override
 	public double getBetPayout(int betId) {
 		double betPayout = 0;
@@ -195,7 +189,28 @@ public class BetDaoPostgres implements BetDao {
 		} catch (SQLException e) {
 			System.out.println("Erro Ao Consultar o custo total da aposta");
 		}
-		return betPayout;
+		
+		BigDecimal bigDecimal = new BigDecimal(betPayout);
+		bigDecimal = bigDecimal.setScale(2, RoundingMode.HALF_UP);
+
+		return bigDecimal.doubleValue();
+	}
+
+	@Override
+	public void updateBetState(int newState, int userId, int betId) {
+		String sql = "UPDATE bet_tb SET bet_state = ?\r\n"
+				+ "WHERE user_id = ? AND bet_id = ?";
+		try {
+			Connection conn = DatabaseConnectionSingleton.getInstance().getConexao();
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setInt(1, newState);
+			ps.setInt(2, userId);
+			ps.setInt(3, betId);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

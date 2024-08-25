@@ -28,7 +28,7 @@ public class CreateTeamWindow extends JInternalFrame {
 		super();
 
 		setBorder(new LineBorder(new Color(0, 0, 0)));
-		setTitle("Bet-Betina v1.23 - Criar Time");
+		setTitle("Bet-Betina v1.23 - ADM: Criar Time");
 		setClosable(true);
 		setResizable(false);
 		setMaximizable(false);

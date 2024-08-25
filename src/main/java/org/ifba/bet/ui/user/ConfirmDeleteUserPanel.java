@@ -66,7 +66,7 @@ public class ConfirmDeleteUserPanel extends JInternalFrame {
 
 		setTitle("Confirmação de Exclusão");
 		setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-		setBounds(0, 0, 212, 280);
+		setBounds(0, 0, 220, 312);
 		setFocusable(false);
 		setClosable(true);
 		getContentPane().setLayout(null);
@@ -75,9 +75,10 @@ public class ConfirmDeleteUserPanel extends JInternalFrame {
 		// -- parent = this
 
 		JButton confirmDeleteBTN = new JButton("Sim");
+		confirmDeleteBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
 		confirmDeleteBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		confirmDeleteBTN.setContentAreaFilled(false);
-		confirmDeleteBTN.setBounds(8, 196, 90, 23);
+		confirmDeleteBTN.setBounds(10, 236, 90, 23);
 		getContentPane().add(confirmDeleteBTN);
 
 		// Tenta apagar o usuário exibe
@@ -105,9 +106,10 @@ public class ConfirmDeleteUserPanel extends JInternalFrame {
 		// -- parent = this
 
 		JButton cancelDeleteBTN = new JButton("Não");
+		cancelDeleteBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
 		cancelDeleteBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		cancelDeleteBTN.setContentAreaFilled(false);
-		cancelDeleteBTN.setBounds(102, 196, 90, 23);
+		cancelDeleteBTN.setBounds(110, 236, 90, 23);
 		getContentPane().add(cancelDeleteBTN);
 
 		// Fecha a janela e não apaga o usuário
@@ -123,7 +125,7 @@ public class ConfirmDeleteUserPanel extends JInternalFrame {
 
 		JLabel profilePictureLabel = new JLabel("");
 		profilePictureLabel.setIcon(new ImageIcon("src/main/resources/user.png"));
-		profilePictureLabel.setBounds(73, 11, 50, 50);
+		profilePictureLabel.setBounds(84, 11, 50, 50);
 		getContentPane().add(profilePictureLabel);
 
 		// Label que exibe uma linha preta, nada demais
@@ -132,15 +134,15 @@ public class ConfirmDeleteUserPanel extends JInternalFrame {
 		JPanel blackLine = new JPanel();
 		blackLine.setForeground(Color.BLACK);
 		blackLine.setBackground(Color.BLACK);
-		blackLine.setBounds(37, 72, 119, 3);
+		blackLine.setBounds(49, 72, 119, 3);
 		getContentPane().add(blackLine);
 
 		// Label que exibe um aviso final ao usuário
 		// -- parent = this
 
 		confirmationTextLabel.setVerticalAlignment(SwingConstants.TOP);
-		confirmationTextLabel.setBounds(8, 86, 178, 99);
-		confirmationTextLabel.setFont(new Font("Georgia", Font.PLAIN, 12));
+		confirmationTextLabel.setBounds(20, 86, 178, 139);
+		confirmationTextLabel.setFont(new Font("Georgia", Font.PLAIN, 14));
 		getContentPane().add(confirmationTextLabel);
 	}
 

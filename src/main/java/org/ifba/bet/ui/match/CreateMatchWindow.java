@@ -176,6 +176,7 @@ public class CreateMatchWindow extends JInternalFrame {
 		this.matchMainWindow = matchMainWindow;
 	}
 	
+
 	public static void main(String[] args) {
 		// Garantir que a criação da GUI ocorra na Event Dispatch Thread
 		SwingUtilities.invokeLater(() -> {

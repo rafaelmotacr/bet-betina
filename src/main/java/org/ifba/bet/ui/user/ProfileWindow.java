@@ -71,24 +71,24 @@ public class ProfileWindow extends JInternalFrame {
 
 		setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		setClosable(true);
-		setBounds(0, 0, 640, 360);
+		setBounds(0, 0, 704, 396);
 		getContentPane().setLayout(null);
-
-		// InternalFrame de delete
-		// -- parent = this
-
-		ConfirmDeleteUserPanel confirmDeleteWindow = new ConfirmDeleteUserPanel();
-		confirmDeleteWindow.setBounds(214, 11, 212, 280);
-		getContentPane().add(confirmDeleteWindow);
+		
 
 		// Painel principal, o do meio
 		// -- parent = this
 
 		JPanel mainPanel = new JPanel();
 		mainPanel.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-		mainPanel.setBounds(214, 11, 212, 280);
+		mainPanel.setBounds(241, 11, 220, 312);
 		getContentPane().add(mainPanel);
 		mainPanel.setLayout(null);
+		
+		// InternalFrame de delete
+		// -- parent = this
+
+		ConfirmDeleteUserPanel confirmDeleteWindow = new ConfirmDeleteUserPanel();
+		mainPanel.add(confirmDeleteWindow);
 
 		// Label onde o nome do usuário é exibido
 		// -- parent = mainPanel
@@ -169,7 +169,7 @@ public class ProfileWindow extends JInternalFrame {
 
 		JPanel dataPanel = new JPanel();
 		dataPanel.setBorder(new LineBorder(new Color(0, 0, 0), 2, true));
-		dataPanel.setBounds(10, 11, 194, 280);
+		dataPanel.setBounds(10, 11, 220, 312);
 		dataPanel.setBackground(new Color(0, 128, 128));
 		dataPanel.setLayout(null);
 		getContentPane().add(dataPanel);
@@ -178,7 +178,7 @@ public class ProfileWindow extends JInternalFrame {
 		// -- parent = dataPanel
 
 		JLabel dataTextPNL = new JLabel("DADOS");
-		dataTextPNL.setBounds(61, 11, 72, 28);
+		dataTextPNL.setBounds(76, 11, 72, 28);
 		dataTextPNL.setForeground(Color.WHITE);
 		dataTextPNL.setFont(new Font("Georgia", Font.PLAIN, 20));
 		dataPanel.add(dataTextPNL);
@@ -208,7 +208,7 @@ public class ProfileWindow extends JInternalFrame {
 		nameFLD = new JTextField();
 		nameFLD.setBorder(new LineBorder(new Color(0, 0, 0)));
 		nameFLD.setEnabled(false);
-		nameFLD.setBounds(11, 87, 173, 20);
+		nameFLD.setBounds(11, 87, 199, 20);
 		dataPanel.add(nameFLD);
 
 		// Label com o texto "Nome", nada demais
@@ -228,7 +228,7 @@ public class ProfileWindow extends JInternalFrame {
 		emailFLD.setBorder(new LineBorder(new Color(0, 0, 0)));
 		emailFLD.setEnabled(false);
 		emailFLD.setColumns(10);
-		emailFLD.setBounds(11, 131, 173, 20);
+		emailFLD.setBounds(11, 131, 199, 20);
 		dataPanel.add(emailFLD);
 
 		// Label com o texto "SENHA", nada demais
@@ -238,7 +238,7 @@ public class ProfileWindow extends JInternalFrame {
 		JLabel passwordTextLBL = new JLabel("SENHA");
 		passwordTextLBL.setForeground(Color.WHITE);
 		passwordTextLBL.setFont(new Font("Georgia", Font.PLAIN, 20));
-		passwordTextLBL.setBounds(61, 152, 72, 28);
+		passwordTextLBL.setBounds(74, 186, 72, 28);
 		dataPanel.add(passwordTextLBL);
 
 		// Label com o texto "NOVA SENHA", nada demais
@@ -247,7 +247,7 @@ public class ProfileWindow extends JInternalFrame {
 		JLabel changePasswordTextLBL = new JLabel("NOVA SENHA");
 		changePasswordTextLBL.setForeground(Color.WHITE);
 		changePasswordTextLBL.setFont(new Font("Georgia", Font.PLAIN, 12));
-		changePasswordTextLBL.setBounds(11, 184, 99, 14);
+		changePasswordTextLBL.setBounds(11, 217, 99, 14);
 		dataPanel.add(changePasswordTextLBL);
 
 		// Campo para digitar a nova senha do usuário
@@ -258,7 +258,7 @@ public class ProfileWindow extends JInternalFrame {
 		changePasswordFLD.setBorder(new LineBorder(new Color(0, 0, 0)));
 		changePasswordFLD.setEnabled(false);
 		changePasswordFLD.setColumns(10);
-		changePasswordFLD.setBounds(11, 200, 173, 20);
+		changePasswordFLD.setBounds(11, 231, 199, 20);
 		dataPanel.add(changePasswordFLD);
 
 		// Label com o texto "CONFIRMAR NOVA SENHA", nada demais
@@ -267,7 +267,7 @@ public class ProfileWindow extends JInternalFrame {
 		JLabel confirmPasswordTextLBL = new JLabel("CONFIRMAR NOVA SENHA");
 		confirmPasswordTextLBL.setForeground(Color.WHITE);
 		confirmPasswordTextLBL.setFont(new Font("Georgia", Font.PLAIN, 12));
-		confirmPasswordTextLBL.setBounds(11, 229, 173, 14);
+		confirmPasswordTextLBL.setBounds(11, 253, 173, 14);
 		dataPanel.add(confirmPasswordTextLBL);
 
 		// Campo para confirmar a nova senha do usuário
@@ -278,16 +278,17 @@ public class ProfileWindow extends JInternalFrame {
 		confirmPasswordFLD.setBorder(new LineBorder(new Color(0, 0, 0)));
 		confirmPasswordFLD.setEnabled(false);
 		confirmPasswordFLD.setColumns(10);
-		confirmPasswordFLD.setBounds(11, 243, 173, 20);
+		confirmPasswordFLD.setBounds(11, 268, 199, 20);
 		dataPanel.add(confirmPasswordFLD);
 
 		// Botão de salvar as alterações
 		// -- parent = this
 
 		JButton saveBTN = new JButton("Salvar Alterações");
+		saveBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
 		saveBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		saveBTN.setContentAreaFilled(false);
-		saveBTN.setBounds(47, 302, 157, 23);
+		saveBTN.setBounds(44, 334, 186, 23);
 		saveBTN.setEnabled(false);
 		getContentPane().add(saveBTN);
 
@@ -414,7 +415,7 @@ public class ProfileWindow extends JInternalFrame {
 
 		JButton editDataBTN = new JButton();
 		editDataBTN.setIcon(new ImageIcon("src/main/resources/editBTN.png"));
-		editDataBTN.setBounds(164, 50, 20, 20);
+		editDataBTN.setBounds(190, 50, 20, 20);
 		dataPanel.add(editDataBTN);
 
 		// Ativa os campos de email e nome para
@@ -434,7 +435,7 @@ public class ProfileWindow extends JInternalFrame {
 
 		JButton editPasswordBTN = new JButton();
 		editPasswordBTN.setIcon(new ImageIcon("src/main/resources/editBTN.png"));
-		editPasswordBTN.setBounds(164, 162, 20, 20);
+		editPasswordBTN.setBounds(190, 194, 20, 20);
 		dataPanel.add(editPasswordBTN);
 
 		// Ativa os campos de alterar e confirmar
@@ -457,7 +458,7 @@ public class ProfileWindow extends JInternalFrame {
 		statementPNL.setBorder(new LineBorder(new Color(0, 0, 0), 2, true));
 		statementPNL.setLayout(null);
 		statementPNL.setBackground(new Color(0, 128, 128));
-		statementPNL.setBounds(436, 11, 194, 280);
+		statementPNL.setBounds(473, 11, 220, 312);
 		getContentPane().add(statementPNL);
 
 		// Label com o texto "EXTRATO", nada demais
@@ -466,16 +467,17 @@ public class ProfileWindow extends JInternalFrame {
 		JLabel statementLBL = new JLabel("EXTRATO");
 		statementLBL.setForeground(Color.WHITE);
 		statementLBL.setFont(new Font("Georgia", Font.PLAIN, 20));
-		statementLBL.setBounds(45, 11, 103, 28);
+		statementLBL.setBounds(61, 11, 103, 28);
 		statementPNL.add(statementLBL);
 
 		// Botão de histórico de apostas do usuário (Ainda não programado / TODO)
 		// -- parent = this
 
-		JButton userHistoryBTN = new JButton("Meu Histórico");
+		JButton userHistoryBTN = new JButton("Fazer Depósito");
+		userHistoryBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
 		userHistoryBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		userHistoryBTN.setContentAreaFilled(false);
-		userHistoryBTN.setBounds(435, 302, 195, 23);
+		userHistoryBTN.setBounds(473, 334, 220, 23);
 		getContentPane().add(userHistoryBTN);
 		userHistoryBTN.addActionListener(new ActionListener() {
 			@Override
@@ -488,9 +490,10 @@ public class ProfileWindow extends JInternalFrame {
 		// -- parent = this
 
 		JButton deleteUserBTN = new JButton("Apagar Perfil");
+		deleteUserBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
 		deleteUserBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		deleteUserBTN.setContentAreaFilled(false);
-		deleteUserBTN.setBounds(214, 302, 212, 23);
+		deleteUserBTN.setBounds(241, 334, 220, 23);
 		deleteUserBTN.setForeground(new Color(255, 0, 0));
 		getContentPane().add(deleteUserBTN);
 
@@ -513,6 +516,7 @@ public class ProfileWindow extends JInternalFrame {
 		// -- parent = this
 
 		JButton statsBTN = new JButton("Ver Estatísticas");
+		statsBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
 		JButton surroundStatsBTN = new JButton("Ocultar Estatísticas");
 
 		statsBTN.setBounds(18, 126, 175, 23);
@@ -571,7 +575,7 @@ public class ProfileWindow extends JInternalFrame {
 		backBTN.setIcon(new ImageIcon("src/main/resources/backBTN.png"));
 		backBTN.setContentAreaFilled(false);
 		backBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-		backBTN.setBounds(10, 302, 30, 23);
+		backBTN.setBounds(10, 334, 30, 23);
 		getContentPane().add(backBTN);
 
 		// Fecha a janela de perfil e

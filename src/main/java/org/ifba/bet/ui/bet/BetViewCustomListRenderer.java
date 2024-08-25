@@ -34,16 +34,16 @@ class BetViewhCustomListRenderer extends JLabel implements ListCellRenderer<Bet>
 		text = text + index + " - ";
 
 		switch (value.getState()) {
-		case 0:
+		case Bet.CLOSED:
 			text = text + "<span style=\"color: orange;\">" + "Aposta Fechada." + "</span>";
 			break;
-		case 1:
+		case Bet.OPEN:
 			text = text + "<span style=\"color: green;\">" + "Aposta Em Aberto." + "</span>";
 			break;
-		case 3:
+		case Bet.WIN:
 			text = text + "<span style=\"color: blue;\">" + "Aposta Vencida." + "</span>";
 			break;
-		case 4:
+		case Bet.LOSE:
 			text = text + "<span style=\"color: red;\">" + "Aposta Perdida." + "</span>";
 			break;
 		default:

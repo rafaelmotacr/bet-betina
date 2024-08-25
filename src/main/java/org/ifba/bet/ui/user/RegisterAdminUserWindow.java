@@ -37,7 +37,7 @@ public class RegisterAdminUserWindow extends RegisterUserWindow {
 		super();
 		this.backgroundLabel.setIcon(new ImageIcon("src/main/resources/registerADMBG.png"));
 		this.mainWindow = mainWindow;
-		this.setTitle("Bet-Betina v1.23 - Criar ADM");
+		this.setTitle("Bet-Betina v1.23 - ADM: Criar ADM");
 	}
 
 	@Override

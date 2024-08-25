@@ -13,8 +13,6 @@ import org.ifba.bet.util.OddGenerator;
 
 public class MatchDaoPostgres implements MatchDao {
 
-
-
 	@Override
 	public ArrayList<Match> getAllMatchs() throws SQLException {
 	    ArrayList<Match> matchArray = new ArrayList<Match>();

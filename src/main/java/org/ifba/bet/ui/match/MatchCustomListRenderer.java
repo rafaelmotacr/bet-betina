@@ -66,7 +66,7 @@ class MatchCustomListRenderer extends JLabel implements ListCellRenderer<Match> 
 		text = text + "</u></html>";
 
 		setText(text);
-		setFont(new Font("Georgia", Font.PLAIN, 14));
+		setFont(new Font("Georgia", Font.PLAIN, 16));
 		if (isSelected) {
 			setBackground(list.getSelectionBackground());
 			setForeground(list.getSelectionForeground());

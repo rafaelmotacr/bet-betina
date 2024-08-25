@@ -92,7 +92,7 @@ public class UserDaoPostgres implements UserDao {
 	public String getFavoriteTeam(User user) throws SQLException {
 
 		PreparedStatement ps = DatabaseConnectionSingleton.getInstance().getConexao().prepareStatement(
-				"SELECT team_abbreviation AS favorite_team \r\n" + "		FROM team_tb INNER JOIN user_tb\r\n"
+				"SELECT team_name AS favorite_team \r\n" + "		FROM team_tb INNER JOIN user_tb\r\n"
 						+ "		ON (user_tb.user_favorite_team_id = team_tb.team_id)\r\n"
 						+ "		WHERE user_tb.user_id = ?");
 

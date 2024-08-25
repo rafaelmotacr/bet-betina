@@ -8,14 +8,12 @@ import java.sql.SQLException;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
 import org.ifba.bet.dao.bet.BetDaoPostgres;
@@ -128,7 +126,7 @@ public class MatchResultWindow extends JInternalFrame {
 				try {
 					matchDao.updateMatchResult(result, match.getId());
 					matchDao.updateMatchState(0, match.getId());
-					betDao.updateBetState(0, result);
+					betDao.updateBetsState(0, match.getId());
 					JOptionPane.showMessageDialog(MatchResultWindow.this.getParent(), "Resultado Definido com Sucesso.",
 							"Info", JOptionPane.INFORMATION_MESSAGE);
 				} catch (SQLException e1) {
@@ -178,24 +176,6 @@ public class MatchResultWindow extends JInternalFrame {
 		rdbtnAwayTeamWin.setText("Vitória do Time " + awayTeamName + ".");
 		rdbtnDraw.setText("Empate.");
 		matchTitleLBL.setText(match.toString());
-	}
-
-	public static void main(String[] args) {
-		// Garantir que a criação da GUI ocorra na Event Dispatch Thread
-		SwingUtilities.invokeLater(() -> {
-			JFrame frame = new JFrame("Main Frame");
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			frame.setSize(800, 600);
-
-			// Adicionar um JDesktopPane ao JFrame
-			JDesktopPane desktopPane = new JDesktopPane();
-			frame.setContentPane(desktopPane);
-
-			// Adicionar uma instância de TesteClass ao JDesktopPane
-			MatchResultWindow testeClass = new MatchResultWindow();
-			desktopPane.add(testeClass);
-			frame.setVisible(true);
-		});
 	}
 
 }

@@ -70,7 +70,7 @@ public class BetHistoryWindow extends JInternalFrame {
 					return;
 				}
 				switch (bet.getState()) {
-				case 1:
+				case Bet.OPEN:
 					try {
 						betMainWindow.loadBids(betDao.getAllBids(bet.getID()));
 						betMainWindow.setForeignBetId(bet.getID());
@@ -100,6 +100,12 @@ public class BetHistoryWindow extends JInternalFrame {
 							JOptionPane.INFORMATION_MESSAGE);
 					return;
 				}
+				if(bet.getState() != Bet.OPEN) {
+					JOptionPane.showMessageDialog(BetHistoryWindow.this, "Não é Possível Apagar Uma \nAposta neste estado.", "Acesso Negado",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				
 				try {
 
 					ArrayList<Bid> bidList = new ArrayList<Bid>();

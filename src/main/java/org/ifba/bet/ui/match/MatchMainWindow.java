@@ -23,6 +23,7 @@ import javax.swing.border.LineBorder;
 
 import org.ifba.bet.dao.match.MatchDaoPostgres;
 import org.ifba.bet.model.Match;
+import org.ifba.bet.ui.user.MainWindow;
 
 public class MatchMainWindow extends JInternalFrame {
 
@@ -31,6 +32,7 @@ public class MatchMainWindow extends JInternalFrame {
 	private DefaultListModel<Match> listModel;
 	private JTextField searchFLD;
 	private MatchDaoPostgres matchDao = new MatchDaoPostgres();
+	private MainWindow mainWindow;
 
 	public MatchMainWindow() {
 
@@ -118,6 +120,11 @@ public class MatchMainWindow extends JInternalFrame {
 			}
 		});
 
+		JLabel teamImgLBL = new JLabel("");
+		teamImgLBL.setBounds(13, 76, 130, 77);
+		teamImgLBL.setIcon(new ImageIcon("src/main/resources/bolacha.png"));
+		dataPanel.add(teamImgLBL);
+		
 		JButton refreshBTN = new JButton("");
 		refreshBTN.setIcon(new ImageIcon("src/main/resources/reload.png"));
 		refreshBTN.addActionListener(new ActionListener() {
@@ -147,7 +154,7 @@ public class MatchMainWindow extends JInternalFrame {
 		btnCriarPartida.setFont(new Font("Georgia", Font.PLAIN, 14));
 		btnCriarPartida.setContentAreaFilled(false);
 		btnCriarPartida.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-		btnCriarPartida.setBounds(10, 234, 137, 23);
+		btnCriarPartida.setBounds(50, 302, 97, 23);
 		dataPanel.add(btnCriarPartida);
 
 		JButton btnAtualizarPartida = new JButton("Definir Resultado");
@@ -201,6 +208,10 @@ public class MatchMainWindow extends JInternalFrame {
 		setVisible(true);
 	}
 
+	public void setMainWindow(MainWindow mainWindow) {
+		this.mainWindow = mainWindow;
+	}
+
 	public void updateMatchs() {
 		ArrayList<Match> matchs = null;
 		try {
@@ -212,6 +223,9 @@ public class MatchMainWindow extends JInternalFrame {
 		listModel.clear();
 		for (Match match : matchs) {
 			listModel.addElement(match);
+		}
+		if(mainWindow != null) {
+			mainWindow.updateHighlits();
 		}
 	}
 

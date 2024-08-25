@@ -139,7 +139,7 @@ public class UpdateTeamWindow extends JInternalFrame {
 	public void turnOn() {
 		teamNameFLD.setText(team.getName());
 		teamAbbreviationFLD.setText(team.getAbbreviation());
-		setTitle("Bet-Betina v1.23 - Atualizando o Time [" + team.getAbbreviation() + "]");
+		setTitle("Bet-Betina v1.23 - ADM: Atualizando o Time [" + team.getAbbreviation() + "]");
 	}
 
 }

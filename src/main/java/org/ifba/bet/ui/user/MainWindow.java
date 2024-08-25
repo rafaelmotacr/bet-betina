@@ -10,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
@@ -29,7 +30,9 @@ import org.ifba.bet.model.Bet;
 import org.ifba.bet.model.Match;
 import org.ifba.bet.model.User;
 import org.ifba.bet.ui.bet.BetMainWindow;
+import org.ifba.bet.ui.match.MatchMainWindow;
 import org.ifba.bet.ui.team.TeamMainWindow;
+import org.ifba.bet.util.Curiosities;
 
 public class MainWindow {
 
@@ -52,19 +55,22 @@ public class MainWindow {
 
 	// Estes componentes da tela são declarados aqui para
 	// se tornarem acessíveis aos métodos da classe
-
+	
+	private JLabel randLBL;
 	private JLabel greetingLBL;
 	private JButton loginBTN;
 	private JButton registerUserBTN;
 	private JButton logOutBTN;
 	private JButton profileBTN;
 	private JButton createADMBTN;
+	private JButton matchBTN;
 
 	private MatchDaoPostgres matchDao = new MatchDaoPostgres();
 	private BetDaoPostgres betDao = new BetDaoPostgres();
 	private UserDaoPostgres userDao = new UserDaoPostgres();
 
 	private DefaultListModel<Match> listModel;
+	private Random rand = new Random();
 
 	// Coordenadas utilizadas para movimentação dinâmica da janela
 
@@ -86,8 +92,8 @@ public class MainWindow {
 		frame.setUndecorated(true);
 		frame.setResizable(false);
 		frame.getContentPane().setBackground(new Color(0, 128, 128));
-		frame.setBounds((int) ((Toolkit.getDefaultToolkit()).getScreenSize().getWidth() / 2 - 768 / 2),
-				(int) ((Toolkit.getDefaultToolkit()).getScreenSize().getHeight() / 2 - 432 / 2), 768, 432);
+		frame.setBounds((int) ((Toolkit.getDefaultToolkit()).getScreenSize().getWidth() / 2 - 844 / 2),
+				(int) ((Toolkit.getDefaultToolkit()).getScreenSize().getHeight() / 2 - 475 / 2), 844, 475);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		// Captura a posição atual do mouse
@@ -136,36 +142,14 @@ public class MainWindow {
 
 		BetMainWindow betMainWindow = new BetMainWindow();
 		betMainWindow.setVisible(false);
-		betMainWindow.setLocation(32, 18);
+		betMainWindow.setLocation(64, 36);
 		frame.getContentPane().add(betMainWindow);
+		
+		MatchMainWindow matchMainWindow = new MatchMainWindow();
+		matchMainWindow.setVisible(false);
+		matchMainWindow.setLocation(64, 36);
+		frame.getContentPane().add(matchMainWindow);
 
-		// Botão de log out
-		// -- parent = frame
-
-		logOutBTN = new JButton("Fazer Log Out");
-		logOutBTN.setBounds(140, 33, 121, 26);
-		logOutBTN.setForeground(new Color(255, 255, 255));
-		logOutBTN.setContentAreaFilled(false);
-		logOutBTN.setMnemonic('O');
-		logOutBTN.setFont(new Font("Georgia", Font.BOLD, 14));
-		logOutBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-		logOutBTN.setVisible(false);
-
-		// Efetivamente desloga o usuário por
-		// definir o usuário atual como "null"
-		// se a subjanela de perfil estiver aberta,
-		// fecha ela
-
-		logOutBTN.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				updateUser(null);
-				if (profileWindow.isVisible()) {
-					profileWindow.dispose();
-				}
-				JOptionPane.showMessageDialog(frame, "Log Out realizado com sucesso.");
-			}
-		});
 
 		// Botão de criar novos admnistradores
 		// só aparece caso o usuário logado
@@ -176,7 +160,7 @@ public class MainWindow {
 		createADMBTN.setForeground(new Color(255, 255, 255));
 		createADMBTN.setContentAreaFilled(false);
 		createADMBTN.setFont(new Font("Georgia", Font.BOLD, 14));
-		createADMBTN.setBounds(271, 33, 150, 26);
+		createADMBTN.setBounds(304, 33, 150, 34);
 		createADMBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		createADMBTN.setVisible(false);
 		frame.getContentPane().add(createADMBTN);
@@ -197,23 +181,12 @@ public class MainWindow {
 			}
 		});
 
-		// Label de cumprimento ao usuário
-		// -- parent = frame
-
-		greetingLBL = new JLabel("Seja Bem Vindo (a), Visitante!");
-		greetingLBL.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-		greetingLBL.setBounds(140, 386, 415, 34);
-		greetingLBL.setForeground(new Color(255, 255, 255));
-		greetingLBL.setFont(new Font("Georgia", Font.BOLD, 16));
-		greetingLBL.setBackground(new Color(51, 51, 51));
-		frame.getContentPane().add(greetingLBL);
-
 		// Logo com a Betina
 		// -- parent = frame
 
 		JLabel logoLBL = new JLabel("");
 		logoLBL.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-		logoLBL.setBounds(140, 67, 415, 313);
+		logoLBL.setBounds(173, 115, 415, 313);
 		logoLBL.setBackground(new Color(102, 0, 0));
 		logoLBL.setIcon(new ImageIcon("src/main/resources/logoMain.png"));
 		frame.getContentPane().add(logoLBL);
@@ -223,7 +196,7 @@ public class MainWindow {
 
 		JPanel mainPNL = new JPanel();
 		mainPNL.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-		mainPNL.setBounds(10, 33, 124, 389);
+		mainPNL.setBounds(10, 33, 153, 431);
 		mainPNL.setBackground(Color.WHITE);
 		mainPNL.setLayout(null);
 		frame.getContentPane().add(mainPNL);
@@ -232,7 +205,7 @@ public class MainWindow {
 		// -- parent = mainPanel
 
 		JLabel appNameLBL = new JLabel("BET BETINA");
-		appNameLBL.setBounds(2, 0, 120, 33);
+		appNameLBL.setBounds(16, 0, 120, 33);
 		appNameLBL.setFont(new Font("Georgia", Font.BOLD, 18));
 		mainPNL.add(appNameLBL);
 
@@ -241,10 +214,10 @@ public class MainWindow {
 
 		JButton exitBTN = new JButton("SAIR");
 		exitBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-		exitBTN.setBounds(12, 355, 98, 26);
+		exitBTN.setBounds(12, 394, 131, 26);
 		exitBTN.setContentAreaFilled(false);
 		exitBTN.setMnemonic('S');
-		exitBTN.setFont(new Font("Georgia", Font.BOLD, 14));
+		exitBTN.setFont(new Font("Georgia", Font.BOLD, 16));
 		mainPNL.add(exitBTN);
 
 		// Fecha a janela principal usando o método dispose
@@ -261,10 +234,10 @@ public class MainWindow {
 
 		JButton betBTN = new JButton("Apostar");
 		betBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-		betBTN.setBounds(12, 50, 98, 26);
+		betBTN.setBounds(12, 50, 131, 26);
 		betBTN.setContentAreaFilled(false);
 		betBTN.setMnemonic('A');
-		betBTN.setFont(new Font("Georgia", Font.BOLD, 14));
+		betBTN.setFont(new Font("Georgia", Font.BOLD, 16));
 		mainPNL.add(betBTN);
 		betBTN.addActionListener(new ActionListener() {
 			@Override
@@ -288,7 +261,7 @@ public class MainWindow {
 		// -- parent = mainPanel
 
 		JPanel blackLine = new JPanel();
-		blackLine.setBounds(1, 36, 119, 3);
+		blackLine.setBounds(1, 35, 152, 4);
 		blackLine.setForeground(new Color(0, 0, 0));
 		blackLine.setBackground(new Color(0, 0, 0));
 		mainPNL.add(blackLine);
@@ -299,18 +272,10 @@ public class MainWindow {
 		JButton teamBTN = new JButton("Ver Times");
 		teamBTN.setMnemonic('t');
 		teamBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-		teamBTN.setBounds(12, 87, 98, 26);
+		teamBTN.setBounds(12, 87, 131, 26);
 		teamBTN.setContentAreaFilled(false);
-		teamBTN.setFont(new Font("Georgia", Font.BOLD, 14));
+		teamBTN.setFont(new Font("Georgia", Font.BOLD, 16));
 		mainPNL.add(teamBTN);
-
-		JButton matchBTN = new JButton("Ver Partidas");
-		matchBTN.setMnemonic('t');
-		matchBTN.setFont(new Font("Georgia", Font.BOLD, 14));
-		matchBTN.setContentAreaFilled(false);
-		matchBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-		matchBTN.setBounds(12, 124, 100, 26);
-		mainPNL.add(matchBTN);
 		teamBTN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				teamMainWindow.setUser(currentUser);
@@ -320,20 +285,35 @@ public class MainWindow {
 			}
 		});
 
+		
+
+		matchBTN = new JButton("Ver Partidas");
+		matchBTN.setMnemonic('t');
+		matchBTN.setFont(new Font("Georgia", Font.BOLD, 16));
+		matchBTN.setContentAreaFilled(false);
+		matchBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+		matchBTN.setBounds(12, 124, 131, 26);
+		mainPNL.add(matchBTN);
+		matchBTN.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				matchMainWindow.setMainWindow(MainWindow.this);
+				matchMainWindow.setVisible(true);
+			}
+		});
 		// "Título" do app
 		// -- parent = titleBarPNL
 
 		JPanel titleBarPNL = new JPanel();
-		titleBarPNL.setBounds(0, 0, 768, 25);
+		titleBarPNL.setBounds(0, 0, 844, 30);
 		titleBarPNL.setForeground(Color.BLACK);
 		titleBarPNL.setBackground(Color.BLACK);
 		frame.getContentPane().add(titleBarPNL);
 		titleBarPNL.setLayout(null);
 
 		JLabel titleLBL = new JLabel("Bet-Betina v1.23 - Home");
-		titleLBL.setFont(new Font("Georgia", Font.BOLD, 14));
+		titleLBL.setFont(new Font("Georgia", Font.BOLD, 18));
 		titleLBL.setForeground(new Color(255, 255, 255));
-		titleLBL.setBounds(10, 4, 185, 16);
+		titleLBL.setBounds(10, 3, 329, 27);
 		titleBarPNL.add(titleLBL);
 
 		// "Botão" de fechar
@@ -341,89 +321,9 @@ public class MainWindow {
 
 		JLabel closeBTN = new JLabel("X");
 		closeBTN.setForeground(new Color(255, 255, 255));
-		closeBTN.setBounds(744, 0, 12, 23);
-		closeBTN.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		closeBTN.setBounds(813, 1, 26, 30);
+		closeBTN.setFont(new Font("Georgia", Font.PLAIN, 20));
 		titleBarPNL.add(closeBTN);
-
-		// Botão de registro de usuários
-		// -- parent = frame
-
-		registerUserBTN = new JButton("Registrar");
-		registerUserBTN.setBounds(431, 33, 124, 26);
-		frame.getContentPane().add(registerUserBTN);
-		registerUserBTN.setFont(new Font("Georgia", Font.BOLD, 14));
-		registerUserBTN.setForeground(new Color(255, 255, 255));
-		registerUserBTN.setContentAreaFilled(false);
-		registerUserBTN.setMnemonic('R');
-		registerUserBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-
-		// Botão de perfil
-		// -- parent = frame
-
-		profileBTN = new JButton("Meu Perfil");
-		profileBTN.setBounds(431, 33, 124, 26);
-		frame.getContentPane().add(profileBTN);
-		profileBTN.setForeground(new Color(255, 255, 255));
-		profileBTN.setContentAreaFilled(false);
-		profileBTN.setMnemonic('p');
-		profileBTN.setFont(new Font("Georgia", Font.BOLD, 14));
-		profileBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-		// Botão de log in
-		// -- parent = frame
-
-		loginBTN = new JButton("Fazer Log In");
-		loginBTN.setBounds(140, 33, 121, 26);
-		frame.getContentPane().add(loginBTN);
-		loginBTN.setFont(new Font("Georgia", Font.BOLD, 14));
-		loginBTN.setForeground(new Color(255, 255, 255));
-		loginBTN.setContentAreaFilled(false);
-		loginBTN.setFocusPainted(false);
-		loginBTN.setMnemonic('L');
-		loginBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-		loginBTN.setVisible(true);
-
-		// Ativa a janela de login
-		// se o usuário tentar se registrar e logar
-		// ao mesmo tempo, cancela a chamada de login
-
-		loginBTN.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (registerCommonUserWindow.isVisible()) {
-					JOptionPane.showMessageDialog(frame, "Primeiro feche a outra janela!");
-					return;
-				}
-				loginWindow.setVisible(true);
-			}
-		});
-		profileBTN.setVisible(false);
-
-		// Ativa a janela de perfil
-		// e tranfere para ela uma referência da janela atual
-
-		profileBTN.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				profileWindow.turnOn(MainWindow.this);
-				profileWindow.setVisible(true);
-			}
-		});
-		registerUserBTN.setVisible(true);
-
-		// Ativa a janela de registro de usuários
-		// se o usuário tentar registrar e logar
-		// ao mesmo tempo, cancela a chamada do registro
-
-		registerUserBTN.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (loginWindow.isVisible()) {
-					JOptionPane.showMessageDialog(frame, "Primeiro feche a outra janela!");
-					return;
-				}
-				registerCommonUserWindow.setVisible(true);
-			}
-		});
 
 		// Finaliza completamente a execução do programa
 
@@ -442,13 +342,13 @@ public class MainWindow {
 
 		JPanel highlitsPNL = new JPanel();
 		highlitsPNL.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-		highlitsPNL.setBounds(564, 33, 194, 26);
+		highlitsPNL.setBounds(598, 33, 236, 30);
 		highlitsPNL.setBackground(Color.WHITE);
 		frame.getContentPane().add(highlitsPNL);
 		highlitsPNL.setLayout(null);
 
-		JLabel highlitsLBL = new JLabel("Partidas Ativas");
-		highlitsLBL.setBounds(27, 2, 140, 22);
+		JLabel highlitsLBL = new JLabel("Próximas Partidas");
+		highlitsLBL.setBounds(29, 2, 178, 22);
 		highlitsLBL.setFont(new Font("Georgia", Font.BOLD, 18));
 		highlitsPNL.add(highlitsLBL);
 
@@ -456,9 +356,8 @@ public class MainWindow {
 		JList<Match> highlitsList = new JList<>(listModel);
 
 		highlitsList.setOpaque(false);
-		highlitsList.setFont(new Font("Georgia", Font.PLAIN, 14));
+		highlitsList.setFont(new Font("Georgia", Font.PLAIN, 18));
 		highlitsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-		frame.getContentPane().add(logOutBTN);
 		highlitsList.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -471,8 +370,137 @@ public class MainWindow {
 
 		JScrollPane scrollPane = new JScrollPane(highlitsList);
 		scrollPane.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-		scrollPane.setBounds(564, 67, 194, 352);
+		scrollPane.setBounds(598, 67, 236, 397);
 		frame.getContentPane().add(scrollPane);
+		
+		randLBL = new JLabel("Cadastre-se agora e ganhe um bônus de R$ 1500!");
+		randLBL.setForeground(Color.WHITE);
+		randLBL.setFont(new Font("Georgia", Font.BOLD, 16));
+		randLBL.setBorder(new LineBorder(new Color(0, 0, 0), 2));
+		randLBL.setBackground(new Color(51, 51, 51));
+		randLBL.setBounds(173, 78, 415, 34);
+		frame.getContentPane().add(randLBL);
+		
+				// Label de cumprimento ao usuário
+				// -- parent = frame
+		
+				greetingLBL = new JLabel("Seja Bem Vindo (a), Visitante!");
+				greetingLBL.setBounds(173, 431, 415, 34);
+				frame.getContentPane().add(greetingLBL);
+				greetingLBL.setBorder(new LineBorder(new Color(0, 0, 0), 2));
+				greetingLBL.setForeground(new Color(255, 255, 255));
+				greetingLBL.setFont(new Font("Georgia", Font.BOLD, 16));
+				greetingLBL.setBackground(new Color(51, 51, 51));
+						// Botão de log in
+						// -- parent = frame
+
+						loginBTN = new JButton("Fazer Log In");
+						loginBTN.setBounds(173, 32, 121, 34);
+						frame.getContentPane().add(loginBTN);
+						loginBTN.setFont(new Font("Georgia", Font.BOLD, 16));
+						loginBTN.setForeground(new Color(255, 255, 255));
+						loginBTN.setContentAreaFilled(false);
+						loginBTN.setFocusPainted(false);
+						loginBTN.setMnemonic('L');
+						loginBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+						
+								// Botão de registro de usuários
+								// -- parent = frame
+						
+								registerUserBTN = new JButton("Registrar");
+								registerUserBTN.setBounds(464, 32, 124, 34);
+								frame.getContentPane().add(registerUserBTN);
+								registerUserBTN.setFont(new Font("Georgia", Font.BOLD, 16));
+								registerUserBTN.setForeground(new Color(255, 255, 255));
+								registerUserBTN.setContentAreaFilled(false);
+								registerUserBTN.setMnemonic('R');
+								registerUserBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+								// Botão de log out
+								// -- parent = frame
+
+								logOutBTN = new JButton("Fazer Log Out");
+								logOutBTN.setBounds(173, 32, 121, 34);
+								frame.getContentPane().add(logOutBTN);
+								logOutBTN.setForeground(new Color(255, 255, 255));
+								logOutBTN.setContentAreaFilled(false);
+								logOutBTN.setMnemonic('O');
+								logOutBTN.setFont(new Font("Georgia", Font.BOLD, 16));
+								logOutBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+								
+										// Botão de perfil
+										// -- parent = frame
+								
+										profileBTN = new JButton("Meu Perfil");
+										profileBTN.setBounds(464, 32, 124, 34);
+										frame.getContentPane().add(profileBTN);
+										profileBTN.setForeground(new Color(255, 255, 255));
+										profileBTN.setContentAreaFilled(false);
+										profileBTN.setMnemonic('p');
+										profileBTN.setFont(new Font("Georgia", Font.BOLD, 16));
+										profileBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+										profileBTN.setVisible(false);
+										
+												// Ativa a janela de perfil
+												// e tranfere para ela uma referência da janela atual
+										
+												profileBTN.addActionListener(new ActionListener() {
+													@Override
+													public void actionPerformed(ActionEvent e) {
+														profileWindow.turnOn(MainWindow.this);
+														profileWindow.setVisible(true);
+													}
+												});
+								logOutBTN.setVisible(false);
+								
+										// Efetivamente desloga o usuário por
+										// definir o usuário atual como "null"
+										// se a subjanela de perfil estiver aberta,
+										// fecha ela
+								
+										logOutBTN.addActionListener(new ActionListener() {
+											@Override
+											public void actionPerformed(ActionEvent e) {
+												updateUser(null);
+												if (profileWindow.isVisible()) {
+													profileWindow.dispose();
+												}
+												JOptionPane.showMessageDialog(frame, "Log Out realizado com sucesso.");
+											}
+										});
+								registerUserBTN.setVisible(true);
+								
+										// Ativa a janela de registro de usuários
+										// se o usuário tentar registrar e logar
+										// ao mesmo tempo, cancela a chamada do registro
+								
+										registerUserBTN.addActionListener(new ActionListener() {
+											@Override
+											public void actionPerformed(ActionEvent e) {
+												if (loginWindow.isVisible()) {
+													JOptionPane.showMessageDialog(frame, "Primeiro feche a outra janela!");
+													return;
+												}
+												registerCommonUserWindow.setVisible(true);
+											}
+										});
+						loginBTN.setVisible(true);
+						
+								// Ativa a janela de login
+								// se o usuário tentar se registrar e logar
+								// ao mesmo tempo, cancela a chamada de login
+						
+								loginBTN.addActionListener(new ActionListener() {
+									@Override
+									public void actionPerformed(ActionEvent e) {
+										if (registerCommonUserWindow.isVisible()) {
+											JOptionPane.showMessageDialog(frame, "Primeiro feche a outra janela!");
+											return;
+										}
+										loginWindow.setVisible(true);
+									}
+								});
+								
+								// Por favor, ignore esta parte se estiver lendo isso.
 
 		updateHighlits();
 
@@ -498,20 +526,24 @@ public class MainWindow {
 			}
 			for (Bet bet : betList) {
 				int betId = bet.getID();
-				if (bet.getState() != 0) {
+				if (bet.getState() != Bet.CLOSED) {
 					return;
 				}
+				
 				if (!betDao.isBetCompleted(betId)) {
 					return;
 				}
 
 				if (betDao.isBetCorrect(betId)) {
-					betDao.updateBetState(3, betId);
+					betDao.updateBetState(Bet.WIN, currentUser.getID(), betId);
+					double betPayout = betDao.getBetPayout(betId);
+					JOptionPane.showMessageDialog(frame, "Parabéns, " + currentUser.getName() + 
+							"!\nVocê acaba de ganhar uma aposta\nque lhe rendeu R$" + betPayout + "!"
+							+ " \nContinue apostando para ter mais ganhos!", "Parabéns", JOptionPane.INFORMATION_MESSAGE);
+					userDao.updateUserBalance(currentUser, (currentUser.getBalance() + betPayout));
 				} else {
-					betDao.updateBetState(4, betId);
+					betDao.updateBetState(Bet.LOSE, currentUser.getID(), betId);
 				}
-				double betPayout = betDao.getBetPayout(betId);
-				userDao.updateUserBalance(currentUser, (currentUser.getBalance() + betPayout));
 			}
 		} catch (SQLException e) {
 			System.out.println("Unexpected Error");
@@ -535,8 +567,9 @@ public class MainWindow {
 			// Caso este usuário seja admnistrador
 			// adiciona o botão de criar novos admnistradores
 
-			if (currentUser.getAccessLevel() == 1) {
+			if (currentUser.getAccessLevel() == User.ADMIN) {
 				createADMBTN.setVisible(true);
+				matchBTN.setVisible(true);
 			}
 		} else {
 			// Se o usuário realizou log out e os botões
@@ -574,11 +607,17 @@ public class MainWindow {
 	private void updateGreetingLabel() {
 		if (currentUser == null) {
 			greetingLBL.setText("Seja Bem Vindo (a), Visitante!");
-		} else if (currentUser.getAccessLevel() == 1) {
+			randLBL.setText("Cadastre-se agora e ganhe um bônus de R$ 1500!");
+			return;
+		}
+		if (currentUser.getAccessLevel() == User.ADMIN) {
 			greetingLBL.setText("Bem Vindo (a) de volta, Administrador (a)!");
-		} else {
+		} 
+		else {
 			greetingLBL.setText("Bem Vindo (a) de volta, " + currentUser.getName() + "!");
 		}
+		
+		randLBL.setText(Curiosities.getCuriosity(rand.nextInt(26)));
 	}
 
 	// Retorna o usuário atual
