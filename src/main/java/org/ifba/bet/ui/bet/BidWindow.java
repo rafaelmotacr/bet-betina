@@ -24,12 +24,10 @@ import org.ifba.bet.model.User;
 public class BidWindow extends JInternalFrame {
 
 	private static final long serialVersionUID = 1L;
-	private TeamDaoPostgres teamDao = new TeamDaoPostgres();
 	private Match match;
 	private String homeTeamName;
 	private String awayTeamName;
 	private BetMainWindow matchMainWindow;
-
 	private User currentUser;
 
 	private JRadioButton rdbtnDraw;
@@ -38,6 +36,8 @@ public class BidWindow extends JInternalFrame {
 	private JLabel matchTitleLBL;
 	private JTextField bidValueFLD;
 
+	private TeamDaoPostgres teamDao = new TeamDaoPostgres();
+	
 	public BidWindow() {
 
 		super();
@@ -87,7 +87,7 @@ public class BidWindow extends JInternalFrame {
 		rdbtnHomeTeamWin.setOpaque(false);
 		rdbtnHomeTeamWin.setBounds(6, 7, 314, 23);
 		rdbtnHomeTeamWin.setFont(new Font("Georgia", Font.PLAIN, 12));
-		rdbtnHomeTeamWin.setActionCommand("1");
+		rdbtnHomeTeamWin.setActionCommand(String.valueOf(Bid.GUESS_TO_HOME_WIN));
 		panel_1.add(rdbtnHomeTeamWin);
 		group.add(rdbtnHomeTeamWin);
 
@@ -95,7 +95,7 @@ public class BidWindow extends JInternalFrame {
 		rdbtnAwayTeamWin.setOpaque(false);
 		rdbtnAwayTeamWin.setBounds(6, 33, 314, 23);
 		rdbtnAwayTeamWin.setFont(new Font("Georgia", Font.PLAIN, 12));
-		rdbtnAwayTeamWin.setActionCommand("2");
+		rdbtnAwayTeamWin.setActionCommand(String.valueOf(Bid.GUESS_TO_AWAY_WIN));
 		panel_1.add(rdbtnAwayTeamWin);
 		group.add(rdbtnAwayTeamWin);
 
@@ -103,7 +103,7 @@ public class BidWindow extends JInternalFrame {
 		rdbtnDraw.setOpaque(false);
 		rdbtnDraw.setBounds(6, 59, 314, 23);
 		rdbtnDraw.setFont(new Font("Georgia", Font.PLAIN, 12));
-		rdbtnDraw.setActionCommand("3");
+		rdbtnDraw.setActionCommand(String.valueOf(Bid.GUESS_TO_DRAW));
 		panel_1.add(rdbtnDraw);
 		group.add(rdbtnDraw);
 

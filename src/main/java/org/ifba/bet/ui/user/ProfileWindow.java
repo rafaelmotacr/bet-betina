@@ -1,11 +1,17 @@
 package org.ifba.bet.ui.user;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Font;
-import java.awt.HeadlessException;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -19,8 +25,10 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 
+import org.ifba.bet.dao.bet.BetDaoPostgres;
 import org.ifba.bet.dao.user.UserDaoPostgres;
 import org.ifba.bet.exceptions.PasswordsDontMatchException;
+import org.ifba.bet.model.Bet;
 import org.ifba.bet.model.User;
 import org.ifba.bet.util.InputManipulation;
 
@@ -44,16 +52,19 @@ public class ProfileWindow extends JInternalFrame {
 
 	// Estes componentes da tela são declarados aqui para
 	// se tornarem acessíveis aos métodos da classe
-
+	
+	private JPanel statementPNL;
 	private JTextField nameFLD;
 	private JTextField emailFLD;
 	private JLabel nameLBL;
 	private JLabel idLBL;
 	private JLabel balanceLBL;
+	private Point initialClick;
 
 	// Conexão com o banco de dados
 
-	private UserDaoPostgres dao = new UserDaoPostgres();
+	private UserDaoPostgres userDao = new UserDaoPostgres();
+	private BetDaoPostgres betDao = new BetDaoPostgres();
 
 	// Ponteiro/referência para a janela principal
 	// para que seja possível receber e atualizar o usuário
@@ -74,7 +85,37 @@ public class ProfileWindow extends JInternalFrame {
 		setBounds(0, 0, 704, 396);
 		getContentPane().setLayout(null);
 		
+		JLabel qrCodeLBL = new JLabel("EU não deveria estar aparecendo");
+		qrCodeLBL.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+		qrCodeLBL.setVisible(false);
+		qrCodeLBL.setBorder(new LineBorder(new Color(0, 0, 0), 4));
+		qrCodeLBL.setOpaque(true);
+		qrCodeLBL.setBounds(191, 24, 320, 320);
+		
+		qrCodeLBL.setIcon(new ImageIcon("src/main/resources/qrCode.png"));
+		getContentPane().add(qrCodeLBL);
+		qrCodeLBL.addMouseListener(new MouseAdapter() {
+            
 
+            @Override
+            public void mousePressed(MouseEvent e) {
+                initialClick = e.getPoint();
+                qrCodeLBL.getComponentAt(initialClick); // Ensures label captures the initial click point
+            }
+        });
+
+		qrCodeLBL.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                // Calculate the new position of the label
+                int x = e.getX() + qrCodeLBL.getX() - initialClick.x;
+                int y = e.getY() + qrCodeLBL.getY() - initialClick.y;
+
+                // Set the new position of the label
+                qrCodeLBL.setLocation(x, y);
+            }
+        });
+	
 		// Painel principal, o do meio
 		// -- parent = this
 
@@ -316,10 +357,8 @@ public class ProfileWindow extends JInternalFrame {
 							return;
 						}
 						try {
-							dao.updateUserName(currentUser, name);
-							ProfileWindow.this.setTitle("Bet-Betina v1.21 - Perfil de " + name);
-							nameLBL.setText(name.concat(
-									currentUser.getAccessLevel() == 0 ? " - Usuario Comum." : " - Admnistrador."));
+							userDao.updateUserName(currentUser, name);
+							update();
 							JOptionPane.showMessageDialog(ProfileWindow.this, "Nome atualizado com sucesso.");
 							userChanged = true;
 						} catch (SQLException e1) {
@@ -341,20 +380,17 @@ public class ProfileWindow extends JInternalFrame {
 							JOptionPane.showMessageDialog(ProfileWindow.this, "Insira um e-mail válido.");
 							return;
 						}
-						try {
-							if (dao.findUserByEmail(email) != null) {
-								JOptionPane.showMessageDialog(ProfileWindow.this,
-										"Email já cadastrado no banco de dados!");
-								return;
-							}
-						} catch (HeadlessException | SQLException e1) {
-
+						if (userDao.findUserByEmail(email) != null) {
+							JOptionPane.showMessageDialog(ProfileWindow.this,
+									"Email já cadastrado no banco de dados!");
+							return;
 						}
+
 
 						// Tenta atualizar o email
 
 						try {
-							dao.updateUserEmail(currentUser, email);
+							userDao.updateUserEmail(currentUser, email);
 							JOptionPane.showMessageDialog(ProfileWindow.this, "Email atualizado com sucesso.");
 							userChanged = true;
 						} catch (SQLException e1) {
@@ -384,7 +420,7 @@ public class ProfileWindow extends JInternalFrame {
 					encriptedPassword = InputManipulation.generateHashedPassword(password);
 					try {
 						// Atualiza a senha no banco de dados
-						dao.updateUserPassword(currentUser, encriptedPassword);
+						userDao.updateUserPassword(currentUser, encriptedPassword);
 						// Reseta os campos de senha e confirmação de senha
 						changePasswordFLD.setText(null);
 						confirmPasswordFLD.setText(null);
@@ -394,12 +430,8 @@ public class ProfileWindow extends JInternalFrame {
 					}
 				}
 				if (userChanged) {
-					try {
-						currentUser = dao.findUserByEmail(currentUser.getEmail());
-					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
+					currentUser = userDao.findUserByEmail(currentUser.getEmail());
+
 				}
 				changePasswordFLD.setEnabled(false);
 				confirmPasswordFLD.setEnabled(false);
@@ -454,21 +486,12 @@ public class ProfileWindow extends JInternalFrame {
 		// , se houver (Ainda não programado / TODO)
 		// -- parent = this
 
-		JPanel statementPNL = new JPanel();
+		statementPNL = new JPanel();
 		statementPNL.setBorder(new LineBorder(new Color(0, 0, 0), 2, true));
-		statementPNL.setLayout(null);
 		statementPNL.setBackground(new Color(0, 128, 128));
 		statementPNL.setBounds(473, 11, 220, 312);
 		getContentPane().add(statementPNL);
-
-		// Label com o texto "EXTRATO", nada demais
-		// -- parent = statementPNL
-
-		JLabel statementLBL = new JLabel("EXTRATO");
-		statementLBL.setForeground(Color.WHITE);
-		statementLBL.setFont(new Font("Georgia", Font.PLAIN, 20));
-		statementLBL.setBounds(61, 11, 103, 28);
-		statementPNL.add(statementLBL);
+		statementPNL.setLayout(null);
 
 		// Botão de histórico de apostas do usuário (Ainda não programado / TODO)
 		// -- parent = this
@@ -482,6 +505,23 @@ public class ProfileWindow extends JInternalFrame {
 		userHistoryBTN.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if(qrCodeLBL.isVisible()) {
+					qrCodeLBL.setVisible(false);
+					return;
+				}
+				qrCodeLBL.setVisible(true);
+				try {
+					userDao.updateUserBalance(currentUser, (currentUser.getBalance() + 100));
+					JOptionPane.showMessageDialog(ProfileWindow.this, "Saldo aumentado em R$ 100.",
+							"Info",
+							JOptionPane.INFORMATION_MESSAGE);
+				} catch (SQLException e1) {
+					JOptionPane.showMessageDialog(ProfileWindow.this, "Erro ao te dar dinheiro. Tente depois.",
+							"Erro",
+							JOptionPane.ERROR_MESSAGE);
+					e1.printStackTrace();
+				}
+				update();
 			}
 		});
 
@@ -526,31 +566,38 @@ public class ProfileWindow extends JInternalFrame {
 		statsBTN.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				int currentUserId = currentUser.getId();
+				int wins = userDao.getTotalWinnedBets(currentUserId);
+				int loses = userDao.getTotalLosedBets(currentUserId);
+				int totalBets = userDao.getTotalBets(currentUserId);
+				double victoryRate;
 				try {
-					totalBetsLBL.setText("Total de Apostas: " + dao.getTotalBets(currentUser) + ".");
-				} catch (SQLException e1) {
-					JOptionPane.showMessageDialog(ProfileWindow.this, "Erro ao ler suas estatísticas.");
-					return;
+					victoryRate = (wins * 100) / totalBets ;
+				}catch(ArithmeticException arithmeticException ){
+					victoryRate = 0;
 				}
+				totalBetsLBL.setText("Total de Apostas: " + totalBets + ".");
 				try {
-					favoriteTeamLBL.setText("Time Favorito: " + dao.getFavoriteTeam(currentUser) + ".");
+					favoriteTeamLBL.setText("Time Favorito: " + userDao.getFavoriteTeam(currentUser) + ".");
 				} catch (SQLException e1) {
 					favoriteTeamLBL.setText("Time Favorito: Nenhum.");
 				}
-				totalLosesLBL.setText("Total de Derrotas:");
-				totalWinsLBL.setText("Total de Vitórias: ");
-				victoryRateLBL.setText("Taxa de Vitória:");
+				totalLosesLBL.setText("Total de Derrotas: " + loses + ".");
+				totalWinsLBL.setText("Total de Vitórias: " + wins  + ".");
+				victoryRateLBL.setText("Taxa de Vitória: " + victoryRate + "%.");
 				statsBTN.setVisible(false);
 				surroundStatsBTN.setVisible(true);
 			}
 		});
-		surroundStatsBTN.setVisible(false);
+		
 
 		// Botão de ocultar estatísticas
 		// -- parent = this
 
 		surroundStatsBTN.setBounds(18, 126, 175, 23);
 		surroundStatsBTN.setContentAreaFilled(false);
+		surroundStatsBTN.setVisible(false);
+		surroundStatsBTN.setFont(new Font("Georgia", Font.PLAIN, 14));
 		surroundStatsBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		mainPanel.add(surroundStatsBTN);
 		surroundStatsBTN.addActionListener(new ActionListener() {
@@ -600,6 +647,8 @@ public class ProfileWindow extends JInternalFrame {
 				}
 			}
 		});
+		updateStatement();
+		// Fim do constructor
 
 	}
 
@@ -607,15 +656,77 @@ public class ProfileWindow extends JInternalFrame {
 	// e define a referência para a janela principal
 	// indispensável para o funcionamento adequado da classe
 
-	public void turnOn(MainWindow mainWinndowPointer) {
-		this.currentUser = mainWinndowPointer.getCurrentUser();
-		this.mainWindow = mainWinndowPointer;
+	public void update(){
 		setTitle("Bet-Betina v1.23 - Perfil de " + currentUser.getName());
 		nameLBL.setText(currentUser.getName()
-				.concat(currentUser.getAccessLevel() == 0 ? " - Usuario Comum." : " - Admnistrador."));
+				.concat(currentUser.getAccessLevel() == User.REGULAR_USER ? " - Usuario Comum." : " - Admnistrador."));
 		balanceLBL.setText(("Saldo Atual: R$ " + currentUser.getBalance() + "."));
-		idLBL.setText("ID:" + currentUser.getID());
+		idLBL.setText("ID:" + currentUser.getId());
 		nameFLD.setText(currentUser.getName());
 		emailFLD.setText(currentUser.getEmail());
+		updateStatement();
+	}
+	
+	public void updateStatement() {
+		if (currentUser == null) {
+			return;
+		}
+		int initialPosX = 10;
+		int initialPosY = 45;
+		int foundedBets = 0 ;
+		statementPNL.removeAll();
+		statementPNL.revalidate();
+		statementPNL.repaint();
+		JLabel statementLBL = new JLabel("EXTRATO");
+		statementLBL.setBounds(61, 11, 103, 28);
+		statementLBL.setForeground(Color.WHITE);
+		statementLBL.setFont(new Font("Georgia", Font.PLAIN, 20));
+		statementPNL.add(statementLBL);
+		try {
+			ArrayList<Bet> betList = betDao.getAllBets(currentUser.getId());
+			if (betList == null) {
+				return;
+			}
+			Collections.reverse(betList);
+			for (Bet bet : betList) {
+				int betId = bet.getId();
+				if (bet.getState() == Bet.CLOSED || bet.getState() == Bet.OPEN) {
+					continue;
+				}
+				if(foundedBets == 10) {
+					break;
+				}
+				JLabel lblR = new JLabel();
+				lblR.setForeground(Color.WHITE);
+				lblR.setFont(new Font("Georgia", Font.PLAIN, 14));
+				statementPNL.add(lblR);
+				lblR.setBounds(initialPosX, initialPosY, 200, 25);
+				if(bet.getState() == Bet.WIN) {
+					lblR.setText("+ RS " + betDao.getBetPayout(betId) + " em Aposta Ganha");
+				}
+				else {
+					lblR.setText("- RS " + betDao.getBetTotalValue(betId) + " em Aposta Perdida");
+				}
+				initialPosY += 25;
+				foundedBets++;
+			}
+		} catch (SQLException e) {
+			System.out.println("Unexpected Error");
+		}
+		if(foundedBets == 0) {
+			JLabel lblR = new JLabel("Sem Apostas Para Exibir.");
+			lblR.setForeground(Color.WHITE);
+			lblR.setFont(new Font("Georgia", Font.PLAIN, 14));
+			statementPNL.add(lblR);
+			lblR.setBounds(initialPosX, initialPosY, 200, 25);
+		}
+	}
+
+	public void setCurrentUser(User currentUser) {
+		this.currentUser = currentUser;
+	}
+
+	public void setMainWindow(MainWindow mainWindow) {
+		this.mainWindow = mainWindow;
 	}
 }

@@ -61,10 +61,6 @@ class BetMatchCustomListRenderer extends JLabel implements ListCellRenderer<Matc
 		return this;
 	}
 
-	public ArrayList<Bid> getBidArray() {
-		return bidArray;
-	}
-
 	public void setBidArray(ArrayList<Bid> bidArray) {
 		this.bidArray = bidArray;
 	}

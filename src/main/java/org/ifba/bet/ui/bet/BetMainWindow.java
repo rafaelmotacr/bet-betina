@@ -359,7 +359,7 @@ public class BetMainWindow extends JInternalFrame {
 
 				int betId = 0;
 				try {
-					betId = betDao.insertBet(currentUser.getID(), Bet.OPEN);
+					betId = betDao.insertBet(currentUser.getId(), Bet.OPEN);
 				} catch (SQLException e1) {
 					JOptionPane.showMessageDialog(BetMainWindow.this, "Ocorreu um erro ao criar a aposta", "Aviso",
 							JOptionPane.ERROR_MESSAGE);

@@ -2,44 +2,47 @@ package org.ifba.bet.model;
 
 public class User {
 
-	private int ID;
+	// Atributos de instância
+	
+	private int id;
 	private int accessLevel;
 	private Double balance;
 	private String name;
 	private String email;
-	private String password;
 	private int favoriteTeam;
 
-	public static int REGULAR_USER = 0;
-	public static int ADMIN = 1;
+	// Atributos estáticos
+	
+	public static final int REGULAR_USER = 0;
+	public static final int ADMIN = 1;
+	
+	public static final double USER_STANDARD_INITAL_BALANCE = 500d;
 
-	public User(int iD, int accessLevel, Double balance, String name, String email, String password) {
+	public User(int iD, int accessLevel, Double balance, String name, String email) {
 		super();
-		this.ID = iD;
+		this.id = iD;
 		this.accessLevel = accessLevel;
 		this.balance = balance;
 		this.name = name;
 		this.email = email;
-		this.password = password;
 	}
 
-	public User(int iD, int accessLevel, Double balance, String name, String email, String password, int favoriteTeam) {
+	public User(int id, int accessLevel, Double balance, String name, String email, int favoriteTeam) {
 		super();
-		ID = iD;
+		this.id = id;
 		this.accessLevel = accessLevel;
 		this.balance = balance;
 		this.name = name;
 		this.email = email;
-		this.password = password;
 		this.favoriteTeam = favoriteTeam;
 	}
 
-	public int getID() {
-		return ID;
+	public int getId() {
+		return id;
 	}
 
-	public void setID(int iD) {
-		this.ID = iD;
+	public void setId(int iD) {
+		this.id = iD;
 	}
 
 	public int getAccessLevel() {
@@ -74,14 +77,6 @@ public class User {
 		this.email = email;
 	}
 
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
 	public int getFavoriteTeam() {
 		return favoriteTeam;
 	}
@@ -92,8 +87,8 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [ID=" + ID + ", accessLevel=" + accessLevel + ", balance=" + balance + ", name=" + name
-				+ ", email=" + email + ", password=" + password + "]";
+		return "User [ID=" + id + ", accessLevel=" + accessLevel + ", balance=" + balance + ", name=" + name
+				+ ", email=" + email + "]";
 	}
 
 }

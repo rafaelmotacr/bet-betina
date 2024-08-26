@@ -13,7 +13,6 @@ public class OddGenerator {
 	}
 
 	// Calcula as odds a partir da probabilidade
-	@SuppressWarnings("unused")
 	public static double calculateOdds() {
 		double probability = generateProbability();
 		double odds = 1 / probability;

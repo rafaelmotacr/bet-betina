@@ -17,18 +17,19 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 
 import org.ifba.bet.dao.user.UserDaoPostgres;
+import org.ifba.bet.model.User;
 
 public class LoginWindow extends JInternalFrame {
 
 	// Atributo obrigarório para classes que herdam de JInternalFrame
 
 	private static final long serialVersionUID = 1L;
+	private static final String ADMIN_EMAIL = "admin";
+	private static final String ADMIN_PASSWORD = "admin";
 
 	// Conexão com o banco de dados
 
 	private UserDaoPostgres userDao = new UserDaoPostgres();
-	@SuppressWarnings("unused")
-	private MainWindow mainWindow;
 	// Recebe um ponteiro/referência para a janela principal como parâmetro.
 	// Isso permite que a LoginWiwndow atualize o usuário atual da aplicação
 
@@ -105,22 +106,24 @@ public class LoginWindow extends JInternalFrame {
 				// métodos de getText()
 				String email = emailField.getText();
 				String password = String.valueOf(passwordField.getPassword());
-
-				if (email.toLowerCase().equals("admin") && password.toLowerCase().equals("admin")) {
-					if (!userDao.login(email, password)) {
-						try {
-							userDao.insertUser("admin", "admin", password, 1);
-							mainWindow.updateUser(userDao.findUserByEmail("admin"));
-							JOptionPane.showMessageDialog(LoginWindow.this, "Usuário root criado com sucesso.");
-						} catch (SQLException e1) {
-							JOptionPane.showMessageDialog(LoginWindow.this, "Erro ao logar como root");
-							e1.printStackTrace();
+				User testUser = null;
+				
+				if (email.equalsIgnoreCase(ADMIN_EMAIL) && password.equalsIgnoreCase(ADMIN_PASSWORD)) {
+						testUser = userDao.findUserByEmail(ADMIN_EMAIL);
+						if (testUser == null) {
+							try {
+								userDao.insertUser("admin", ADMIN_EMAIL, ADMIN_PASSWORD, User.ADMIN);
+								mainWindow.updateUser(userDao.findUserByEmail(ADMIN_EMAIL));
+								JOptionPane.showMessageDialog(LoginWindow.this, "Usuário root criado com sucesso.");
+							} catch (SQLException e1) {
+								JOptionPane.showMessageDialog(LoginWindow.this, "Erro ao logar como root");
+								e1.printStackTrace();
+							}
+							emailField.setText(null);
+							passwordField.setText(null);
+							dispose();
+							return;
 						}
-						emailField.setText(null);
-						passwordField.setText(null);
-						dispose();
-						return;
-					}
 				}
 
 				// Se o email ou a senha estiverem vazios, não tenta realizar login
@@ -146,23 +149,16 @@ public class LoginWindow extends JInternalFrame {
 				// do usuário e fazer o login
 				// propriamente dito
 
-				try {
-					mainWindow.updateUser(userDao.findUserByEmail(email));
-					JOptionPane.showMessageDialog(LoginWindow.this, "Login realizado com sucesso.");
-				} catch (SQLException e1) {
-					// Caso ocorra algum erro no banco de dados
-					// avisa ao usuário
-					JOptionPane.showMessageDialog(LoginWindow.this, "Algo deu errado ao fazer login");
-					e1.printStackTrace();
-				} finally {
-					// limpa os campos de email e senha
-					// para caso a janela seja aberta novamente.
-					// Fecha a janela.
-					emailField.setText(null);
-					passwordField.setText(null);
-					dispose();
+				mainWindow.updateUser(userDao.findUserByEmail(email));
+				JOptionPane.showMessageDialog(LoginWindow.this, "Login realizado com sucesso.");
+				// limpa os campos de email e senha
+				// para caso a janela seja aberta novamente.
+				// Fecha a janela.
+				emailField.setText(null);
+				passwordField.setText(null);
+				dispose();
 				}
-			}
+			
 		});
 
 		// Label que exibe a imagem de fundo

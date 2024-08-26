@@ -7,6 +7,10 @@ public class Bid {
 	private int betID;
 	private int matchID;
 
+	public static final int GUESS_TO_HOME_WIN = 1;
+	public static final int GUESS_TO_AWAY_WIN = 2;
+	public static final int GUESS_TO_DRAW = 3;
+	
 	public Bid(double paidValue, int guess, int matchID) {
 		super();
 		this.paidValue = paidValue;

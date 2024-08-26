@@ -2,28 +2,32 @@ package org.ifba.bet.model;
 
 public class Bet {
 
-	private int ID;
+	// Atributos de instância
+	
+	private int id;
 	private int state;
 	private int userID;
+	
+	// Atributos estáticos
 	
 	public static final int CLOSED = 0;
 	public static final int OPEN = 1;
 	public static final int WIN = 2;
 	public static final int LOSE = 3;
 
-	public Bet(int iD, int state, int userID) {
+	public Bet(int id, int state, int userID) {
 		super();
-		ID = iD;
+		this.id = id;
 		this.state = state;
 		this.userID = userID;
 	}
 
-	public int getID() {
-		return ID;
+	public int getId() {
+		return id;
 	}
 
-	public void setID(int iD) {
-		ID = iD;
+	public void setId(int iD) {
+		id = iD;
 	}
 
 	public int getState() {

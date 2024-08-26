@@ -10,6 +10,7 @@ public class Curiosities {
 
     static {
         List<String> tempList = new ArrayList<>();
+        
         tempList.add("As formigas nunca dormem.");
         tempList.add("O coração de um camarão está em sua cabeça.");
         tempList.add("O mel nunca estraga.");

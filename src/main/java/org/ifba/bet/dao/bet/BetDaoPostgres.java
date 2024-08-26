@@ -119,7 +119,8 @@ public class BetDaoPostgres implements BetDao {
 	@Override
 	public double getBetTotalValue(int betId) {
 		double totalBetValue = 0;
-		String sql = "SELECT SUM total_bet_value(bid_tb.bid_paid_value)\r\n" + "FROM bid_tb WHERE bet_id = ?";
+		String sql = "SELECT SUM (bid_tb.bid_paid_value) AS total_bet_value\r\n"
+				+ "	FROM bid_tb WHERE bet_id = ?;";
 		try {
 			Connection conn = DatabaseConnectionSingleton.getInstance().getConexao();
 			PreparedStatement ps = conn.prepareStatement(sql);

@@ -19,7 +19,11 @@ public interface UserDao {
 
 	public ArrayList<Bet> getAllBets(int userId) throws SQLException;
 
-	public int getTotalBets(User user) throws SQLException;
+	public int getTotalBets(int userId);
+	
+	public int getTotalWinnedBets(int userId);
+	
+	public int getTotalLosedBets(int userId);
 
 	public String getFavoriteTeam(User user) throws SQLException;
 

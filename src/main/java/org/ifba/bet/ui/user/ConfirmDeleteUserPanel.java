@@ -36,7 +36,7 @@ public class ConfirmDeleteUserPanel extends JInternalFrame {
 
 	private UserDaoPostgres dao = new UserDaoPostgres();
 
-	// JLabel declarada aqui para er acessível
+	// JLabel declarada aqui para ser acessível
 	// aos métodos da classe
 
 	private JLabel confirmationTextLabel = new JLabel();
@@ -155,7 +155,7 @@ public class ConfirmDeleteUserPanel extends JInternalFrame {
 		this.mainWindow = mainWindow;
 		currentUser = mainWindow.getCurrentUser();
 		confirmationTextLabel.setText("<html>Deseja realmente apagar para \r\n<br> sempre o "
-				.concat(currentUser.getAccessLevel() == 0 ? "usuario (a)" : "admnistrador") + "<strong> "
+				.concat(currentUser.getAccessLevel() == User.REGULAR_USER ? "usuario (a)" : "admnistrador") + "<strong> "
 				+ currentUser.getName() + "</strong>?\r\n<br>(Para sempre é um tempão!)</html>");
 	}
 }

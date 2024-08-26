@@ -243,11 +243,12 @@ public class MainWindow {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (currentUser == null) {
-					JOptionPane.showMessageDialog(frame, "Você precisa estar logado para apostar!");
+					JOptionPane.showMessageDialog(frame, "Você precisa estar logado para apostar!", "Acesso Negado",
+							JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 				if (currentUser.getAccessLevel() == User.ADMIN) {
-					JOptionPane.showMessageDialog(frame, "Admnistradores Não Podem Apostar.", "Acesso Negado",
+					JOptionPane.showMessageDialog(frame, "Admnistradores não podem apostar.", "Acesso Negado",
 							JOptionPane.ERROR_MESSAGE);
 					return;
 				}
@@ -288,6 +289,7 @@ public class MainWindow {
 		
 
 		matchBTN = new JButton("Ver Partidas");
+		matchBTN.setVisible(false);
 		matchBTN.setMnemonic('t');
 		matchBTN.setFont(new Font("Georgia", Font.BOLD, 16));
 		matchBTN.setContentAreaFilled(false);
@@ -446,7 +448,9 @@ public class MainWindow {
 												profileBTN.addActionListener(new ActionListener() {
 													@Override
 													public void actionPerformed(ActionEvent e) {
-														profileWindow.turnOn(MainWindow.this);
+														profileWindow.setMainWindow(MainWindow.this);
+														profileWindow.setCurrentUser(currentUser);
+														profileWindow.update();
 														profileWindow.setVisible(true);
 													}
 												});
@@ -520,29 +524,32 @@ public class MainWindow {
 			return;
 		}
 		try {
-			ArrayList<Bet> betList = betDao.getAllBets(currentUser.getID());
+			ArrayList<Bet> betList = betDao.getAllBets(currentUser.getId());
 			if (betList == null) {
 				return;
 			}
 			for (Bet bet : betList) {
-				int betId = bet.getID();
+				int betId = bet.getId();
 				if (bet.getState() != Bet.CLOSED) {
-					return;
+					continue;
 				}
 				
 				if (!betDao.isBetCompleted(betId)) {
-					return;
+					continue;
 				}
 
 				if (betDao.isBetCorrect(betId)) {
-					betDao.updateBetState(Bet.WIN, currentUser.getID(), betId);
+					betDao.updateBetState(Bet.WIN, currentUser.getId(), betId);
 					double betPayout = betDao.getBetPayout(betId);
 					JOptionPane.showMessageDialog(frame, "Parabéns, " + currentUser.getName() + 
 							"!\nVocê acaba de ganhar uma aposta\nque lhe rendeu R$" + betPayout + "!"
 							+ " \nContinue apostando para ter mais ganhos!", "Parabéns", JOptionPane.INFORMATION_MESSAGE);
 					userDao.updateUserBalance(currentUser, (currentUser.getBalance() + betPayout));
 				} else {
-					betDao.updateBetState(Bet.LOSE, currentUser.getID(), betId);
+					betDao.updateBetState(Bet.LOSE, currentUser.getId(), betId);
+					JOptionPane.showMessageDialog(frame, "Uma de suas apostas foi atualizada. Infelizmente,\n"
+														+ "você perdeu a aposta e teve um prejuízo de R$ " + betDao.getBetTotalValue(betId) + ".\n"
+														+ "Mas não desista! Continue apostando!", "Info", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		} catch (SQLException e) {
@@ -580,6 +587,7 @@ public class MainWindow {
 				logOutBTN.setVisible(false);
 				profileBTN.setVisible(false);
 				createADMBTN.setVisible(false);
+				matchBTN.setVisible(false);
 			}
 			loginBTN.setVisible(true);
 			registerUserBTN.setVisible(true);
@@ -595,9 +603,13 @@ public class MainWindow {
 			e.printStackTrace();
 		}
 		listModel.clear();
+		if(matchs == null) {
+			return;
+		}
 		for (Match match : matchs) {
 			listModel.addElement(match);
 		}
+		matchs.clear();
 	}
 
 	// Atualiza a label de cumprimento ao usuário de acordo
@@ -616,8 +628,7 @@ public class MainWindow {
 		else {
 			greetingLBL.setText("Bem Vindo (a) de volta, " + currentUser.getName() + "!");
 		}
-		
-		randLBL.setText(Curiosities.getCuriosity(rand.nextInt(26)));
+		randLBL.setText(Curiosities.getCuriosity(rand.nextInt(25)));
 	}
 
 	// Retorna o usuário atual

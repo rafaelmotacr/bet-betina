@@ -72,8 +72,8 @@ public class BetHistoryWindow extends JInternalFrame {
 				switch (bet.getState()) {
 				case Bet.OPEN:
 					try {
-						betMainWindow.loadBids(betDao.getAllBids(bet.getID()));
-						betMainWindow.setForeignBetId(bet.getID());
+						betMainWindow.loadBids(betDao.getAllBids(bet.getId()));
+						betMainWindow.setForeignBetId(bet.getId());
 						setVisible(false);
 					} catch (SQLException e1) {
 						e1.printStackTrace();
@@ -109,10 +109,10 @@ public class BetHistoryWindow extends JInternalFrame {
 				try {
 
 					ArrayList<Bid> bidList = new ArrayList<Bid>();
-					bidList = bidDao.getAllBids(bet.getID());
+					bidList = bidDao.getAllBids(bet.getId());
 					double bidListValue = bidList.stream().mapToDouble(Bid::getPaidValue).sum();
 					userDao.updateUserBalance(currentUser, (currentUser.getBalance() + bidListValue));
-					betDao.deleteBet(bet.getID());
+					betDao.deleteBet(bet.getId());
 					betMainWindow.updateStatus();
 					JOptionPane.showMessageDialog(BetHistoryWindow.this, "Aposta deletada com sucesso.", "Informação",
 							JOptionPane.INFORMATION_MESSAGE);
@@ -136,7 +136,7 @@ public class BetHistoryWindow extends JInternalFrame {
 	public void updateBets() {
 		ArrayList<Bet> bets = null;
 		try {
-			bets = userDao.getAllBets(currentUser.getID());
+			bets = userDao.getAllBets(currentUser.getId());
 		} catch (SQLException e) {
 			System.out.println("foi aqui");
 			e.printStackTrace();

@@ -1,3 +1,8 @@
+-- Banco de dados: "bet-betina"
+
+CREATE DATABASE IF NOT EXISTS 'bet-betina-prod';
+USE 'bet-betina-prod';
+
 CREATE TABLE team_tb (
     team_id SERIAL PRIMARY KEY,
     team_abbreviation VARCHAR(10) NOT NULL,
@@ -6,7 +11,7 @@ CREATE TABLE team_tb (
 
 CREATE TABLE user_tb (
     user_id SERIAL PRIMARY KEY,
-    user_access_level INT NOT NULL,
+    user_access_level INT NOT NULL, -- 0 ou 1. 0 para usuário normal e 1 para admnistrador
     user_name VARCHAR(100) NOT NULL,
     user_email VARCHAR(100) NOT NULL UNIQUE,
     user_password VARCHAR(255) NOT NULL,
@@ -18,14 +23,14 @@ CREATE TABLE user_tb (
 CREATE TABLE bet_tb (
     bet_id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
-    bet_state INT NOT NULL,
+    bet_state INT NOT NULL, -- 0 para cancelada, 1 para ativa, 2 para vitória e 3 para derrota
     FOREIGN KEY (user_id) REFERENCES user_tb (user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE match_tb (
     match_id SERIAL PRIMARY KEY,
-    match_result INT,
-    match_state INT NOT NULL,
+    match_result INT, -- 0 para ativa, 1 para vitória do time de casa, 2 para time visitante e 3 para empate
+    match_state INT NOT NULL, -- 0 para finalizada, 1 para ativa
     match_home_team INT NOT NULL,
     match_away_team INT NOT NULL,
     match_odd_home FLOAT NOT NULL,
@@ -46,63 +51,41 @@ CREATE TABLE bid_tb (
     FOREIGN KEY (match_id) REFERENCES match_tb (match_id) ON DELETE CASCADE
 );
 
--- Inserir Times
+-- times
+
 INSERT INTO team_tb (team_abbreviation, team_name) VALUES
-('FCB', 'Futebol Clube de Barcelona'),
+('FCB', 'Futebol Clube Barcelona'),
 ('RMD', 'Real Madrid'),
 ('LIV', 'Liverpool FC'),
-('MNC', 'Manchester City');
+('MNC', 'Manchester City'),
+('PSG', 'Paris Saint-Germain'),
+('JUV', 'Juventus FC'),
+('BAY', 'Bayern Munich'),
+('CHE', 'Chelsea FC'),
+('ATM', 'Atlético Madrid'),
+('DOR', 'Borussia Dortmund'),
+('INT', 'Inter Milan'),
+('ACM', 'AC Milan'),
+('TOT', 'Tottenham Hotspur'),
+('ARS', 'Arsenal FC'),
+('MUN', 'Manchester United'),
+('ROM', 'AS Roma'),
+('NAP', 'Napoli'),
+('BEN', 'Benfica'),
+('POR', 'FC Porto'),
+('LIL', 'Lille OSC');
 
--- Inserir Usuários
-INSERT INTO user_tb (user_access_level, user_name, user_email, user_password, user_balance, user_favorite_team_id) VALUES
-(1, 'João Silva', 'joao.silva@example.com', 'senha123', 100.50, 1),  -- FCB
-(2, 'Maria Oliveira', 'maria.oliveira@example.com', 'senha456', 200.75, 2),  -- RMD
-(1, 'Carlos Souza', 'carlos.souza@example.com', 'senha789', 150.00, 3);  -- LIV
+-- Partidas
 
--- Inserir Partidas
-INSERT INTO match_tb (match_name, match_result, match_state, match_home_team, match_away_team, match_date, match_odd_home, match_odd_away, match_odd_draw) VALUES
-('FCB vs RMD', NULL, 1, 1, 2, '2024-09-01', 1.80, 2.00, 3.50),  -- FCB vs RMD
-('LIV vs MNC', NULL, 1, 3, 4, '2024-09-02', 2.10, 1.90, 3.60);  -- LIV vs MNC
+INSERT INTO match_tb (match_result, match_state, match_home_team, match_away_team, match_odd_home, match_odd_away, match_odd_draw) VALUES
+(NULL, 1, 1, 2, 1.6, 2.8, 3.1),  -- Futebol Clube Barcelona vs Real Madrid
+(NULL, 1, 3, 4, 1.9, 2.4, 3.2),  -- Liverpool FC vs Manchester City
+(NULL, 1, 5, 6, 2.0, 2.6, 3.3),  -- Paris Saint-Germain vs Juventus FC
+(NULL, 1, 7, 8, 1.7, 2.9, 3.0),  -- Bayern Munich vs Chelsea FC
+(NULL, 1, 9, 10, 2.2, 2.5, 3.1),  -- Atlético Madrid vs Borussia Dortmund
+(NULL, 1, 11, 12, 1.8, 2.7, 3.4),  -- Inter Milan vs AC Milan
+(NULL, 1, 13, 14, 2.1, 2.6, 3.2),  -- Tottenham Hotspur vs Arsenal FC
+(NULL, 1, 15, 16, 1.5, 3.0, 3.5),  -- Manchester United vs AS Roma
+(NULL, 1, 17, 18, 1.6, 2.8, 3.0),  -- Napoli vs Benfica
+(NULL, 1, 19, 20, 2.0, 2.7, 3.1);  -- FC Porto vs Lille OSC
 
--- Inserir Apostas
-INSERT INTO bet_tb (user_id, bet_state) VALUES
-(1, 1),  -- João Silva
-(2, 1);  -- Maria Oliveira
-
--- Inserir Lances
-INSERT INTO bid_tb (bet_id, match_id, bid_guess, bid_paid_value) VALUES
-(1, 1, 1, 50.00),  -- João Silva aposta na vitória do time da casa (FCB vs RMD)
-(2, 2, 2, 75.00);  -- Maria Oliveira aposta na vitória do time visitante (LIV vs MNC)
-
--- Consulta para obter todos os lances corretos
-
-SELECT COUNT(*) AS correct_bids
-FROM match_tb 
-INNER JOIN (
-    SELECT match_id, bid_guess
-    FROM bid_tb 
-    WHERE bet_id = 1
-) AS bids_tb
-ON bids_tb.match_id = match_tb.match_id
-WHERE bids_tb.bid_guess = match_tb.match_result;
-
--- Consulta para o valor total investido na aposta
-
-SELECT SUM (bid_tb.bid_paid_value) AS total_bet_value
-FROM bid_tb WHERE bet_id = 1
-
--- consulta para determinar o valor a ser pago por uma aposta
-select * from match_tb
-	
-
-
-
--- Consulta que determina se uma aposta está finalizada ou não
-
-select * from match_tb inner join (
-    SELECT match_id, bid_guess
-    FROM bid_tb 
-    WHERE bet_id = 1
-) AS bids_tb
-on(match_tb.match_id = bids_tb.match_id)
-where(match_tb.match_state != 0)

@@ -21,9 +21,9 @@ public class MatchDaoPostgres implements MatchDao {
 	            "    home_team.team_id AS home_team_id, " +
 	            "    away_team.team_id AS away_team_id, " +
 	            "    match_tb.match_state AS state, " +
-	            "    match_tb.match_home_odd AS home_team_odd, " +
-	            "    match_tb.match_away_odd AS away_team_odd, " +
-	            "    match_tb.match_draw_odd AS draw_odd, " +
+	            "    match_tb.match_odd_home AS home_team_odd, " +
+	            "    match_tb.match_odd_away AS away_team_odd, " +
+	            "    match_tb.match_odd_draw AS draw_odd, " +
 	            "    match_tb.match_result AS result " +
 	            "FROM " +
 	            "    match_tb " +
@@ -123,9 +123,9 @@ public class MatchDaoPostgres implements MatchDao {
 	            "    home_team.team_id AS home_team_id, " +
 	            "    away_team.team_id AS away_team_id, " +
 	            "    match_tb.match_state AS state, " +
-	            "    match_tb.match_home_odd AS home_team_odd, " +
-	            "    match_tb.match_away_odd AS away_team_odd, " +
-	            "    match_tb.match_draw_odd AS draw_odd, " +
+	            "    match_tb.match_odd_home AS home_team_odd, " +
+	            "    match_tb.match_odd_away AS away_team_odd, " +
+	            "    match_tb.match_odd_draw AS draw_odd, " +
 	            "    match_tb.match_result AS result " +
 	            "FROM " +
 	            "    match_tb " +

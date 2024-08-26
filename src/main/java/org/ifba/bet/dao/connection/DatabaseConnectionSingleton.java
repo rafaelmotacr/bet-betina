@@ -8,19 +8,16 @@ public class DatabaseConnectionSingleton {
 
 	private Connection connection;
 	private static DatabaseConnectionSingleton instance;
-
+	
+    private static final String URL = "jdbc:postgresql://localhost:5433/bet-betina-prod";
+    private static final String USER = "postgres";
+    private static final String PASSWORD = "postgres";
+    
 	private DatabaseConnectionSingleton() {
+		
+		
 		try {
-
-			// Conexao com o BD de Rafael
-			connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/bet", "postgres", "106927");
-
-			// Conexao com o BD do IFBA
-//			connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/bet-betina-prod", "postgres","alunoifba");
-
-			// Conexao com o BD de Iuri
-//			connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/bet", "postgres","admin");
-
+			connection = DriverManager.getConnection(URL, USER, PASSWORD);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

@@ -32,10 +32,10 @@ class MatchCustomListRenderer extends JLabel implements ListCellRenderer<Match> 
 		text = text + index + " - " + value + " - ";
 
 		switch (value.getState()) {
-		case 0:
+		case Match.MATCH_FINISHED:
 			text = text + "<span style=\"color: red;\">" + "Partida Finalizada. " + "</span>";
 			break;
-		case 1:
+		case Match.MATCH_ON_GOING:
 			text = text + "<span style=\"color: green;\">" + "Partida Ativa. " + "</span>";
 			break;
 		default:
@@ -45,18 +45,18 @@ class MatchCustomListRenderer extends JLabel implements ListCellRenderer<Match> 
 		text = text + "Resultado: <u>";
 
 		switch (value.getResult()) {
-		case 0:
+		case Match.RESULT_ON_GOING:
 			text = text + "Em aberto.";
 			break;
-		case 1:
+		case Match.RESULT_HOME_WIN:
 			text = text + "<span style=\"color: blue;\">" + "Vitória do "
 					+ teamDao.findTeamById(value.getHomeTeamId()).getName() + ".</span>";
 			break;
-		case 2:
+		case Match.RESULT_AWAY_WIN:
 			text = text + "<span style=\"color: blue;\">" + "Vitória do "
 					+ teamDao.findTeamById(value.getAwayTeamId()).getName() + ".</span>";
 			break;
-		case 3:
+		case Match.RESULT_DRAW:
 			text = text + "<span style=\"color: orange;\">" + "Empate </span>";
 			break;
 		default:

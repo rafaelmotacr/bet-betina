@@ -1,6 +1,5 @@
 package org.ifba.bet.ui.user;
 
-import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.sql.SQLException;
 
@@ -9,6 +8,7 @@ import javax.swing.JOptionPane;
 
 import org.ifba.bet.dao.user.UserDaoPostgres;
 import org.ifba.bet.exceptions.PasswordsDontMatchException;
+import org.ifba.bet.model.User;
 import org.ifba.bet.util.InputManipulation;
 
 public class RegisterAdminUserWindow extends RegisterUserWindow {
@@ -34,7 +34,9 @@ public class RegisterAdminUserWindow extends RegisterUserWindow {
 	private MainWindow mainWindow;
 
 	public RegisterAdminUserWindow(MainWindow mainWindow) {
+		
 		super();
+		
 		this.backgroundLabel.setIcon(new ImageIcon("src/main/resources/registerADMBG.png"));
 		this.mainWindow = mainWindow;
 		this.setTitle("Bet-Betina v1.23 - ADM: Criar ADM");
@@ -70,13 +72,10 @@ public class RegisterAdminUserWindow extends RegisterUserWindow {
 					"O nome precisa ter ao menos " + InputManipulation.minNameLength + " letras.");
 			return;
 		}
-		try {
-			if (dao.findUserByEmail(email) != null) {
-				JOptionPane.showMessageDialog(this, "Email já cadastrado no banco de dados!");
-				return;
-			}
-		} catch (HeadlessException | SQLException e1) {
 
+		if (dao.findUserByEmail(email) != null) {
+			JOptionPane.showMessageDialog(this, "Email já cadastrado no banco de dados!");
+			return;
 		}
 		// Se todas as validações forem bem sucedidas,
 		// tenta criar um novo admnistrador no banco de dados,
@@ -85,7 +84,7 @@ public class RegisterAdminUserWindow extends RegisterUserWindow {
 		// Em caso de sucesso ou falha, fecha a janela
 
 		try {
-			dao.insertUser(name, email, password, 1);
+			dao.insertUser(name, email, password, User.ADMIN);
 			this.mainWindow.updateUser(dao.findUserByEmail(email));
 			JOptionPane.showMessageDialog(RegisterAdminUserWindow.this, "Administrador criado com sucesso.");
 		} catch (SQLException e1) {

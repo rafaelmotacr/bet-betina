@@ -168,8 +168,8 @@ public class MatchMainWindow extends JInternalFrame {
 				}
 				if(match.getState() == Match.MATCH_FINISHED) {
 					JOptionPane.showMessageDialog(MatchMainWindow.this, "Esta Partida Já Está Finalizada.\n"
-							+ "Você Não Pode Fazer Alterações.", "Aviso",
-							JOptionPane.WARNING_MESSAGE);
+							+ "Você Não Pode Fazer Alterações.", "Acesso Negado.",
+							JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 				matchResultWindow.setMatchMainWindow(MatchMainWindow.this);

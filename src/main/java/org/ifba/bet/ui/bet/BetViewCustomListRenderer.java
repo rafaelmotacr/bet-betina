@@ -9,6 +9,7 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import javax.swing.border.LineBorder;
 
+import org.ifba.bet.dao.bet.BetDaoPostgres;
 import org.ifba.bet.dao.bid.BidDaoPostgres;
 import org.ifba.bet.model.Bet;
 
@@ -16,6 +17,7 @@ class BetViewhCustomListRenderer extends JLabel implements ListCellRenderer<Bet>
 
 	private static final long serialVersionUID = 1L;
 	private BidDaoPostgres bidDao = new BidDaoPostgres();
+	private BetDaoPostgres betDao = new BetDaoPostgres();
 
 	public BetViewhCustomListRenderer() {
 		setOpaque(true);
@@ -41,10 +43,10 @@ class BetViewhCustomListRenderer extends JLabel implements ListCellRenderer<Bet>
 			text = text + "<span style=\"color: green;\">" + "Aposta Em Aberto." + "</span>";
 			break;
 		case Bet.WIN:
-			text = text + "<span style=\"color: blue;\">" + "Aposta Vencida." + "</span>";
+			text = text + "<span style=\"color: blue;\">" + "Aposta Vencida. " + "</span>" +  "Valor ganho: R$ " + betDao.getBetPayout(value.getId()) + "." ;
 			break;
 		case Bet.LOSE:
-			text = text + "<span style=\"color: red;\">" + "Aposta Perdida." + "</span>";
+			text = text + "<span style=\"color: red;\">" + "Aposta Perdida. " + "</span>" +  "Valor perdido: R$ " + betDao.getBetTotalValue(value.getId()) + "." ;
 			break;
 		default:
 			text = text + "<span style=\"color: red;\">" + "Estado Desconhecido." + "</span>";
@@ -52,7 +54,7 @@ class BetViewhCustomListRenderer extends JLabel implements ListCellRenderer<Bet>
 		}
 
 		try {
-			totalBidsInBet = bidDao.getAllBids(value.getID()).size();
+			totalBidsInBet = bidDao.getAllBids(value.getId()).size();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

@@ -286,6 +286,9 @@ public class TeamMainWindow extends JInternalFrame {
 			JOptionPane.showMessageDialog(TeamMainWindow.this, "Nenhum time foi encontrado.");
 		}
 		listModel.clear();
+		if(teams == null) {
+			return;
+		}
 		for (Team team : teams) {
 			listModel.addElement(team);
 		}
@@ -297,6 +300,9 @@ public class TeamMainWindow extends JInternalFrame {
 			teams = teamDao.getAllTeams(filter);
 		} catch (SQLException e) {
 			JOptionPane.showMessageDialog(TeamMainWindow.this, "Nenhum time foi encontrado.");
+		}
+		if(teams == null) {
+			return;
 		}
 		listModel.clear();
 		for (Team team : teams) {

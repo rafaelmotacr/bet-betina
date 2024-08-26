@@ -4,6 +4,8 @@ import org.ifba.bet.dao.team.TeamDaoPostgres;
 
 public class Match {
 
+	// Atributos de instância
+	
 	private int id;
 	private int state;
 	private int result;
@@ -14,8 +16,17 @@ public class Match {
 	private double drawOdd;
 	private TeamDaoPostgres teamDao = new TeamDaoPostgres();
 	
+	// Atributos estáticos para possíveis estados da partida
+	
 	public static final int MATCH_ON_GOING = 1;
 	public static final int MATCH_FINISHED = 0;
+	
+	// Atributos estáticos para possíveis resultados da partida
+	
+	public static final int RESULT_ON_GOING = 0;
+	public static final int RESULT_HOME_WIN = 1;
+	public static final int RESULT_AWAY_WIN = 2;
+	public static final int RESULT_DRAW = 3;
 	
 	public Match(int id, int state, int homeTeamId, int awayTeamId, double homeTeamOdd, double awayTeamOdd,
 			double drawOdd) {

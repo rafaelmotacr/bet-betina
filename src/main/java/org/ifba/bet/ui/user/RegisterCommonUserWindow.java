@@ -1,6 +1,5 @@
 package org.ifba.bet.ui.user;
 
-import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.sql.SQLException;
 
@@ -9,6 +8,7 @@ import javax.swing.JOptionPane;
 
 import org.ifba.bet.dao.user.UserDaoPostgres;
 import org.ifba.bet.exceptions.PasswordsDontMatchException;
+import org.ifba.bet.model.User;
 import org.ifba.bet.util.InputManipulation;
 
 public class RegisterCommonUserWindow extends RegisterUserWindow {
@@ -35,7 +35,9 @@ public class RegisterCommonUserWindow extends RegisterUserWindow {
 	private MainWindow mainWindow;
 
 	public RegisterCommonUserWindow(MainWindow mainWindow) {
+		
 		super();
+
 		this.backgroundLabel.setIcon(new ImageIcon("src/main/resources/registerUserBG.png"));
 		this.mainWindow = mainWindow;
 		this.setTitle("Bet-Betina v1.23 - Registro");
@@ -71,15 +73,11 @@ public class RegisterCommonUserWindow extends RegisterUserWindow {
 					"O nome precisa ter ao menos " + InputManipulation.minNameLength + " letras.");
 			return;
 		}
-		try {
-			if (dao.findUserByEmail(email) != null) {
-				JOptionPane.showMessageDialog(this, "Email já cadastrado no banco de dados!");
-				return;
-			}
-		} catch (HeadlessException | SQLException e1) {
-
+		
+		if (dao.findUserByEmail(email) != null) {
+			JOptionPane.showMessageDialog(this, "Email já cadastrado no banco de dados!");
+			return;
 		}
-
 		// Se todas as validações forem bem sucedidas,
 		// tenta criar um novo usuário comum no banco de dados,
 		// através do DAO. Caso contrário, nem sequer chega a este ponto.
@@ -87,7 +85,7 @@ public class RegisterCommonUserWindow extends RegisterUserWindow {
 		// Em caso de sucesso ou falha , fecha a janela
 
 		try {
-			dao.insertUser(name, email, password, 0);
+			dao.insertUser(name, email, password, User.REGULAR_USER);
 			this.mainWindow.updateUser(dao.findUserByEmail(email));
 			JOptionPane.showMessageDialog(RegisterCommonUserWindow.this, "Usuário criado com sucesso.");
 		} catch (SQLException e1) {
