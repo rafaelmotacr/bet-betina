@@ -89,7 +89,7 @@ public class BetMainWindow extends JInternalFrame {
 		BetHistoryWindow betHistoryWindow = new BetHistoryWindow();
 		betHistoryWindow.setVisible(false);
 		betHistoryWindow.setClosable(true);
-		betHistoryWindow.setLocation(140, 44);
+		betHistoryWindow.setLocation(120, 62);
 		getContentPane().add(betHistoryWindow);
 
 		listModel = new DefaultListModel<>();

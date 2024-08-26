@@ -375,7 +375,7 @@ public class MainWindow {
 		scrollPane.setBounds(598, 67, 236, 397);
 		frame.getContentPane().add(scrollPane);
 		
-		randLBL = new JLabel("Cadastre-se agora e ganhe um bônus de R$ 1500!");
+		randLBL = new JLabel("Cadastre-se agora e ganhe um bônus de R$ 500!");
 		randLBL.setForeground(Color.WHITE);
 		randLBL.setFont(new Font("Georgia", Font.BOLD, 16));
 		randLBL.setBorder(new LineBorder(new Color(0, 0, 0), 2));
@@ -619,7 +619,7 @@ public class MainWindow {
 	private void updateGreetingLabel() {
 		if (currentUser == null) {
 			greetingLBL.setText("Seja Bem Vindo (a), Visitante!");
-			randLBL.setText("Cadastre-se agora e ganhe um bônus de R$ 1500!");
+			randLBL.setText("Cadastre-se agora e ganhe um bônus de R$ 500!");
 			return;
 		}
 		if (currentUser.getAccessLevel() == User.ADMIN) {

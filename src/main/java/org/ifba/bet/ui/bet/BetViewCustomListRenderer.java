@@ -37,10 +37,10 @@ class BetViewhCustomListRenderer extends JLabel implements ListCellRenderer<Bet>
 
 		switch (value.getState()) {
 		case Bet.CLOSED:
-			text = text + "<span style=\"color: orange;\">" + "Aposta Fechada." + "</span>";
+			text = text + "<span style=\"color: orange;\">" + "Aposta Fechada." + "</span>"  +  "Valor Apostado: R$ " + betDao.getBetTotalValue(value.getId()) + ".";
 			break;
 		case Bet.OPEN:
-			text = text + "<span style=\"color: green;\">" + "Aposta Em Aberto." + "</span>";
+			text = text + "<span style=\"color: green;\">" + "Aposta Em Aberto." + "</span>" +  "Valor Apostado: R$ " + betDao.getBetTotalValue(value.getId())  + ".";
 			break;
 		case Bet.WIN:
 			text = text + "<span style=\"color: blue;\">" + "Aposta Vencida. " + "</span>" +  "Valor ganho: R$ " + betDao.getBetPayout(value.getId()) + "." ;
@@ -49,7 +49,7 @@ class BetViewhCustomListRenderer extends JLabel implements ListCellRenderer<Bet>
 			text = text + "<span style=\"color: red;\">" + "Aposta Perdida. " + "</span>" +  "Valor perdido: R$ " + betDao.getBetTotalValue(value.getId()) + "." ;
 			break;
 		default:
-			text = text + "<span style=\"color: red;\">" + "Estado Desconhecido." + "</span>";
+			text = text + "<span style=\"color: red;\">" + "Estado Desconhecido." + "</span>"  +  "Valor: R$ ???." ;
 			break;
 		}
 

@@ -42,7 +42,7 @@ public class BetHistoryWindow extends JInternalFrame {
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 
 		getContentPane().setBackground(new Color(255, 255, 255));
-		setBounds(0, 0, 357, 244);
+		setBounds(0, 0, 462, 244);
 		setTitle("Bet-Betina v1.23 - Minhas Apostas");
 		setClosable(true);
 		setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
@@ -57,7 +57,7 @@ public class BetHistoryWindow extends JInternalFrame {
 
 		JScrollPane scrollPane = new JScrollPane(list);
 		scrollPane.setBorder(new LineBorder(new Color(0, 0, 0), 2, true));
-		scrollPane.setBounds(1, 0, 353, 172);
+		scrollPane.setBounds(1, 0, 458, 172);
 		getContentPane().add(scrollPane);
 
 		JButton btnNewButton = new JButton("Modificar Aposta");
@@ -128,7 +128,7 @@ public class BetHistoryWindow extends JInternalFrame {
 		btnNewButton_1.setFont(new Font("Georgia", Font.PLAIN, 14));
 		btnNewButton_1.setContentAreaFilled(false);
 		btnNewButton_1.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-		btnNewButton_1.setBounds(181, 183, 173, 23);
+		btnNewButton_1.setBounds(286, 183, 173, 23);
 		getContentPane().add(btnNewButton_1);
 		setVisible(true);
 	}

@@ -54,9 +54,9 @@ public class MatchDaoPostgres implements MatchDao {
 	            "    home_team.team_id AS home_team_id, " +
 	            "    away_team.team_id AS away_team_id, " +
 	            "    match_tb.match_state AS state, " +
-	            "    match_tb.match_home_odd AS home_team_odd, " +
-	            "    match_tb.match_away_odd AS away_team_odd, " +
-	            "    match_tb.match_draw_odd AS draw_odd, " +
+	            "    match_tb.match_odd_home AS home_team_odd, " +
+	            "    match_tb.match_odd_away AS away_team_odd, " +
+	            "    match_tb.match_odd_draw AS draw_odd, " +
 	            "    match_tb.match_result AS result " +
 	            "FROM " +
 	            "    match_tb " +
@@ -90,9 +90,9 @@ public class MatchDaoPostgres implements MatchDao {
 	            "    match_tb.match_id AS id, " +
 	            "    match_tb.match_state AS state, " +
 	            "    match_tb.match_result AS result, " +
-	            "    match_tb.match_home_odd AS home_team_odd, " +
-	            "    match_tb.match_away_odd AS away_team_odd, " +
-	            "    match_tb.match_draw_odd AS draw_odd, " +
+	            "    match_tb.match_odd_home AS home_team_odd, " +
+	            "    match_tb.match_odd_away AS away_team_odd, " +
+	            "    match_tb.match_odd_draw AS draw_odd, " +
 	            "    home_team.team_id AS home_team_id, " +
 	            "    away_team.team_id AS away_team_id " +
 	            "FROM " +
@@ -156,9 +156,9 @@ public class MatchDaoPostgres implements MatchDao {
 	            "    home_team.team_id AS home_team_id, " +
 	            "    away_team.team_id AS away_team_id, " +
 	            "    match_tb.match_state AS state, " +
-	            "    match_tb.match_home_odd AS home_team_odd, " +
-	            "    match_tb.match_away_odd AS away_team_odd, " +
-	            "    match_tb.match_draw_odd AS draw_odd, " +
+	            "    match_tb.match_odd_home AS home_team_odd, " +
+	            "    match_tb.match_odd_away AS away_team_odd, " +
+	            "    match_tb.match_odd_draw AS draw_odd, " +
 	            "    match_tb.match_result AS result " +
 	            "FROM " +
 	            "    match_tb " +
@@ -186,7 +186,7 @@ public class MatchDaoPostgres implements MatchDao {
 
 	@Override
 	public void insertMatch(int homeTeamId, int awayTeamId) throws SQLException {
-	    String sql = "INSERT INTO match_tb (match_state, match_home_team, match_away_team, match_home_odd, match_away_odd, match_draw_odd) VALUES " +
+	    String sql = "INSERT INTO match_tb (match_state, match_home_team, match_away_team, match_odd_home, match_odd_away, match_odd_draw) VALUES " +
 	            "(1, ?, ?, ?, ?, ?);";
 	    double homeTeamOdd = OddGenerator.calculateOdds();
 	    double awayTeamOdd = OddGenerator.calculateOdds();
