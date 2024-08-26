@@ -168,7 +168,7 @@ public class ProfileWindow extends JInternalFrame {
 		// -- parent = dataPanel
 
 		JLabel totalBetsLBL = new JLabel();
-		totalBetsLBL.setBounds(12, 153, 163, 14);
+		totalBetsLBL.setBounds(12, 153, 198, 14);
 		mainPanel.add(totalBetsLBL);
 		totalBetsLBL.setFont(new Font("Georgia", Font.PLAIN, 12));
 
@@ -176,7 +176,7 @@ public class ProfileWindow extends JInternalFrame {
 		// -- parent = dataPanel
 
 		JLabel totalLosesLBL = new JLabel();
-		totalLosesLBL.setBounds(12, 179, 163, 14);
+		totalLosesLBL.setBounds(12, 179, 198, 14);
 		mainPanel.add(totalLosesLBL);
 		totalLosesLBL.setFont(new Font("Georgia", Font.PLAIN, 12));
 
@@ -184,7 +184,7 @@ public class ProfileWindow extends JInternalFrame {
 		// -- parent = dataPanel
 
 		JLabel totalWinsLBL = new JLabel();
-		totalWinsLBL.setBounds(12, 205, 163, 14);
+		totalWinsLBL.setBounds(12, 205, 198, 14);
 		mainPanel.add(totalWinsLBL);
 		totalWinsLBL.setFont(new Font("Georgia", Font.PLAIN, 12));
 
@@ -192,7 +192,7 @@ public class ProfileWindow extends JInternalFrame {
 		// -- parent = dataPanel
 
 		JLabel victoryRateLBL = new JLabel();
-		victoryRateLBL.setBounds(12, 231, 163, 14);
+		victoryRateLBL.setBounds(12, 231, 198, 14);
 		mainPanel.add(victoryRateLBL);
 		victoryRateLBL.setFont(new Font("Georgia", Font.PLAIN, 12));
 
@@ -201,7 +201,7 @@ public class ProfileWindow extends JInternalFrame {
 		// -- parent = dataPanel
 
 		JLabel favoriteTeamLBL = new JLabel();
-		favoriteTeamLBL.setBounds(12, 257, 163, 14);
+		favoriteTeamLBL.setBounds(12, 257, 198, 14);
 		mainPanel.add(favoriteTeamLBL);
 		favoriteTeamLBL.setFont(new Font("Georgia", Font.PLAIN, 12));
 
@@ -343,7 +343,6 @@ public class ProfileWindow extends JInternalFrame {
 				String email = emailFLD.getText();
 				String name = nameFLD.getText();
 				String password = null;
-				String encriptedPassword = null;
 				boolean userChanged = false;
 				if (nameFLD.isEnabled() && emailFLD.isEnabled()) {
 
@@ -417,10 +416,9 @@ public class ProfileWindow extends JInternalFrame {
 						JOptionPane.showMessageDialog(ProfileWindow.this, "Senha muito curta. Use ao menos 8 digitos.");
 						return;
 					}
-					encriptedPassword = InputManipulation.generateHashedPassword(password);
 					try {
 						// Atualiza a senha no banco de dados
-						userDao.updateUserPassword(currentUser, encriptedPassword);
+						userDao.updateUserPassword(currentUser, password);
 						// Reseta os campos de senha e confirmação de senha
 						changePasswordFLD.setText(null);
 						confirmPasswordFLD.setText(null);
@@ -483,7 +481,7 @@ public class ProfileWindow extends JInternalFrame {
 		});
 
 		// Painel que exibe as x apostas mais recentes de um usuário
-		// , se houver (Ainda não programado / TODO)
+		// , se houver 
 		// -- parent = this
 
 		statementPNL = new JPanel();
@@ -493,7 +491,7 @@ public class ProfileWindow extends JInternalFrame {
 		getContentPane().add(statementPNL);
 		statementPNL.setLayout(null);
 
-		// Botão de histórico de apostas do usuário (Ainda não programado / TODO)
+		// Botão de histórico de apostas do usuário 
 		// -- parent = this
 
 		JButton userHistoryBTN = new JButton("Fazer Depósito");
@@ -683,7 +681,7 @@ public class ProfileWindow extends JInternalFrame {
 		statementLBL.setFont(new Font("Georgia", Font.PLAIN, 20));
 		statementPNL.add(statementLBL);
 		try {
-			ArrayList<Bet> betList = betDao.getAllBets(currentUser.getId());
+			ArrayList<Bet> betList = userDao.getAllBets(currentUser.getId());
 			if (betList == null) {
 				return;
 			}

@@ -524,7 +524,7 @@ public class MainWindow {
 			return;
 		}
 		try {
-			ArrayList<Bet> betList = betDao.getAllBets(currentUser.getId());
+			ArrayList<Bet> betList = userDao.getAllBets(currentUser.getId());
 			if (betList == null) {
 				return;
 			}

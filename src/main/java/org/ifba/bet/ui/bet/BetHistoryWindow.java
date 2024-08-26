@@ -11,6 +11,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -34,6 +35,8 @@ public class BetHistoryWindow extends JInternalFrame {
 	private BidDaoPostgres bidDao = new BidDaoPostgres();
 	private BetDaoPostgres betDao = new BetDaoPostgres();
 	private UserDaoPostgres userDao = new UserDaoPostgres();
+	private JScrollPane scrollPane;
+	private JLabel noBetsFoundedLBL; // Mova esta declaração para cá, tornando-a uma variável de instância.
 
 	public BetHistoryWindow() {
 
@@ -49,17 +52,25 @@ public class BetHistoryWindow extends JInternalFrame {
 		getContentPane().setLayout(null);
 
 		listModel = new DefaultListModel<>();
+		
+        noBetsFoundedLBL = new JLabel("Não foram encontradas apostas em seu nome.");
+        noBetsFoundedLBL.setVisible(false);
+        noBetsFoundedLBL.setBounds(81, 50, 301, 44);
+        getContentPane().add(noBetsFoundedLBL);
+        noBetsFoundedLBL.setFont(new Font("Georgia", Font.PLAIN, 14));
+        noBetsFoundedLBL.setForeground(Color.BLACK);
+        
 		JList<Bet> list = new JList<>(listModel);
 
 		list.setOpaque(false);
 		list.setFont(new Font("Georgia", Font.BOLD, 16));
 		list.setCellRenderer(customListRenderer);
 
-		JScrollPane scrollPane = new JScrollPane(list);
+		scrollPane = new JScrollPane(list);
 		scrollPane.setBorder(new LineBorder(new Color(0, 0, 0), 2, true));
 		scrollPane.setBounds(1, 0, 458, 172);
 		getContentPane().add(scrollPane);
-
+		
 		JButton btnNewButton = new JButton("Modificar Aposta");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -133,19 +144,26 @@ public class BetHistoryWindow extends JInternalFrame {
 		setVisible(true);
 	}
 
-	public void updateBets() {
-		ArrayList<Bet> bets = null;
-		try {
-			bets = userDao.getAllBets(currentUser.getId());
-		} catch (SQLException e) {
-			System.out.println("foi aqui");
-			e.printStackTrace();
-		}
-		listModel.clear();
-		for (Bet bet : bets) {
-			listModel.addElement(bet);
-		}
-	}
+    public void updateBets() {
+        ArrayList<Bet> bets = null;
+
+        try {
+            bets = userDao.getAllBets(currentUser.getId());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        listModel.clear();
+
+        if (bets == null || bets.isEmpty()) {
+            noBetsFoundedLBL.setVisible(true); // Torne o rótulo visível se não houver apostas
+        } else {
+            noBetsFoundedLBL.setVisible(false); // Esconda o rótulo se houver apostas
+            for (Bet bet : bets) {
+                listModel.addElement(bet);
+            }
+        }
+    }
 
 	public void setCurrentUser(User currentUser) {
 		this.currentUser = currentUser;

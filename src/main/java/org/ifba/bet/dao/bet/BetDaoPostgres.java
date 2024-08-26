@@ -10,54 +10,56 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import org.ifba.bet.dao.connection.DatabaseConnectionSingleton;
-import org.ifba.bet.model.Bet;
 import org.ifba.bet.model.Bid;
 
 public class BetDaoPostgres implements BetDao {
 
 	@Override
 	public int insertBet(int userId, int betState) throws SQLException {
-		Connection conn = DatabaseConnectionSingleton.getInstance().getConexao();
-		String sql = "INSERT INTO bet_tb (user_id, bet_state) VALUES (?, ?)";
+		String sql = "INSERT INTO bet_tb (user_id, bet_state) VALUES (?, ?);";
+		Connection conn = DatabaseConnectionSingleton.getInstance().getConnection();
 		PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 		ps.setInt(1, userId);
 		ps.setInt(2, betState);
 		ps.executeUpdate();
 		ResultSet getBetId = ps.getGeneratedKeys();
 		getBetId.next();
+	    ps.close();
 		return getBetId.getInt(1);
 	}
 
 	@Override
 	public void deleteBet(int betId) throws SQLException {
-		String sql = "DELETE FROM bet_tb WHERE bet_id = ?";
-		Connection conn = DatabaseConnectionSingleton.getInstance().getConexao();
+		String sql = "DELETE FROM bet_tb WHERE bet_id = ?;";
+		Connection conn = DatabaseConnectionSingleton.getInstance().getConnection();
 		PreparedStatement ps = conn.prepareStatement(sql);
 		ps.setInt(1, betId);
 		ps.executeUpdate();
+	    ps.close();
 	}
 
 	@Override
 	public ArrayList<Bid> getAllBids(int betId) throws SQLException {
-		String sql = "SELECT * FROM bid_tb \r\n" + "WHERE bet_id = ?";
-		Connection conn = DatabaseConnectionSingleton.getInstance().getConexao();
+		String sql = "SELECT * FROM bid_tb WHERE bet_id = ?;";
+		Connection conn = DatabaseConnectionSingleton.getInstance().getConnection();
 		ArrayList<Bid> bidArray = new ArrayList<Bid>();
 		PreparedStatement ps = conn.prepareStatement(sql);
 		ps.setInt(1, betId);
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
-			// public Bid(double paidValue, int guess, int betId, int matchID)
 			bidArray.add(new Bid(rs.getDouble("bid_paid_value"), rs.getInt("bid_guess"), rs.getInt("bet_id"),
 					rs.getInt("match_id")));
 		}
+	    ps.close();
+	    rs.close();
 		return bidArray;
 	}
 
 	@Override
 	public void updateBetsState(int newState, int matchId) throws SQLException {
-		String sql = "update bet_tb set bet_state = ?\r\n" + "	where bet_id in\r\n"
-				+ "	(select bet_id from bid_tb\r\n" + "where match_id = ?)";
-		Connection conn = DatabaseConnectionSingleton.getInstance().getConexao();
+		String sql = "UPDATE bet_tb SET bet_state = ?\r\n" + "	WHERE bet_id IN\r\n"
+				+ "	(SELECT bet_id FROM bid_tb\r\n" + "WHERE match_id = ?);";
+		Connection conn = DatabaseConnectionSingleton.getInstance().getConnection();
 		PreparedStatement ps = conn.prepareStatement(sql);
 		ps.setInt(1, newState);
 		ps.setInt(2, matchId);
@@ -65,52 +67,43 @@ public class BetDaoPostgres implements BetDao {
 	}
 
 	@Override
-	public ArrayList<Bet> getAllBets(int user_id) throws SQLException {
-		String sql = "SELECT * FROM bet_tb \r\n" + "WHERE user_id = ?";
-		Connection conn = DatabaseConnectionSingleton.getInstance().getConexao();
-		ArrayList<Bet> betArray = new ArrayList<Bet>();
-		PreparedStatement ps = conn.prepareStatement(sql);
-		ps.setInt(1, user_id);
-		ResultSet rs = ps.executeQuery();
-		while (rs.next()) {
-			betArray.add(new Bet(rs.getInt("bet_id"), rs.getInt("bet_state"), rs.getInt("user_id")));
-		}
-		return betArray;
-	}
-
-	@Override
 	public int getTotalBids(int betId) {
-		String sql = "SELECT COUNT (*) AS total_bids\r\n" + "FROM bid_tb WHERE bet_id = ?";
+		String sql = "SELECT COUNT (*) AS total_bids\r\n" + "FROM bid_tb WHERE bet_id = ?;";
 		int totalBids = 0;
 		try {
-			Connection conn = DatabaseConnectionSingleton.getInstance().getConexao();
+			Connection conn = DatabaseConnectionSingleton.getInstance().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, betId);
 			ResultSet rs = ps.executeQuery();
 			rs.next();
 			totalBids = rs.getInt("total_bids");
+		    ps.close();
+		    rs.close();
 		} catch (SQLException e) {
 			System.out.println("Erro Ao Consultar o Total de Lances");
 		}
+		
 		return totalBids;
 	}
 
 	@Override
 	public int getCorrectBids(int betId) {
-		int totalCorrectBids = 0;
 		String sql = "SELECT COUNT(*) AS correct_bids\r\n" + "FROM match_tb \r\n" + "INNER JOIN (\r\n"
 				+ "    SELECT match_id, bid_guess\r\n" + "    FROM bid_tb \r\n" + "    WHERE bet_id = ?\r\n"
 				+ ") AS bids_tb\r\n" + "ON bids_tb.match_id = match_tb.match_id\r\n"
 				+ "WHERE bids_tb.bid_guess = match_tb.match_result;";
+		int totalCorrectBids = 0;
 		try {
-			Connection conn = DatabaseConnectionSingleton.getInstance().getConexao();
+			Connection conn = DatabaseConnectionSingleton.getInstance().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, betId);
 			ResultSet rs = ps.executeQuery();
 			rs.next();
 			totalCorrectBids = rs.getInt("correct_bids");
+		    ps.close();
+		    rs.close();
 		} catch (SQLException e) {
-			System.out.println("Erro Ao Consultar o Total de Lances");
+			System.out.println("Erro Ao Consultar o Total de Lances corretos;");
 		}
 
 		return totalCorrectBids;
@@ -122,12 +115,14 @@ public class BetDaoPostgres implements BetDao {
 		String sql = "SELECT SUM (bid_tb.bid_paid_value) AS total_bet_value\r\n"
 				+ "	FROM bid_tb WHERE bet_id = ?;";
 		try {
-			Connection conn = DatabaseConnectionSingleton.getInstance().getConexao();
+			Connection conn = DatabaseConnectionSingleton.getInstance().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, betId);
 			ResultSet rs = ps.executeQuery();
 			rs.next();
 			totalBetValue = rs.getDouble("total_bet_value");
+			ps.close();
+			rs.close();
 		} catch (SQLException e) {
 			System.out.println("Erro Ao Consultar o custo total da aposta");
 		}
@@ -140,13 +135,15 @@ public class BetDaoPostgres implements BetDao {
 		String sql = "SELECT EXISTS (" + "    SELECT 1 " + "    FROM match_tb " + "    INNER JOIN ( "
 				+ "        SELECT match_id " + "        FROM bid_tb " + "        WHERE bet_id = ? "
 				+ "    ) AS bids_tb " + "    ON match_tb.match_id = bids_tb.match_id "
-				+ "    WHERE match_tb.match_state != 0 " + ")";
-		Connection conn = DatabaseConnectionSingleton.getInstance().getConexao();
+				+ "    WHERE match_tb.match_state != 0 " + ");";
+		Connection conn = DatabaseConnectionSingleton.getInstance().getConnection();
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, betId);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
+				ps.close();
+				rs.close();
 				return !rs.getBoolean(1);
 			}
 
@@ -181,33 +178,34 @@ public class BetDaoPostgres implements BetDao {
 				+ "WHERE \r\n"
 				+ "    bid_tb.bet_id = ?;";
 		try {
-			Connection conn = DatabaseConnectionSingleton.getInstance().getConexao();
+			Connection conn = DatabaseConnectionSingleton.getInstance().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, betId);
 			ResultSet rs = ps.executeQuery();
 			rs.next();
 			betPayout = rs.getDouble("total_payout");
+			ps.close();
+			rs.close();
 		} catch (SQLException e) {
 			System.out.println("Erro Ao Consultar o custo total da aposta");
 		}
-		
 		BigDecimal bigDecimal = new BigDecimal(betPayout);
 		bigDecimal = bigDecimal.setScale(2, RoundingMode.HALF_UP);
-
 		return bigDecimal.doubleValue();
 	}
 
 	@Override
 	public void updateBetState(int newState, int userId, int betId) {
 		String sql = "UPDATE bet_tb SET bet_state = ?\r\n"
-				+ "WHERE user_id = ? AND bet_id = ?";
+				+ "WHERE user_id = ? AND bet_id = ?';";
 		try {
-			Connection conn = DatabaseConnectionSingleton.getInstance().getConexao();
+			Connection conn = DatabaseConnectionSingleton.getInstance().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, newState);
 			ps.setInt(2, userId);
 			ps.setInt(3, betId);
 			ps.executeUpdate();
+			ps.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

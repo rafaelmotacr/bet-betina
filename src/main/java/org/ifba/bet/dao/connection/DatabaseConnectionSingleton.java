@@ -24,7 +24,7 @@ public class DatabaseConnectionSingleton {
 
 	}
 
-	public Connection getConexao() {
+	public Connection getConnection() {
 		return connection;
 	}
 

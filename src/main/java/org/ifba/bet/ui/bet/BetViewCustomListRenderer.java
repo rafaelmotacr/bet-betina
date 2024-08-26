@@ -32,9 +32,7 @@ class BetViewhCustomListRenderer extends JLabel implements ListCellRenderer<Bet>
 		if (index < 10) {
 			text = text + "0";
 		}
-		// text = text + index + " - [ID: " + value.getID() + "] ";
 		text = text + index + " - ";
-
 		switch (value.getState()) {
 		case Bet.CLOSED:
 			text = text + "<span style=\"color: orange;\">" + "Aposta Fechada." + "</span>"  +  "Valor Apostado: R$ " + betDao.getBetTotalValue(value.getId()) + ".";

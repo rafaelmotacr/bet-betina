@@ -18,13 +18,15 @@ public class UserDaoPostgres implements UserDao {
 	@Override
 	public boolean login(String email, String originalPassword) {
 		String sql = "SELECT user_password FROM user_tb WHERE user_email = ?;";
-		Connection conn = DatabaseConnectionSingleton.getInstance().getConexao();
+		Connection conn = DatabaseConnectionSingleton.getInstance().getConnection();
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, email);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
 				String dbPassword = rs.getString("user_password");
+				rs.close();
+				ps.close();
 				return BCrypt.checkpw(originalPassword, dbPassword);
 			}
 		} catch (SQLException e) {
@@ -36,8 +38,8 @@ public class UserDaoPostgres implements UserDao {
 	@Override
 	public User findUserByEmail(String email) {
 		User user = null;
-		String sql = "SELECT * FROM user_tb WHERE user_email = ?";
-		Connection conn =  DatabaseConnectionSingleton.getInstance().getConexao();
+		String sql = "SELECT * FROM user_tb WHERE user_email = ?;";
+		Connection conn =  DatabaseConnectionSingleton.getInstance().getConnection();
 		try {
 			PreparedStatement ps;
 			ps = conn.prepareStatement(sql);
@@ -46,85 +48,96 @@ public class UserDaoPostgres implements UserDao {
 			rs.next();
 			user = new User(rs.getInt("user_id"), rs.getInt("user_access_level"), rs.getDouble("user_balance"),
 					rs.getString("user_name"), rs.getString("user_email"), rs.getInt("user_favorite_team_id"));
+			rs.close();
+			ps.close();
 		} catch (SQLException e) {
+			System.out.println("Erro ao Buscar Sua Conta no Banco de Dados.");
 		}
 		return user;
 	}
 
 	@Override
 	public void insertUser(String name, String email, String password, int accessLevel) throws SQLException {
+		String sql = "INSERT INTO user_tb (user_access_level, user_name, user_email, user_password, user_balance) VALUES (?, ?, ?, ?, ?);";
+		Connection conn = DatabaseConnectionSingleton.getInstance().getConnection();
+		PreparedStatement ps = conn.prepareStatement(sql);
 		String encryptedPassword = InputManipulation.generateHashedPassword(password);
-		PreparedStatement ps = DatabaseConnectionSingleton.getInstance().getConexao().prepareStatement(
-				"INSERT INTO user_tb (user_access_level, user_name, user_email, user_password, user_balance) VALUES (?, ?, ?, ?, ?)");
 		ps.setInt(1, accessLevel);
 		ps.setString(2, name);
 		ps.setString(3, email);
 		ps.setString(4, encryptedPassword);
 		ps.setDouble(5, User.USER_STANDARD_INITAL_BALANCE);
 		ps.executeUpdate();
+		ps.close();
 	}
 
 	@Override
 	public void deletUser(User user) throws SQLException {
-		PreparedStatement ps = DatabaseConnectionSingleton.getInstance().getConexao()
-				.prepareStatement("DELETE FROM user_tb WHERE user_id = ? ");
+		String sql = "DELETE FROM user_tb WHERE user_id = ?;";
+		Connection conn =  DatabaseConnectionSingleton.getInstance().getConnection();
+		PreparedStatement ps = conn.prepareStatement(sql);
 		ps.setInt(1, user.getId());
 		ps.executeUpdate();
+		ps.close();
 	}
 
 	@Override
 	public int getTotalBets(int userId){
-		String sql = "SELECT COUNT (*) AS total_user_bets\r\n"
-				+ "	FROM bet_tb\r\n"
-				+ "WHERE user_id = ?;";
+		String sql = "SELECT COUNT (*) AS total_user_bets FROM bet_tb WHERE user_id = ?;";
+		int totalUserBets = 0;
 		try {
-			Connection conn = DatabaseConnectionSingleton.getInstance().getConexao();
+			Connection conn = DatabaseConnectionSingleton.getInstance().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, userId);
 			ResultSet rs = ps.executeQuery();
 			rs.next();
-			return rs.getInt("total_user_bets");
+			totalUserBets = rs.getInt("total_user_bets");
+			ps.close();
+			rs.close();
+			return totalUserBets;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Erro ao calcular o seu total de apostas paizão;");
 		}
-		return 0;
+		return totalUserBets;
 	}
 
 	
 	@Override
 	public int getTotalWinnedBets(int userId) {
-		String sql = "SELECT COUNT (*) AS total_wins\r\n"
-				+ "	FROM bet_tb\r\n"
-				+ "WHERE user_id = ? AND bet_state = ?;";
+		String sql = "SELECT COUNT (*) AS total_wins FROM bet_tb WHERE user_id = ? AND bet_state = ?;";
+		int totalWinnedBets = 0;
 		try {
-			Connection conn = DatabaseConnectionSingleton.getInstance().getConexao();
+			Connection conn = DatabaseConnectionSingleton.getInstance().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, userId);
 			ps.setInt(2, Bet.WIN);
 			ResultSet rs = ps.executeQuery();
 			rs.next();
-			return rs.getInt("total_wins");
+			totalWinnedBets = rs.getInt("total_wins");
+			ps.close();
+			rs.close();
+			return totalWinnedBets;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Erro ao calcular o seu total de apostas ganhas paizão;");
 		}
-		return 0;
+		return totalWinnedBets;
 	}
 
 	@Override
 	public int getTotalLosedBets(int userId) {
-		String sql = "SELECT COUNT (*) AS total_loses\r\n"
-				+ "	FROM bet_tb\r\n"
-				+ "WHERE user_id = ? AND bet_state = ?;";
+		String sql = "SELECT COUNT (*) AS total_loses FROM bet_tb WHERE user_id = ? AND bet_state = ?;";
+		int totalLosedBets = 0;
 		try {
-			Connection conn = DatabaseConnectionSingleton.getInstance().getConexao();
+			Connection conn = DatabaseConnectionSingleton.getInstance().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, userId);
 			ps.setInt(2, Bet.LOSE);
 			ResultSet rs = ps.executeQuery();
 			rs.next();
-			return rs.getInt("total_loses");
+			totalLosedBets = rs.getInt("total_loses");
+			ps.close();
+			rs.close();
+			return totalLosedBets;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -132,75 +145,90 @@ public class UserDaoPostgres implements UserDao {
 		return 0;
 	}
 	
-	
 	@Override
 	public String getFavoriteTeam(User user) throws SQLException {
-
-		PreparedStatement ps = DatabaseConnectionSingleton.getInstance().getConexao().prepareStatement(
-				"SELECT team_name AS favorite_team \r\n" + "		FROM team_tb INNER JOIN user_tb\r\n"
-						+ "		ON (user_tb.user_favorite_team_id = team_tb.team_id)\r\n"
-						+ "		WHERE user_tb.user_id = ?");
-
+		String sql ="SELECT team_name AS favorite_team \r\n" 
+				+ "		FROM team_tb INNER JOIN user_tb\r\n"
+				+ "		ON (user_tb.user_favorite_team_id = team_tb.team_id)\r\n"
+				+ "		WHERE user_tb.user_id = ?;";
+		Connection conn = DatabaseConnectionSingleton.getInstance().getConnection();
+		PreparedStatement ps = conn.prepareStatement(sql);
+		String teamName = null;
 		ps.setInt(1, user.getId());
-
 		ResultSet rs = ps.executeQuery();
 		rs.next();
-		return rs.getString("favorite_team");
+		teamName = rs.getString("favorite_team");
+		ps.close();
+		rs.close();
+		return teamName;
 	}
 
 	@Override
 	public void updateUserPassword(User user, String newPassword) throws SQLException {
-		PreparedStatement ps = DatabaseConnectionSingleton.getInstance().getConexao()
-				.prepareStatement("UPDATE user_tb SET user_password = ? \r\n" + "WHERE(user_id = ?)");
-		ps.setString(1, newPassword);
+		String sql = "UPDATE user_tb SET user_password = ? WHERE user_id = ?;";
+		Connection conn = DatabaseConnectionSingleton.getInstance().getConnection();
+		PreparedStatement ps = conn.prepareStatement(sql);
+		String encryptedPassword = InputManipulation.generateHashedPassword(newPassword);
+		ps.setString(1, encryptedPassword);
 		ps.setInt(2, user.getId());
 		ps.executeUpdate();
+		ps.close();
 	}
 
 	@Override
 	public void updateUserName(User user, String newUserName) throws SQLException {
-		PreparedStatement ps = DatabaseConnectionSingleton.getInstance().getConexao()
-				.prepareStatement("UPDATE user_tb SET user_name = ? \r\n" + "WHERE(user_id = ?)");
+		String sql = "UPDATE user_tb SET user_name = ? WHERE user_id = ?;";
+		Connection conn = DatabaseConnectionSingleton.getInstance().getConnection();
+		PreparedStatement ps = conn.prepareStatement(sql);
 		ps.setString(1, newUserName);
 		ps.setInt(2, user.getId());
 		ps.executeUpdate();
 		user.setName(newUserName);
+		ps.close();
 	}
 
+	//TODO resolver questão da dupla encriptação da senha
+	
 	@Override
 	public void updateUserEmail(User user, String newEmail) throws SQLException {
-		PreparedStatement ps = DatabaseConnectionSingleton.getInstance().getConexao()
-				.prepareStatement("UPDATE user_tb SET user_email = ? \r\n" + "WHERE(user_id = ?)");
+		String sql = "UPDATE user_tb SET user_email = ? WHERE user_id = ?;";
+		Connection conn = DatabaseConnectionSingleton.getInstance().getConnection();
+		PreparedStatement ps = conn.prepareStatement(sql);
 		ps.setString(1, newEmail);
 		ps.setInt(2, user.getId());
 		ps.executeUpdate();
 		user.setEmail(newEmail);
+		ps.close();
 	}
 
 	@Override
 	public void updateUserFavoriteTeam(User user, Team team) throws SQLException {
-		PreparedStatement ps = DatabaseConnectionSingleton.getInstance().getConexao()
-				.prepareStatement("UPDATE user_tb SET user_favorite_team_id = ? \r\n" + "WHERE user_id = ?");
+		String sql = "UPDATE user_tb SET user_favorite_team_id = ? WHERE user_id = ?;";
+		Connection conn = DatabaseConnectionSingleton.getInstance().getConnection();
+		PreparedStatement ps = conn.prepareStatement(sql);
 		ps.setInt(1, team.getID());
 		ps.setInt(2, user.getId());
 		ps.executeUpdate();
 		user.setFavoriteTeam(team.getID());
+		ps.close();
 	}
 
 	@Override
 	public void updateUserBalance(User user, Double newBalance) throws SQLException {
-		PreparedStatement ps = DatabaseConnectionSingleton.getInstance().getConexao()
-				.prepareStatement("UPDATE user_tb SET user_balance = ? \r\n" + "WHERE user_id = ?");
+		String sql = "UPDATE user_tb SET user_balance = ? WHERE user_id = ?;";
+		Connection conn = DatabaseConnectionSingleton.getInstance().getConnection();
+		PreparedStatement ps = conn.prepareStatement(sql);
 		ps.setDouble(1, newBalance);
 		ps.setInt(2, user.getId());
 		ps.executeUpdate();
 		user.setBalance(newBalance);
+		ps.close();
 	}
 
 	@Override
 	public ArrayList<Bet> getAllBets(int userId) throws SQLException {
-		String sql = "SELECT * FROM bet_tb WHERE user_id = ? ORDER BY bet_id";
-		Connection conn = DatabaseConnectionSingleton.getInstance().getConexao();
+		String sql = "SELECT * FROM bet_tb WHERE user_id = ? ORDER BY bet_id;";
+		Connection conn = DatabaseConnectionSingleton.getInstance().getConnection();
 		ArrayList<Bet> betArray = new ArrayList<Bet>();
 		PreparedStatement ps = conn.prepareStatement(sql);
 		ps.setInt(1, userId);
@@ -208,9 +236,8 @@ public class UserDaoPostgres implements UserDao {
 		while (rs.next()) {
 			betArray.add(new Bet(rs.getInt("bet_id"), rs.getInt("bet_state"), rs.getInt("user_id")));
 		}
+		ps.close();
+		rs.close();
 		return betArray;
 	}
-
-
-
 }
