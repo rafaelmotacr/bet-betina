@@ -27,7 +27,6 @@ public class BidWindow extends JInternalFrame {
 	private Match match;
 	private String homeTeamName;
 	private String awayTeamName;
-	private BetMainWindow matchMainWindow;
 	private User currentUser;
 
 	private JRadioButton rdbtnDraw;
@@ -35,8 +34,8 @@ public class BidWindow extends JInternalFrame {
 	private JRadioButton rdbtnHomeTeamWin;
 	private JLabel matchTitleLBL;
 	private JTextField bidValueFLD;
-
 	private TeamDaoPostgres teamDao = new TeamDaoPostgres();
+	private BetMainWindow betMainWindow;
 	
 	public BidWindow() {
 
@@ -135,31 +134,45 @@ public class BidWindow extends JInternalFrame {
 
 		confirmBidBTN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
 				if (bidValueFLD.getText().equals("") || bidValueFLD.getText() == null) {
 					JOptionPane.showMessageDialog(BidWindow.this.getParent(), "Insira o Valor do Lance.", "Aviso",
 							JOptionPane.WARNING_MESSAGE);
 					return;
 				}
-
-				double paidValue = Double.parseDouble(bidValueFLD.getText());
+				double remainingBalance = currentUser.getBalance() - betMainWindow.getBetTotalCost();
+				double paidValue = 0d;
 				int guess = Integer.parseInt(group.getSelection().getActionCommand());
 				int matchId = match.getId();
+				
+				try {
+					paidValue = Double.parseDouble(bidValueFLD.getText());
 
-				if (paidValue < 0) {
+				}
+				catch(Exception e5) {
+					JOptionPane.showMessageDialog(BidWindow.this.getParent(),
+							"Valor inválido. Vá quebrar outro.", "Aviso", JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+				if (paidValue == 0) {
 					JOptionPane.showMessageDialog(BidWindow.this.getParent(),
 							"Você não pode apostar zero reais, amigão.", "Aviso", JOptionPane.WARNING_MESSAGE);
 					return;
 				}
+				if (paidValue < 0) {
+					JOptionPane.showMessageDialog(BidWindow.this.getParent(),
+							"Eu não te devo nada, amigão.", "Aviso", JOptionPane.WARNING_MESSAGE);
+					return;
+				}
 
-				if (paidValue > currentUser.getBalance()) {
+
+				if (paidValue > remainingBalance ) {
 					JOptionPane.showMessageDialog(BidWindow.this.getParent(),
 							"O valor do lance não pode \ntranspassar seu saldo atual.", "Aviso",
 							JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 				bidValueFLD.setText("");
-				matchMainWindow.addBid(new Bid(paidValue, guess, matchId));
+				betMainWindow.addBid(new Bid(paidValue, guess, matchId));
 				setVisible(false);
 			}
 		});
@@ -176,8 +189,8 @@ public class BidWindow extends JInternalFrame {
 		update();
 	}
 
-	public void setBetMainWindow(BetMainWindow matchMainWindow) {
-		this.matchMainWindow = matchMainWindow;
+	public void setBetMainWindow(BetMainWindow betMainWindow) {
+		this.betMainWindow = betMainWindow;
 	}
 
 	public User getCurrentUserr() {

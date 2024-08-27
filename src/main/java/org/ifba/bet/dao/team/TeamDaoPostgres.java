@@ -94,7 +94,7 @@ public class TeamDaoPostgres implements TeamDao {
 //	Define como nulo todos os usuários que tem um time favoritado excluído
 	@Override
 	public void fixUsersFavoriteTeamAfterDelete(Team team) throws SQLException {
-		String sql = "UPDATE user_tb SET user_favorite_team_id = null \r\n" + "WHERE user_favorite_team_id = ?;"; 
+		String sql = "UPDATE user_tb SET user_favorite_team_id = null WHERE user_favorite_team_id = ?;"; 
 		Connection conn = DatabaseConnectionSingleton.getInstance().getConnection();
 		PreparedStatement ps = conn.prepareStatement(sql);
 		ps.setInt(1, team.getID());

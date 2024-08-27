@@ -147,10 +147,10 @@ public class UserDaoPostgres implements UserDao {
 	
 	@Override
 	public String getFavoriteTeam(User user) throws SQLException {
-		String sql ="SELECT team_name AS favorite_team \r\n" 
-				+ "		FROM team_tb INNER JOIN user_tb\r\n"
-				+ "		ON (user_tb.user_favorite_team_id = team_tb.team_id)\r\n"
-				+ "		WHERE user_tb.user_id = ?;";
+		String sql ="SELECT team_name AS favorite_team" 
+				+ "	FROM team_tb INNER JOIN user_tb"
+				+ "	ON (user_tb.user_favorite_team_id = team_tb.team_id)"
+				+ "	WHERE user_tb.user_id = ?;";
 		Connection conn = DatabaseConnectionSingleton.getInstance().getConnection();
 		PreparedStatement ps = conn.prepareStatement(sql);
 		String teamName = null;
@@ -186,8 +186,6 @@ public class UserDaoPostgres implements UserDao {
 		user.setName(newUserName);
 		ps.close();
 	}
-
-	//TODO resolver questão da dupla encriptação da senha
 	
 	@Override
 	public void updateUserEmail(User user, String newEmail) throws SQLException {

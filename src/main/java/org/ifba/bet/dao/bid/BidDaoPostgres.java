@@ -33,7 +33,6 @@ public class BidDaoPostgres implements BidDao {
 		ps.setInt(1, betId);
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
-			// public Bid(double paidValue, int guess, int matchID)
 			bidArray.add(new Bid(rs.getDouble("bid_paid_value"), rs.getInt("bid_guess"), rs.getInt("match_id")));
 		}
 	    ps.close();
@@ -43,7 +42,7 @@ public class BidDaoPostgres implements BidDao {
 
 	@Override
 	public void deleteBid(Bid bid) throws SQLException {
-		String sql = "	DELETE FROM bid_tb WHERE bet_id = ? AND match_id = ?;";
+		String sql = "DELETE FROM bid_tb WHERE bet_id = ? AND match_id = ?;";
 		Connection conn = DatabaseConnectionSingleton.getInstance().getConnection();
 		PreparedStatement ps = conn.prepareStatement(sql);
 		ps.setInt(1, bid.getBetID());

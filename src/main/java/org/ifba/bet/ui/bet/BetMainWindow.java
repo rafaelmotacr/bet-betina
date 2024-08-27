@@ -12,8 +12,6 @@ import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JDesktopPane;
-import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -21,7 +19,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
 import org.ifba.bet.dao.bet.BetDaoPostgres;
@@ -81,6 +78,7 @@ public class BetMainWindow extends JInternalFrame {
 		getContentPane().setLayout(null);
 
 		BidWindow bidWindow = new BidWindow();
+		bidWindow.setBetMainWindow(BetMainWindow.this);
 		bidWindow.setVisible(false);
 		bidWindow.setClosable(true);
 		bidWindow.setLocation(140, 44);
@@ -658,22 +656,8 @@ public class BetMainWindow extends JInternalFrame {
 		this.foreignBetId = foreignBetId;
 	}
 
-	public static void main(String[] args) {
-		// Garantir que a criação da GUI ocorra na Event Dispatch Thread
-		SwingUtilities.invokeLater(() -> {
-			JFrame frame = new JFrame("Main Frame");
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			frame.setSize(800, 600);
-
-			// Adicionar um JDesktopPane ao JFrame
-			JDesktopPane desktopPane = new JDesktopPane();
-			frame.setContentPane(desktopPane);
-
-			// Adicionar uma instância de TesteClass ao JDesktopPane
-			BetMainWindow testeClass = new BetMainWindow();
-			desktopPane.add(testeClass);
-
-			frame.setVisible(true);
-		});
+	public double getBetTotalCost() {
+		return betTotalCost;
 	}
+
 }

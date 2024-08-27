@@ -78,7 +78,7 @@ public class MatchDaoPostgres implements MatchDao {
 	                rs.getInt("match_home_team"), rs.getInt("match_away_team"), rs.getDouble("match_odd_home"),
 	                rs.getDouble("match_odd_away"), rs.getDouble("match_odd_draw"));
 
-	        if (match.toString().toLowerCase().contains(filter)) {
+	        if (match.toString().toLowerCase().contains(filter.toLowerCase())) {
 	            matchArray.add(match);
 	        }
 	    }
@@ -87,8 +87,6 @@ public class MatchDaoPostgres implements MatchDao {
 	    return matchArray;
 	}
 
-
-//calma calabreso
 	@Override
 	public ArrayList<Match> findTeamMatches(Team team) throws SQLException {
 	    ArrayList<Match> matchArray = new ArrayList<>();
@@ -214,7 +212,7 @@ public class MatchDaoPostgres implements MatchDao {
 	                rs.getDouble("match_odd_away"), 
 	                rs.getDouble("match_odd_draw"));
 
-	        if (match.toString().toLowerCase().contains(filter)) {
+	        if (match.toString().toLowerCase().contains(filter.toLowerCase())) {
 	            matchArray.add(match);
 	        }
 	    }
