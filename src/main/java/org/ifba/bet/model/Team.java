@@ -2,23 +2,23 @@ package org.ifba.bet.model;
 
 public class Team {
 
-	private int ID;
+	private int id;
 	private String name;
 	private String abbreviation;
 
-	public Team(int iD, String name, String abbreviation) {
+	public Team(int id, String name, String abbreviation) {
 		super();
-		ID = iD;
+		this.id = id;
 		this.name = name;
 		this.abbreviation = abbreviation;
 	}
 
-	public int getID() {
-		return ID;
+	public int getId() {
+		return id;
 	}
 
-	public void setID(int iD) {
-		ID = iD;
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getName() {

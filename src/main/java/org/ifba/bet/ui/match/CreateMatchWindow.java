@@ -122,8 +122,8 @@ public class CreateMatchWindow extends JInternalFrame {
 							JOptionPane.WARNING_MESSAGE);
 				}
 
-				int homeTeamid = awayTeamBox.getItemAt(selectedAwayTeamIndex).getID();
-				int awayTeamid = homeTemBox.getItemAt(selectedHomeTeamIndex).getID();
+				int homeTeamid = awayTeamBox.getItemAt(selectedAwayTeamIndex).getId();
+				int awayTeamid = homeTemBox.getItemAt(selectedHomeTeamIndex).getId();
 
 				try {
 					matchDao.insertMatch(homeTeamid, awayTeamid);

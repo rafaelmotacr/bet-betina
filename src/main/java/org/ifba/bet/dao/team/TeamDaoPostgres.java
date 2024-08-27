@@ -28,7 +28,7 @@ public class TeamDaoPostgres implements TeamDao {
 		String sql = "DELETE FROM team_tb WHERE team_id = ?;";
 		Connection conn = DatabaseConnectionSingleton.getInstance().getConnection();
 		PreparedStatement ps = conn.prepareStatement(sql);
-		ps.setInt(1, team.getID());
+		ps.setInt(1, team.getId());
 		ps.executeUpdate();
 		ps.close();
 	}
@@ -40,7 +40,7 @@ public class TeamDaoPostgres implements TeamDao {
 		Connection conn = DatabaseConnectionSingleton.getInstance().getConnection();
 		PreparedStatement ps = conn.prepareStatement(sql);
 		ps.setString(1, abbreviation);
-		ps.setInt(2, team.getID());
+		ps.setInt(2, team.getId());
 		ps.executeUpdate();
 		ps.close();
 	}
@@ -51,7 +51,7 @@ public class TeamDaoPostgres implements TeamDao {
 		Connection conn = DatabaseConnectionSingleton.getInstance().getConnection();
 		PreparedStatement ps = conn.prepareStatement(sql);
 		ps.setString(1, name);
-		ps.setInt(2, team.getID());
+		ps.setInt(2, team.getId());
 		ps.executeUpdate();
 		ps.close();
 	}
@@ -97,7 +97,7 @@ public class TeamDaoPostgres implements TeamDao {
 		String sql = "UPDATE user_tb SET user_favorite_team_id = null WHERE user_favorite_team_id = ?;"; 
 		Connection conn = DatabaseConnectionSingleton.getInstance().getConnection();
 		PreparedStatement ps = conn.prepareStatement(sql);
-		ps.setInt(1, team.getID());
+		ps.setInt(1, team.getId());
 		ps.executeUpdate();
 		ps.close();
 	}

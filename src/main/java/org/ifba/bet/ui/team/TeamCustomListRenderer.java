@@ -33,7 +33,7 @@ class TeamCustomListRenderer extends JLabel implements ListCellRenderer<Team> {
 		} else {
 			text = String.valueOf(index) + " - " + value;
 		}
-		if ((user != null) && (value.getID() == user.getFavoriteTeam())) {
+		if ((user != null) && (value.getId() == user.getFavoriteTeam())) {
 			text = text.concat(" | (Seu time favorito)");
 		}
 		setText(text);

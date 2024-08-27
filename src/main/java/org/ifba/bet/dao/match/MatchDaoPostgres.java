@@ -111,8 +111,8 @@ public class MatchDaoPostgres implements MatchDao {
 	            "    away_team.team_id = ? OR home_team.team_id = ?;";
 	    Connection conn = DatabaseConnectionSingleton.getInstance().getConnection();
 	    PreparedStatement ps = conn.prepareStatement(sql);
-	    ps.setInt(1, team.getID());
-	    ps.setInt(2, team.getID());
+	    ps.setInt(1, team.getId());
+	    ps.setInt(2, team.getId());
 	    ResultSet rs = ps.executeQuery();
 	    while (rs.next()) {
 	        matchArray.add(new Match(

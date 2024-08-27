@@ -204,10 +204,10 @@ public class UserDaoPostgres implements UserDao {
 		String sql = "UPDATE user_tb SET user_favorite_team_id = ? WHERE user_id = ?;";
 		Connection conn = DatabaseConnectionSingleton.getInstance().getConnection();
 		PreparedStatement ps = conn.prepareStatement(sql);
-		ps.setInt(1, team.getID());
+		ps.setInt(1, team.getId());
 		ps.setInt(2, user.getId());
 		ps.executeUpdate();
-		user.setFavoriteTeam(team.getID());
+		user.setFavoriteTeam(team.getId());
 		ps.close();
 	}
 
