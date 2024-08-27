@@ -146,6 +146,7 @@ public class MatchMainWindow extends JInternalFrame {
 		JButton btnCriarPartida = new JButton("Criar Partida");
 		btnCriarPartida.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				createMatchWindow.updateTeams();
 				createMatchWindow.setMatchMainWindow(MatchMainWindow.this);
 				createMatchWindow.setVisible(true);
 			}

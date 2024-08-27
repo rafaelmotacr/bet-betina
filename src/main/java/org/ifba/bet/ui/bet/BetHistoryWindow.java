@@ -25,21 +25,32 @@ import org.ifba.bet.model.Bid;
 import org.ifba.bet.model.User;
 
 public class BetHistoryWindow extends JInternalFrame {
+	
+	//Janela de Histórico de apostas
 
 	private static final long serialVersionUID = 1L;
 	private DefaultListModel<Bet> listModel;
+	
+	//Personalização da lista de bet
 	private BetViewhCustomListRenderer customListRenderer = new BetViewhCustomListRenderer();
+	
+	// CurrentUser define o usuário atual
+	// e serve para buscá-lo no banco de dados
 
 	private User currentUser;
 	private BetMainWindow betMainWindow;
+	
+	//objetos de acesso ao banco de dados
 	private BidDaoPostgres bidDao = new BidDaoPostgres();
 	private BetDaoPostgres betDao = new BetDaoPostgres();
 	private UserDaoPostgres userDao = new UserDaoPostgres();
+	
 	private JScrollPane scrollPane;
-	private JLabel noBetsFoundedLBL; // Mova esta declaração para cá, tornando-a uma variável de instância.
-
+	private JLabel noBetsFoundedLBL;
+	
+	//Construtor da classe
 	public BetHistoryWindow() {
-
+		
 		super();
 
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -50,9 +61,12 @@ public class BetHistoryWindow extends JInternalFrame {
 		setClosable(true);
 		setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		getContentPane().setLayout(null);
-
+		
+		//Modelo da Lista
 		listModel = new DefaultListModel<>();
 		
+		//Mensagem de falha ao encontrar apostas no nome do usuario
+		//sempre invisivel até que seja utilizada
         noBetsFoundedLBL = new JLabel("Não foram encontradas apostas em seu nome.");
         noBetsFoundedLBL.setVisible(false);
         noBetsFoundedLBL.setBounds(81, 50, 301, 44);
@@ -60,58 +74,64 @@ public class BetHistoryWindow extends JInternalFrame {
         noBetsFoundedLBL.setFont(new Font("Georgia", Font.PLAIN, 14));
         noBetsFoundedLBL.setForeground(Color.BLACK);
         
+        //Lista de Bets
 		JList<Bet> list = new JList<>(listModel);
-
+		
 		list.setOpaque(false);
 		list.setFont(new Font("Georgia", Font.BOLD, 16));
 		list.setCellRenderer(customListRenderer);
-
+		
+		//Onde a lista de Bets está inserida
 		scrollPane = new JScrollPane(list);
 		scrollPane.setBorder(new LineBorder(new Color(0, 0, 0), 2, true));
 		scrollPane.setBounds(1, 0, 458, 172);
 		getContentPane().add(scrollPane);
 		
+		//Botão de modificar apostas em aberto
 		JButton btnNewButton = new JButton("Modificar Aposta");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Bet bet = list.getSelectedValue();
+				Bet bet = list.getSelectedValue(); //Pega a aposta selecionada pelo usuário
 				if (bet == null) {
 					JOptionPane.showMessageDialog(BetHistoryWindow.this, "Selecione um aposta para editar.", "Aviso",
 							JOptionPane.INFORMATION_MESSAGE);
 					return;
 				}
 				switch (bet.getState()) {
-				case Bet.OPEN:
+				case Bet.OPEN: //Verifica se a aposta ainda está em aberto
 					try {
-						betMainWindow.loadBids(betDao.getAllBids(bet.getId()));
-						betMainWindow.setForeignBetId(bet.getId());
+						betMainWindow.loadBids(betDao.getAllBids(bet.getId()));//pega as informações da aposta
+						betMainWindow.setForeignBetId(bet.getId());//pega o id da aposta
 						setVisible(false);
 					} catch (SQLException e1) {
 						e1.printStackTrace();
 					}
 					break;
-				default:
+				default: //Quando a aposta estiver fechada
 					JOptionPane.showMessageDialog(BetHistoryWindow.this, "Não é possível editar esta aposta.",
 							"Acesso Negado", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
+		
+		//Visuais do Botão
 		btnNewButton.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		btnNewButton.setContentAreaFilled(false);
 		btnNewButton.setFont(new Font("Georgia", Font.PLAIN, 14));
 		btnNewButton.setBounds(1, 183, 170, 23);
 		getContentPane().add(btnNewButton);
-
+		
+		//Botão de deletar a aposta
 		JButton btnNewButton_1 = new JButton("Deletar Aposta");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Bet bet = list.getSelectedValue();
-				if (bet == null) {
+				Bet bet = list.getSelectedValue(); //pega a aposta selecionada pelo usuario
+				if (bet == null) { //verifica se a aposta foi selecionada
 					JOptionPane.showMessageDialog(BetHistoryWindow.this, "Selecione um aposta para apagar.", "Aviso",
 							JOptionPane.INFORMATION_MESSAGE);
 					return;
 				}
-				if(bet.getState() != Bet.OPEN) {
+				if(bet.getState() != Bet.OPEN) { //verifica se a aposta está aberta
 					JOptionPane.showMessageDialog(BetHistoryWindow.this, "Não é Possível Apagar Uma \nAposta neste estado.", "Acesso Negado",
 							JOptionPane.ERROR_MESSAGE);
 					return;
@@ -119,12 +139,12 @@ public class BetHistoryWindow extends JInternalFrame {
 				
 				try {
 
-					ArrayList<Bid> bidList = new ArrayList<Bid>();
+					ArrayList<Bid> bidList = new ArrayList<Bid>(); //armazena as apostas deletadas
 					bidList = bidDao.getAllBids(bet.getId());
-					double bidListValue = bidList.stream().mapToDouble(Bid::getPaidValue).sum();
-					userDao.updateUserBalance(currentUser, (currentUser.getBalance() + bidListValue));
-					betDao.deleteBet(bet.getId());
-					betMainWindow.updateStatus();
+					double bidListValue = bidList.stream().mapToDouble(Bid::getPaidValue).sum(); //pega os valores apostados nas apostas deletadas
+					userDao.updateUserBalance(currentUser, (currentUser.getBalance() + bidListValue)); //reembolsa os valores na conta do usuário
+					betDao.deleteBet(bet.getId()); //Deleta a aposta do banco de dados
+					betMainWindow.updateStatus(); //faz um update na tela de apostas
 					JOptionPane.showMessageDialog(BetHistoryWindow.this, "Aposta deletada com sucesso.", "Informação",
 							JOptionPane.INFORMATION_MESSAGE);
 					updateBets();
@@ -135,6 +155,8 @@ public class BetHistoryWindow extends JInternalFrame {
 
 			}
 		});
+		
+		//visual do botão
 		btnNewButton_1.setForeground(new Color(255, 0, 0));
 		btnNewButton_1.setFont(new Font("Georgia", Font.PLAIN, 14));
 		btnNewButton_1.setContentAreaFilled(false);
@@ -143,12 +165,13 @@ public class BetHistoryWindow extends JInternalFrame {
 		getContentPane().add(btnNewButton_1);
 		setVisible(true);
 	}
-
+	
+	//atualiza as apostas do histórico
     public void updateBets() {
         ArrayList<Bet> bets = null;
 
         try {
-            bets = userDao.getAllBets(currentUser.getId());
+            bets = userDao.getAllBets(currentUser.getId()); //pega as apostas do usuario atual
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -156,9 +179,9 @@ public class BetHistoryWindow extends JInternalFrame {
         listModel.clear();
 
         if (bets == null || bets.isEmpty()) {
-            noBetsFoundedLBL.setVisible(true); // Torne o rótulo visível se não houver apostas
+            noBetsFoundedLBL.setVisible(true); //Deixa a mensagem de falha ao encontrar apostas visível
         } else {
-            noBetsFoundedLBL.setVisible(false); // Esconda o rótulo se houver apostas
+            noBetsFoundedLBL.setVisible(false); 
             for (Bet bet : bets) {
                 listModel.addElement(bet);
             }

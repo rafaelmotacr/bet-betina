@@ -319,7 +319,7 @@ public class TeamMainWindow extends JInternalFrame {
 		this.mainWindow = mainWindow;
 
 	}
-
+	
 	public void turnOn() {
 		if (currentUser == null) {
 			createTeamBTN.setVisible(false);

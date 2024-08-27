@@ -45,8 +45,8 @@ public class BidDaoPostgres implements BidDao {
 		String sql = "DELETE FROM bid_tb WHERE bet_id = ? AND match_id = ?;";
 		Connection conn = DatabaseConnectionSingleton.getInstance().getConnection();
 		PreparedStatement ps = conn.prepareStatement(sql);
-		ps.setInt(1, bid.getBetID());
-		ps.setInt(2, bid.getMatchID());
+		ps.setInt(1, bid.getBetId());
+		ps.setInt(2, bid.getMatchId());
 		ps.executeUpdate();
 	    ps.close();
 	}
@@ -58,8 +58,8 @@ public class BidDaoPostgres implements BidDao {
 		PreparedStatement ps = conn.prepareStatement(sql);
 		ps.setInt(1, bid.getGuess());
 		ps.setDouble(2, bid.getPaidValue());
-		ps.setInt(3, bid.getBetID());
-		ps.setInt(4, bid.getMatchID());
+		ps.setInt(3, bid.getBetId());
+		ps.setInt(4, bid.getMatchId());
 		ps.executeUpdate();
 	    ps.close();
 	}

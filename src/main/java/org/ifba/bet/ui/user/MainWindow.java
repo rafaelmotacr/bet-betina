@@ -298,6 +298,7 @@ public class MainWindow {
 		mainPNL.add(matchBTN);
 		matchBTN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				matchMainWindow.updateMatchs(null);
 				matchMainWindow.setMainWindow(MainWindow.this);
 				matchMainWindow.setVisible(true);
 			}
@@ -636,4 +637,7 @@ public class MainWindow {
 	public User getCurrentUser() {
 		return currentUser;
 	}
+	
+	
+	
 }

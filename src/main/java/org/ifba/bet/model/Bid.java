@@ -4,26 +4,26 @@ public class Bid {
 
 	private Double paidValue;
 	private int guess;
-	private int betID;
-	private int matchID;
+	private int betId;
+	private int matchId;
 
 	public static final int GUESS_TO_HOME_WIN = 1;
 	public static final int GUESS_TO_AWAY_WIN = 2;
 	public static final int GUESS_TO_DRAW = 3;
 	
-	public Bid(double paidValue, int guess, int matchID) {
+	public Bid(double paidValue, int guess, int matchId) {
 		super();
 		this.paidValue = paidValue;
 		this.guess = guess;
-		this.matchID = matchID;
+		this.matchId = matchId;
 	}
 
-	public Bid(double paidValue, int guess, int betId, int matchID) {
+	public Bid(double paidValue, int guess, int betId, int matchId) {
 		super();
 		this.paidValue = paidValue;
 		this.guess = guess;
-		this.betID = betId;
-		this.matchID = matchID;
+		this.betId = betId;
+		this.matchId = matchId;
 	}
 
 	public double getPaidValue() {
@@ -42,20 +42,20 @@ public class Bid {
 		this.guess = guess;
 	}
 
-	public int getBetID() {
-		return betID;
+	public int getBetId() {
+		return betId;
 	}
 
-	public void setBetID(int betID) {
-		this.betID = betID;
+	public void setBetId(int betId) {
+		this.betId = betId;
 	}
 
-	public int getMatchID() {
-		return matchID;
+	public int getMatchId() {
+		return matchId;
 	}
 
-	public void setMatchID(int matchID) {
-		this.matchID = matchID;
+	public void setMatchdId(int matchId) {
+		this.matchId = matchId;
 	}
 
 }

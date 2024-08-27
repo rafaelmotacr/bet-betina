@@ -31,6 +31,8 @@ import org.ifba.bet.model.Match;
 import org.ifba.bet.model.User;
 
 public class BetMainWindow extends JInternalFrame {
+	
+	//Janela principal de apostas 
 
 	private static final long serialVersionUID = 1L;
 
@@ -63,33 +65,39 @@ public class BetMainWindow extends JInternalFrame {
 	private double betTotalCost = 0;
 
 	private ArrayList<Bid> bidArray;
-
+	
+	//construtor da classe
 	public BetMainWindow() {
 
 		super();
-
+		
+		//lista de palpites
 		bidArray = new ArrayList<Bid>();
-
+		
+		//visual da janela
 		setTitle("Bet-Betina v1.23 - Menu de Apostas");
 		setClosable(true);
 		setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		setBounds(0, 0, 704, 396);
 		setLocation(259, 78);
 		getContentPane().setLayout(null);
-
+		
+		//tela de criar palpites
 		BidWindow bidWindow = new BidWindow();
 		bidWindow.setBetMainWindow(BetMainWindow.this);
-		bidWindow.setVisible(false);
+		bidWindow.setVisible(false); //invisivel até abrir com o botão
 		bidWindow.setClosable(true);
 		bidWindow.setLocation(140, 44);
 		getContentPane().add(bidWindow);
-
+		
+		//tela de histórico de apostas
 		BetHistoryWindow betHistoryWindow = new BetHistoryWindow();
 		betHistoryWindow.setVisible(false);
 		betHistoryWindow.setClosable(true);
 		betHistoryWindow.setLocation(120, 62);
 		getContentPane().add(betHistoryWindow);
-
+		
+		//modelo da lista de partidas
 		listModel = new DefaultListModel<>();
 		JList<Match> list = new JList<>(listModel);
 		customListRenderer.setBidArray(bidArray);
@@ -97,7 +105,8 @@ public class BetMainWindow extends JInternalFrame {
 		list.setOpaque(false);
 		list.setFont(new Font("Georgia", Font.BOLD, 16));
 		list.setCellRenderer(customListRenderer);
-
+		
+		//lista de partidas disponíveis 
 		JScrollPane scrollPane = new JScrollPane(list);
 		scrollPane.setBorder(new LineBorder(new Color(0, 0, 0), 2, true));
 		scrollPane.setBounds(164, 32, 310, 299);
@@ -109,7 +118,8 @@ public class BetMainWindow extends JInternalFrame {
 		dataPanel.setBackground(new Color(0, 128, 128));
 		dataPanel.setBounds(0, 32, 157, 336);
 		getContentPane().add(dataPanel);
-
+		
+		//botão de buscar partida
 		JButton searchBTN = new JButton("Buscar Partida");
 		searchBTN.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		searchBTN.setForeground(new Color(255, 255, 255));
@@ -121,17 +131,20 @@ public class BetMainWindow extends JInternalFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String searchText = searchFLD.getText();
+				
+				//verifica o conteúdo do search field
 				if (searchText == null || searchText.equals("") || !searchFLD.isEnabled()) {
 					return;
 				}
-				updateMatchs(searchText);
+				updateMatchs(searchText); //atualiza a lista de partidas disponiveis
 			}
 		});
-
+		
+		//barra de pesquisa de partidas
 		searchFLD = new JTextField();
 		searchFLD.setBorder(new LineBorder(new Color(0, 0, 0)));
 		searchFLD.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
+			public void mouseClicked(MouseEvent e) { //ativa a barra de pesquisa quando acontece um click
 				searchFLD.setText(null);
 				searchFLD.setEnabled(true);
 				searchFLD.requestFocus();
@@ -143,7 +156,8 @@ public class BetMainWindow extends JInternalFrame {
 		searchFLD.setBounds(10, 11, 111, 23);
 		dataPanel.add(searchFLD);
 		searchFLD.setColumns(10);
-
+		
+		//botão de voltar para a janela principal
 		JButton backBTN = new JButton("");
 		backBTN.setIcon(new ImageIcon("src/main/resources/backBTN.png"));
 		backBTN.setContentAreaFilled(false);
@@ -155,7 +169,8 @@ public class BetMainWindow extends JInternalFrame {
 				dispose();
 			}
 		});
-
+		
+		//botão de resetar a pagina
 		JButton refreshBTN = new JButton("");
 		refreshBTN.setToolTipText("Clique aqui para limpar a busca.");
 		refreshBTN.setBorderPainted(false);
@@ -167,12 +182,14 @@ public class BetMainWindow extends JInternalFrame {
 		refreshBTN.setIcon(new ImageIcon("src/main/resources/reload.png"));
 		refreshBTN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				//reseta a barra de pesquisa
 				searchFLD.setText("Nome do time...");
 				searchFLD.setEnabled(false);
-				updateMatchs();
+				updateMatchs(); //atualiza a lista de partidas
 			}
 		});
-
+		
+		//botão de fazer palpite
 		makeBidBTN = new JButton("Fazer Lance");
 		makeBidBTN.setEnabled(false);
 		makeBidBTN.setForeground(Color.WHITE);
@@ -183,14 +200,15 @@ public class BetMainWindow extends JInternalFrame {
 		dataPanel.add(makeBidBTN);
 		makeBidBTN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Match match = list.getSelectedValue();
+				Match match = list.getSelectedValue(); //verifica a partida na qual o usuario que apostar
 				if (match == null) {
 					JOptionPane.showMessageDialog(BetMainWindow.this, "Selecione uma partida primeiro.", "Aviso",
 							JOptionPane.INFORMATION_MESSAGE);
 					return;
 				}
 				for (Bid bid : bidArray) {
-					if (bid.getMatchID() == match.getId()) {
+					//verifica se já existe um lance do usario com essa partida
+					if (bid.getMatchId() == match.getId()) {
 						JOptionPane.showMessageDialog(BetMainWindow.this, "Você já fez um lance nesta partida.",
 								"Aviso", JOptionPane.INFORMATION_MESSAGE);
 						return;
@@ -199,10 +217,11 @@ public class BetMainWindow extends JInternalFrame {
 				bidWindow.setBetMainWindow(BetMainWindow.this);
 				bidWindow.setCurrentUser(currentUser);
 				bidWindow.setMatch(list.getSelectedValue());
-				bidWindow.setVisible(true);
+				bidWindow.setVisible(true); //abre a tela de fazer lance
 			}
 		});
-
+		
+		//botão de abrir o historico de apostas
 		historyBTN = new JButton("Minhas Apostas");
 		historyBTN.setEnabled(false);
 		historyBTN.setForeground(Color.WHITE);
@@ -213,13 +232,15 @@ public class BetMainWindow extends JInternalFrame {
 		dataPanel.add(historyBTN);
 		historyBTN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				//abre o historico de apostas do usuario
 				betHistoryWindow.setBetMainWindow(BetMainWindow.this);
 				betHistoryWindow.setCurrentUser(currentUser);
 				betHistoryWindow.updateBets();
 				betHistoryWindow.setVisible(true);
 			}
 		});
-
+		
+		//visual da janela
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(0, 0, 0));
 		panel.setBounds(0, 0, 702, 28);
@@ -304,7 +325,8 @@ public class BetMainWindow extends JInternalFrame {
 		blackLine_1_1_2.setBackground(Color.BLACK);
 		blackLine_1_1_2.setBounds(0, 291, 221, 3);
 		panel_1.add(blackLine_1_1_2);
-
+		
+		//botão de confirmar aposta
 		confirmBetBTN = new JButton("Confirmar Aposta");
 		confirmBetBTN.setEnabled(false);
 		confirmBetBTN.setBounds(324, 342, 150, 23);
@@ -317,7 +339,7 @@ public class BetMainWindow extends JInternalFrame {
 
 		confirmBetBTN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (bidArray.size() < 1) {
+				if (bidArray.size() < 1) { //verifica se existem lances
 					JOptionPane.showMessageDialog(BetMainWindow.this, "Inclua ao menos um lance em sua aposta.",
 							"Aviso", JOptionPane.ERROR_MESSAGE);
 					return;
@@ -328,9 +350,9 @@ public class BetMainWindow extends JInternalFrame {
 
 						// Adiciona somente os novos lances ao banco
 
-						if (bid.getBetID() != foreignBetId) {
+						if (bid.getBetId() != foreignBetId) {
 							try {
-								bidDao.insertBid(foreignBetId, bid.getMatchID(), bid.getGuess(), bid.getPaidValue());
+								bidDao.insertBid(foreignBetId, bid.getMatchId(), bid.getGuess(), bid.getPaidValue());
 								userDao.updateUserBalance(currentUser, (currentUser.getBalance() - bid.getPaidValue()));
 							} catch (SQLException e1) {
 								JOptionPane.showMessageDialog(BetMainWindow.this,
@@ -339,6 +361,7 @@ public class BetMainWindow extends JInternalFrame {
 								return;
 							}
 						} else {
+							//remove o valor apostado da conta do usuário
 							currentUser.setBalance(currentUser.getBalance() - bid.getPaidValue());
 							try {
 								bidDao.updateBid(bid);
@@ -347,6 +370,7 @@ public class BetMainWindow extends JInternalFrame {
 							}
 						}
 					}
+					//mensagem de confirmação de aposta
 					JOptionPane.showMessageDialog(BetMainWindow.this, "Aposta Atualizada com Sucesso.",
 							"Confirmação de Aposta", JOptionPane.INFORMATION_MESSAGE);
 					removeAllBids();
@@ -357,8 +381,9 @@ public class BetMainWindow extends JInternalFrame {
 
 				int betId = 0;
 				try {
-					betId = betDao.insertBet(currentUser.getId(), Bet.OPEN);
+					betId = betDao.insertBet(currentUser.getId(), Bet.OPEN); //coloca a aposta no banco de dados
 				} catch (SQLException e1) {
+					//mensagem de erro
 					JOptionPane.showMessageDialog(BetMainWindow.this, "Ocorreu um erro ao criar a aposta", "Aviso",
 							JOptionPane.ERROR_MESSAGE);
 					e1.printStackTrace();
@@ -366,8 +391,10 @@ public class BetMainWindow extends JInternalFrame {
 				}
 				for (Bid bid : bidArray) {
 					try {
-						bidDao.insertBid(betId, bid.getMatchID(), bid.getGuess(), bid.getPaidValue());
+						//insere o lance no banco de dados
+						bidDao.insertBid(betId, bid.getMatchId(), bid.getGuess(), bid.getPaidValue());
 					} catch (SQLException e1) {
+						//mensagem de erro
 						JOptionPane.showMessageDialog(BetMainWindow.this,
 								"Ocorreu um erro ao cadastrar\n um de seus lances.", "Aviso",
 								JOptionPane.ERROR_MESSAGE);
@@ -375,6 +402,7 @@ public class BetMainWindow extends JInternalFrame {
 						return;
 					}
 				}
+				//mensagem de confirmação de criação de aposta
 				JOptionPane.showMessageDialog(BetMainWindow.this, "Aposta criada com sucesso.", "Confirmação de Aposta",
 						JOptionPane.INFORMATION_MESSAGE);
 				betLocalState= 0;
@@ -437,7 +465,7 @@ public class BetMainWindow extends JInternalFrame {
 				}
 				if (betLocalState== 7) {
 					for (Bid bid : bidArray) {
-						if (bid.getMatchID() == match.getId()) {
+						if (bid.getMatchId() == match.getId()) {
 							try {
 								bidDao.deleteBid(bid);
 								userDao.updateUserBalance(currentUser, (currentUser.getBalance() + bid.getPaidValue()));
@@ -454,7 +482,7 @@ public class BetMainWindow extends JInternalFrame {
 					return;
 				}
 				for (Bid bid : bidArray) {
-					if (bid.getMatchID() == match.getId()) {
+					if (bid.getMatchId() == match.getId()) {
 						removeBid(match);
 						return;
 					}
@@ -500,8 +528,8 @@ public class BetMainWindow extends JInternalFrame {
 				}
 				if (betLocalState== 7) {
 					for (Bid bid : bidArray) {
-						if (bid.getMatchID() == match.getId()) {
-							if (bid.getBetID() == foreignBetId) {
+						if (bid.getMatchId() == match.getId()) {
+							if (bid.getBetId() == foreignBetId) {
 								try {
 									bidDao.deleteBid(bid);
 								} catch (SQLException e1) {
@@ -517,7 +545,7 @@ public class BetMainWindow extends JInternalFrame {
 					}
 				}
 				for (Bid bid : bidArray) {
-					if (bid.getMatchID() == match.getId()) {
+					if (bid.getMatchId() == match.getId()) {
 						removeBid(match);
 						bidWindow.setCurrentUser(currentUser);
 						bidWindow.setMatch(match);
@@ -623,7 +651,7 @@ public class BetMainWindow extends JInternalFrame {
 
 	public void removeBid(Match match) {
 		for (Bid bid : bidArray) {
-			if (bid.getMatchID() == match.getId()) {
+			if (bid.getMatchId() == match.getId()) {
 				betTotalCost -= bid.getPaidValue();
 				bidArray.remove(bid);
 				break;
@@ -659,5 +687,4 @@ public class BetMainWindow extends JInternalFrame {
 	public double getBetTotalCost() {
 		return betTotalCost;
 	}
-
 }

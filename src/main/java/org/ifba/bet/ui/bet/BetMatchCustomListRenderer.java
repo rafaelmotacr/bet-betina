@@ -35,7 +35,7 @@ class BetMatchCustomListRenderer extends JLabel implements ListCellRenderer<Matc
 		text = text + String.valueOf(index) + " - " + value;
 		boolean hasBid = false;
 		for (Bid bid : bidArray) {
-			if (bid.getMatchID() == value.getId()) {
+			if (bid.getMatchId() == value.getId()) {
 				hasBid = true;
 				break;
 			}

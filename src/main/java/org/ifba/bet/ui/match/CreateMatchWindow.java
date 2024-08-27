@@ -10,14 +10,12 @@ import java.util.Collections;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
 import org.ifba.bet.dao.match.MatchDaoPostgres;
@@ -31,6 +29,8 @@ public class CreateMatchWindow extends JInternalFrame {
 	private MatchDaoPostgres matchDao = new MatchDaoPostgres();
 	private JLabel matchTitleLBL;
 	private MatchMainWindow matchMainWindow;
+	private JComboBox<Team> awayTeamBox;
+	private JComboBox<Team> homeTemBox;
 	
 	private ArrayList<Team> teamArray;
 
@@ -95,12 +95,12 @@ public class CreateMatchWindow extends JInternalFrame {
 		cancelBidBTN.setBounds(20, 177, 167, 23);
 		getContentPane().add(cancelBidBTN);
 
-		JComboBox<Team> awayTeamBox = new JComboBox<>(teamArray.toArray(new Team[0]));
+		awayTeamBox = new JComboBox<>(teamArray.toArray(new Team[0]));
 		awayTeamBox.setFont(new Font("Georgia", Font.PLAIN, 14));
 		awayTeamBox.setBounds(243, 64, 162, 22);
 		getContentPane().add(awayTeamBox);
 
-		JComboBox<Team> homeTemBox = new JComboBox<>(teamArray.toArray(new Team[0]));
+		homeTemBox = new JComboBox<>(teamArray.toArray(new Team[0]));
 		homeTemBox.setFont(new Font("Georgia", Font.PLAIN, 14));
 		homeTemBox.setBounds(20, 64, 162, 22);
 		getContentPane().add(homeTemBox);
@@ -166,6 +166,12 @@ public class CreateMatchWindow extends JInternalFrame {
 		try {
 			teamArray = teamDao.getAllTeams();
 			Collections.sort(teamArray, (t1, t2) -> t1.getName().compareTo(t2.getName()));
+			awayTeamBox.removeAll();
+			homeTemBox.removeAll();
+	        for (Team team : teamArray) {
+	        	awayTeamBox.addItem(team);
+	        	homeTemBox.addItem(team);
+	        }
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -177,24 +183,6 @@ public class CreateMatchWindow extends JInternalFrame {
 	}
 	
 
-	public static void main(String[] args) {
-		// Garantir que a criação da GUI ocorra na Event Dispatch Thread
-		SwingUtilities.invokeLater(() -> {
-			JFrame frame = new JFrame("Main Frame");
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			frame.setSize(800, 600);
 
-			// Adicionar um JDesktopPane ao JFrame
-			JDesktopPane desktopPane = new JDesktopPane();
-			frame.setContentPane(desktopPane);
-
-			// Adicionar uma instância de TesteClass ao JDesktopPane
-			CreateMatchWindow testeClass = new CreateMatchWindow();
-			desktopPane.add(testeClass);
-
-			frame.setVisible(true);
-		});
-	}
-	
 
 }

@@ -1,4 +1,4 @@
-package org.ifba.bet.ui.team;
+	package org.ifba.bet.ui.team;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -21,7 +21,7 @@ public class CreateTeamWindow extends JInternalFrame {
 
 	private static final long serialVersionUID = 1L;
 	TeamDaoPostgres dao = new TeamDaoPostgres();
-	TeamMainWindow testeClass;
+	TeamMainWindow teamMainWindow;
 
 	CreateTeamWindow() {
 
@@ -94,7 +94,8 @@ public class CreateTeamWindow extends JInternalFrame {
 				try {
 					dao.insertTeam(teamName, teamAbbreviation);
 					JOptionPane.showMessageDialog(CreateTeamWindow.this, "Time criado com sucesso.");
-					testeClass.updateTeams();
+					teamMainWindow.updateTeams();
+				//	teamMainWindow.getMainWindow().get
 				} catch (SQLException e1) {
 					JOptionPane.showMessageDialog(CreateTeamWindow.this, "Ocorreu um erro ao criar o time.");
 					e1.printStackTrace();
@@ -114,6 +115,6 @@ public class CreateTeamWindow extends JInternalFrame {
 	}
 
 	public void setTesteClass(TeamMainWindow testeClass) {
-		this.testeClass = testeClass;
+		this.teamMainWindow = testeClass;
 	}
 }
